@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IAB207 Assessment 2</title>
+
+    <link rel="stylesheet" href="static/style/eventDetails.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+
+</head>
+
+<body style="background-color: #141117;">
+
+
+    <header>
+
+        <!--Navbar-->
+        <nav class="navbar navbar-expand-lg bg-body-secondary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">AmpUpEvents</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="eventCreation.html">Create Events</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="eventDetails.html">All Events</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="bookingHistory.html">Account</a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#">Sign-Up</a>
+                        </li> -->
+                    </ul>
+                    <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+    </header>
+
+    <main>
+
+        <!--First Row-->
+        <div class="row creation-banner">
+
+
+
+            <div class="col-sm-12">
+
+
+                <div class="Title text-center justify-content-center">
+                    <h1>Kendrick Lamar</h1>
+                    <h2>Status: Open</h2>
+                </div>
+
+                <div id="carouselExample" class="carousel slide">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src='static/img/kendrick.png' class="d-block w-100" alt="..." width="800" height="800">
+                        </div>
+                        <div class="carousel-item">
+                            <img src='static/img/kendrick3.png' class="d-block w-100" alt="..." width="800"
+                                height="800">
+                        </div>
+                        <div class="carousel-item">
+                            <img src='static/img/kendrick2.png' class="d-block w-100" alt="..." width="800"
+                                height="800">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Second Row-->
+        <div class="container mt-4">
+            <div class="row">
+                <!-- Ticket Details -->
+                <div class="col-12 col-lg-6">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Ticket Details:</h5>
+                            <!-- Tickets Remaining -->
+                            <div class="form-group">
+                                <label>Tickets Quantity:</label>
+                                <div class="d-flex gap-2">
+                                    <input type="number" class="form-control" placeholder="Ticket Qty" />
+                                    <input type="number" class="form-control me-2" placeholder="Remaining Tickets: 132"
+                                        disabled />
+                                </div>
+                            </div>
+                            <!-- Ticket Types and Cost -->
+                            <div class="form-group mb-3">
+                                <label>Ticket Types</label>
+                                <div class="d-flex gap-2">
+                                    <select class="form-control me-2">
+                                        <option>General</option>
+                                        <option>VIP</option>
+                                        <option>Balcony</option>
+                                    </select>
+                                    <input type="text" class="form-control" placeholder="Ticket Cost" disabled />
+                                </div>
+                            </div>
+
+                            <label for="event-date">Select Date:</label>
+                            <input type="date" id="event-date" name="event-date" class="form-control w-100 mb-1">
+                            <!-- Seat Allocation -->
+                            <div class="form-group">
+                                <label>Seat Allocation:</label>
+                                <div class="d-flex">
+                                    <div class="d-flex gap-2">
+                                        <select class="form-control me-2">
+                                            <option>Front Row</option>
+                                            <option>Middle Row</option>
+                                            <option>Back Row</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary">Book Tickets</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concert Details -->
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Concert Details:</h5>
+                            <div class="form-group">
+                                <label>Concert Name:</label>
+                                <input type="text" class="form-control" placeholder="Kendrick Lamar" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label>Concert Genre:</label>
+                                <input type="text" class="form-control" placeholder="Hip Hop" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label>Age Limit:</label>
+                                <input type="number" class="form-control" placeholder="16+" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label>Concert Times:</label>
+                                <input type="text" class="form-control" placeholder="7:00 PM - 10:00 PM" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label>Concert Length:</label>
+                                <input type="text" class="form-control" placeholder="Estimated Time: 3hrs" disabled />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Social Link Row -->
+        <div class="row">
+            <!-- Social Media Links -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Social Media Links:</h5>
+                    <div class="d-flex justify-content-center">
+                        <div class="row g-3 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 text-center">
+
+
+
+                            <div class="col test p-0">
+                                <button type="button" class="btn img-btn"
+                                    style="background-image: url('static/img/FacebookNC.png');">
+                                </button>
+                            </div>
+
+                            <div class="col p-0">
+                                <button type="button" class="btn img-btn"
+                                    style="background-image: url('static/img/InstaNC.png');">
+                                </button>
+                            </div>
+
+                            <div class="col p-0">
+                                <button type="button" class="btn img-btn"
+                                    style="background-image: url('static/img/TwitterNC.png');">
+                                </button>
+                            </div>
+
+                            <div class="col p-0">
+                                <button type="button" class="btn img-btn"
+                                    style="background-image: url('static/img/YouTubeNC.png');">
+                                </button>
+                            </div>
+
+                            <div class="col p-0">
+                                <button type="button" class="btn img-btn"
+                                    style="background-image: url('static/img/RedditNC.png');">
+                                </button>
+                            </div>
+
+                            <div class="col p-0">
+                                <button type="button" class="btn img-btn"
+                                    style="background-image: url('static/img/SnapNC.png');">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+
+
+        <!--Third Row-->
+        <div class="row">
+
+            <div class="col-sm-12 justify-content-center">
+                <!-- Artist Information Card -->
+                <div class="card-slider card rounded-4 overflow-hidden">
+                    <div class="artist-name-section position-relative bg-light" style="height: 400px;">
+
+                        <div class="card-header fw-bold">
+                            Artist Name & Information
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-9 custom-border text-center">
+                                    <textarea class="form-control artist-creation-card" id="message" rows="4"
+                                        wrap="hard"
+                                        placeholder="Kendrick Lamar
+Kendrick Lamar Duckworth is an American rapper. Regarded as one of the greatest rappers of all time, he was awarded the 2018 Pulitzer Prize for Music, becoming the first musician outside of the classical and jazz genres to receive the honor. -Wikipedia"
+                                        disabled></textarea>
+                                </div>
+
+                                <div
+                                    class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center p-4">
+                                    <form class="w-100 text-center">
+                                        <label for="event-venue" class="form-label">
+                                            Venue:
+                                        </label>
+                                        <input type="text" id="event-venue" name="event-venue"
+                                            class="form-control w-100 mb-2 text-center" required
+                                            placeholder="U.S. Bank Stadium" disabled>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Forth Row-->
+        <div class="row">
+
+            <div class="col-sm-12">
+                <!-- Event Description Card -->
+                <div class="card-slider card rounded-4 overflow-hidden">
+                    <div class="position-relative bg-light" style="height: 600px;">
+
+                        <div class="card-header fw-bold">
+                            Event Description
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-9 custom-border text-center">
+                                    <textarea class="form-control creation-card" id="message" rows="4" wrap="hard"
+                                        placeholder="Type Event Description Here"
+                                        disabled>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis cum accusamus accusantium ad magnam commodi, voluptas eligendi cupiditate. Distinctio perspiciatis neque praesentium vel aspernatur minus esse eum ad aliquid fugiat placeat accusantium explicabo molestias molestiae beatae, quisquam architecto quo consequuntur hic recusandae dolore officia nemo accusamus temporibus! Quo, voluptates. Aliquam sit sed exercitationem dolorum reiciendis iure veniam? Dolorem, veniam?</textarea>
+                                </div>
+
+                                <div
+                                    class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center p-5">
+                                    <form class="text-center">
+                                        <div class="mb-3">
+                                            <label for="eventStart" class="form-label">Event Start Date:</label>
+                                            <input type="date" id="eventStart" class="form-control text-center"
+                                                placeholder="Select start date" disabled>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="eventEnd" class="form-label">Event End Date:</label>
+                                            <input type="date" id="eventEnd" class="form-control text-center"
+                                                placeholder="Select end date" disabled>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Fifth Row-->
+        <div class="row">
+
+            <div class="col-sm-12">
+                <!-- Event Policies Card -->
+                <div class="card-slider card rounded-4 overflow-hidden">
+                    <div class="position-relative bg-light" style="height: 520px;">
+
+                        <div class="card-header fw-bold">
+                            Event Policies
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-12 custom-border text-center">
+                                    <textarea class="form-control event-policy" id="message" rows="4" wrap="hard"
+                                        placeholder="Type Event Policies Here"
+                                        disabled> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quia maxime voluptate ut praesentium iste officia animi laborum est officiis, magnam quam esse nesciunt porro ipsa quo deserunt non unde nihil ducimus, tempore quisquam. Quam saepe incidunt inventore, optio aperiam corrupti vitae corporis magnam doloremque fugiat impedit, iusto deserunt repellat dignissimos natus eligendi alias mollitia tempore dolorem tempora? Aperiam eveniet totam incidunt voluptate, officia pariatur. Officiis, id consequatur quidem numquam nam eveniet ipsam, tempore inventore soluta nulla, cupiditate ipsum repellendus facere. Cumque ipsum, voluptates, labore veniam atque ut optio ducimus, alias error distinctio consequuntur temporibus. Corporis doloremque molestiae modi veniam asperiores enim voluptate optio tempore non possimus voluptas reprehenderit nihil, cumque quam nulla obcaecati distinctio nostrum ipsa voluptatum! Voluptatibus molestiae accusantium pariatur voluptates quam ipsa voluptate! Deleniti omnis ducimus beatae inventore, reiciendis excepturi ex aliquam recusandae est qui unde nobis voluptate molestiae quos aspernatur similique vitae repellendus quaerat doloribus sed? Saepe expedita ipsam, quibusdam nihil atque ipsa dolorum unde sequi placeat aliquam. Voluptas error aut repudiandae facere est explicabo nulla quas dolorem totam placeat provident, aliquid perspiciatis! Atque consequuntur perferendis incidunt hic ad, aperiam eligendi corrupti tempore commodi dolore totam inventore voluptates sapiente qui quod consectetur est numquam quis deserunt? Facilis, suscipit, saepe non quisquam consectetur est sunt exercitationem aperiam, nihil neque illo. Dicta, facere. Voluptas facere consequatur, a atque voluptatibus vitae quibusdam, illum sed in porro magnam esse voluptatem impedit veniam unde minima praesentium soluta optio vel iure nobis et eum. Velit veniam nesciunt repudiandae distinctio nemo dolorum, at iusto asperiores, quam quasi saepe delectus quos eveniet voluptatibus possimus consequuntur quibusdam, harum repellendus. Reiciendis, a ratione! Mollitia odit cum illum ullam officiis illo, quaerat quod numquam nobis! Ab maxime repellendus ducimus a? Ea, voluptas repellendus delectus expedita nisi mollitia cumque officiis eveniet minus repellat? Cupiditate sit nam impedit id odio.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--Sixth Row-->
+        <div class="row">
+
+            <div class="col-sm-12">
+                <!-- Comments Card -->
+                <div class="card-slider card rounded-4 overflow-hidden">
+                    <div class="position-relative bg-light" style="height: 700px;">
+
+                        <div class="card-header fw-bold">
+                            Comment Section
+                        </div>
+                        <div class="card-body">
+                            <!-- Comment One -->
+                            <div class="row">
+                                <div class="col-md-12 custom-border">
+                                    <label for="event-comment" class="form-label">User: CurrentUser</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control event-comment"
+                                            placeholder="Leave a Comment Here!" aria-label="Leave a Comment Here!"
+                                            aria-describedby="button-addon2">
+
+                                        <button class="btn btn-outline-secondary" type="button">Post</button>
+                                    </div>
+                                    <div class="form-text" id="basic-addon4">Share Your Event Experience!</div>
+                                </div>
+                            </div>
+
+                            <!-- Comment Two -->
+                            <div class="row">
+                                <div class="col-md-12 custom-border">
+                                    <label for="event-comment" class="form-label">User: Username4321</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control event-comment" placeholder="I love this artist"
+                                            aria-label="Comment Here" aria-describedby="button-addon2" disabled>
+
+                                        <button class="btn btn-outline-secondary" type="button">Reply</button>
+                                    </div>
+                                    <div class="form-text" id="basic-addon4">
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            id="button-addon2">Like</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comment Three -->
+                            <div class="row">
+                                <div class="col-md-12 custom-border">
+                                    <label for="event-comment" class="form-label">User: Username2468</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control event-comment" placeholder="Best concert I’ve ever been to, hands down. The energy was unreal!"
+                                            aria-label="Comment Here" aria-describedby="button-addon2" disabled>
+
+                                        <button class="btn btn-outline-secondary" type="button">Reply</button>
+                                    </div>
+                                    <div class="form-text" id="basic-addon4">
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            id="button-addon2">Like</button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Comment Four -->
+                            <div class="row">
+                                <div class="col-md-12 custom-border">
+                                    <label for="event-comment" class="form-label">User: Username1234</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control event-comment" placeholder="Vibes were immaculate. Crowd was super chill too!"
+                                            aria-label="Comment Here" aria-describedby="button-addon2" disabled>
+
+                                        <button class="btn btn-outline-secondary" type="button">Reply</button>
+                                    </div>
+                                    <div class="form-text" id="basic-addon4">
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            id="button-addon2">Like</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+</html>
