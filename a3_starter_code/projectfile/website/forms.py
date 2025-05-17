@@ -72,6 +72,19 @@ class EventForm(FlaskForm):
         if self.start_date.data and field.data < self.start_date.data:
             raise ValidationError("End date must be after start date.")
         
+# User comment
 class CommentForm(FlaskForm):
-  text = TextAreaField('Comment', [InputRequired()])
-  submit = SubmitField('Create')
+    text = TextAreaField('Comment', [
+        InputRequired('Please enter a comment'),
+        Length(min=1, max=400, message='Comment must be between 1 and 400 characters')
+    ])
+    submit = SubmitField('Post Comment')
+
+    def validate_text(self, field):
+        # Remove leading and trailing whitespace
+        if field.data.strip() == '':
+            raise ValidationError('Comment cannot be empty or just whitespace')
+        
+        # Check for minimum meaningful content
+        if len(field.data.strip()) < 1:
+            raise ValidationError('Comment must contain at least one character')

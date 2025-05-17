@@ -1,20 +1,24 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for
-from .models import Event, Comment, ticket, ticket_type
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash
+from .models import Event, Comment, ticket_type
 from .forms import EventForm
 from .forms import TicketForm
 from .forms import CommentForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
+from flask_login import login_required, current_user
 
 eventbp = Blueprint('event', __name__, url_prefix='/events')
 
 @eventbp.route('/<id>')
 def details(id):
     event = db.session.scalar(db.select(Event).where(Event.id==id))
-
+    if not event:
+        flash('Event not found', 'error')
+        return redirect(url_for('main.index'))
+    
     cform = CommentForm()
-    return render_template('events/eventDetails.html', event = event, form=cform)
+    return render_template('events/eventDetails.html', event=event, form=cform)
 
 @eventbp.route('/create', methods = ['GET', 'POST'])
 def create():
@@ -88,19 +92,6 @@ def create():
     return redirect(url_for('event.create'))
   return render_template('events/eventCreation.html', form=form, ticketform=ticketform)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 def check_upload_file(form):
   # get file data from form  
   fp = form.image.data
@@ -114,3 +105,25 @@ def check_upload_file(form):
   # save the file and return the db upload path  
   fp.save(upload_path)
   return db_upload_path
+
+@eventbp.route('/<id>/comment', methods=['GET', 'POST'])
+@login_required
+def comment(id):
+    form = CommentForm()
+    event = db.session.scalar(db.select(Event).where(Event.id==id))
+    
+    if not event:
+        flash('Event not found', 'error')
+        return redirect(url_for('main.index'))
+    
+    if form.validate_on_submit():
+        comment = Comment(
+            text=form.text.data,
+            event=event,
+            user=current_user
+        )
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your comment has been added', 'success')
+    
+    return redirect(url_for('event.details', id=id))
