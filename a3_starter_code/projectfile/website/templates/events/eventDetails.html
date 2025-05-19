@@ -133,8 +133,9 @@
     <div class="container mt-4 mb-3">
         <div class="row">
             <div class="col-12 text-center">
-                {% if current_user.is_authenticated and event.created_by == current_user.id %}
-                    <a href="{{ url_for('event.edit_event', id=event.id) }}" class="btn btn-warning btn-lg">Edit Event</a>
+                {% if current_user.is_authenticated and event.created_by == current_user.id and event.status != 'Cancelled' %}
+                    <a href="{{ url_for('event.edit_event', id=event.id) }}" class="btn btn-warning btn-lg me-2">Edit Event</a>
+                    <a href="{{ url_for('event.cancel_confirm', id=event.id) }}" class="btn btn-danger btn-lg">Cancel Event</a>
                 {% endif %}
             </div>
         </div>

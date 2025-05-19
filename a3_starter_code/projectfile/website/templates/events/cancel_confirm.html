@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Cancellation - {{ event.name }}{% endblock %}
+
+{% block content %}
+<main class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Confirm Event Cancellation</h4>
+                </div>
+                <div class="card-body">
+                    {% if event %}
+                        <p class="lead">Are you sure you want to cancel the event: <strong>"{{ event.name }}"</strong>?</p>
+                        <p>This action will mark the event as cancelled and it will no longer be bookable. This action typically cannot be undone.</p>
+                        
+                        <form method="POST" action="{{ url_for('event.cancel_event_confirmed', id=event.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                            <button type="submit" class="btn btn-danger me-2">Yes, Cancel Event</button>
+                            <a href="{{ url_for('event.details', id=event.id) }}" class="btn btn-secondary">No, Go Back</a>
+                        </form>
+                    {% else %}
+                        <p class="text-danger">Event details could not be loaded for confirmation.</p>
+                        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Go to Homepage</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

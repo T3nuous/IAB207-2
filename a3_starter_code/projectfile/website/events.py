@@ -5,6 +5,7 @@ from . import db
 import os
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
+from flask_wtf.csrf import generate_csrf
 
 eventbp = Blueprint('event', __name__, url_prefix='/events')
 
@@ -121,7 +122,6 @@ def edit_event(id):
         flash("Error loading page data. Please check category setup.", "danger")
         form.category.choices = []
 
-
     if request.method == 'POST':
         if form.validate() and ticketform.validate():
             form.populate_obj(event_to_edit) 
@@ -181,6 +181,37 @@ def edit_event(id):
 
     return render_template('events/editEvent.html', form=form, ticketform=ticketform, event_id=event_to_edit.id, title=f"Edit Event: {event_to_edit.name}")
 
+@eventbp.route('/<int:id>/cancel_confirm', methods=['GET'])
+@login_required
+def cancel_confirm(id):
+    event = db.session.query(Event).filter_by(id=id).first_or_404()
+    if event.created_by != current_user.id:
+        flash("You are not authorized to cancel this event.", "danger")
+        return redirect(url_for('event.details', id=id))
+    if event.status == 'Cancelled':
+        flash("This event has already been cancelled.", "info")
+        return redirect(url_for('event.details', id=id))
+    return render_template('events/cancel_confirm.html', event=event, csrf_token=generate_csrf)
+
+@eventbp.route('/<int:id>/cancel_confirmed', methods=['POST'])
+@login_required
+def cancel_event_confirmed(id):
+    event = db.session.query(Event).filter_by(id=id).first_or_404()
+    if event.created_by != current_user.id:
+        flash("You are not authorized to cancel this event.", "danger")
+        return redirect(url_for('event.details', id=id))
+    if event.status == 'Cancelled':
+        flash("This event has already been cancelled.", "info")
+        return redirect(url_for('event.details', id=id))
+    try:
+        event.status = 'Cancelled'
+        db.session.commit()
+        flash(f'The event "{event.name}" has been successfully cancelled.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error cancelling event: {e}")
+        flash(f"Error cancelling event: {str(e)}", "danger")
+    return redirect(url_for('event.details', id=id))
 
 @eventbp.route('/<int:id>/comment', methods=['POST'])
 @login_required
