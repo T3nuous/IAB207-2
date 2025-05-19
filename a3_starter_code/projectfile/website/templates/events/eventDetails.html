@@ -1,415 +1,198 @@
-<!doctype html>
-<html lang="en">
+{% extends 'base.html' %}
+{% from "bootstrap5/form.html" import render_form %}
 
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/eventDetails.css') }}">
+{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>IAB207 Assessment 2</title>
-
-    <link rel="stylesheet" href="static/style/eventDetails.css">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-
-</head>
-
-<body style="background-color: #141117;">
-
-
-    <header>
-
-        <!--Navbar-->
-        <nav class="navbar navbar-expand-lg bg-body-secondary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">AmpUpEvents</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('event.create') }}">Create Events</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.booking_history') }}">Account</a>
-                        </li>
-                    </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                </div>
+{% block content %}
+<main>
+    {% if event %}
+    <div class="row creation-banner">
+        <div class="col-sm-12">
+            <div class="Title text-center justify-content-center py-3">
+                <h1>{{ event.name | default('Event Name Not Available') }}</h1>
+                <h2>Status: {{ event.status | default('N/A') }}</h2>
             </div>
-        </nav>
 
-    </header>
-
-    <main>
-
-        <!--First Row-->
-        <div class="row creation-banner">
-
-
-
-            <div class="col-sm-12">
-
-
-                <div class="Title text-center justify-content-center">
-                    <h1>Kendrick Lamar</h1>
-                    <h2>Status: Open</h2>
-                </div>
-
-                <div id="carouselExample" class="carousel slide">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src='static/img/kendrick.png' class="d-block w-100" alt="..." width="800" height="800">
-                        </div>
-                        <div class="carousel-item">
-                            <img src='static/img/kendrick3.png' class="d-block w-100" alt="..." width="800"
-                                height="800">
-                        </div>
-                        <div class="carousel-item">
-                            <img src='static/img/kendrick2.png' class="d-block w-100" alt="..." width="800"
-                                height="800">
-                        </div>
+            {% if event.image_filename %}
+            <div id="eventImageCarousel" class="carousel slide mb-4">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{{ url_for('static', filename=event.image_filename) }}" class="d-block w-100" alt="{{ event.name }} Image" style="max-height: 700px; object-fit: contain;">
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
                 </div>
             </div>
-
+            {% else %}
+            <div class="text-center py-3">
+                <p>No image available for this event.</p>
+                <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="d-block w-50 mx-auto" alt="Placeholder Image" style="max-height: 400px; object-fit: contain;">
+            </div>
+            {% endif %}
         </div>
+    </div>
 
-        <!--Second Row-->
-        <div class="container mt-4">
-            <div class="row">
-                <!-- Ticket Details -->
-                <div class="col-12 col-lg-6">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Ticket Details:</h5>
-                            <!-- Tickets Remaining -->
-                            <div class="form-group">
-                                <label>Tickets Quantity:</label>
-                                <div class="d-flex gap-2">
-                                    <input type="number" class="form-control" placeholder="Ticket Qty" />
-                                    <input type="number" class="form-control me-2" placeholder="Remaining Tickets: 132"
-                                        disabled />
-                                </div>
-                            </div>
-                            <!-- Ticket Types and Cost -->
-                            <div class="form-group mb-3">
-                                <label>Ticket Types</label>
-                                <div class="d-flex gap-2">
-                                    <select class="form-control me-2">
-                                        <option>General</option>
-                                        <option>VIP</option>
-                                        <option>Balcony</option>
-                                    </select>
-                                    <input type="text" class="form-control" placeholder="Ticket Cost" disabled />
-                                </div>
-                            </div>
-
-                            <label for="event-date">Select Date:</label>
-                            <input type="date" id="event-date" name="event-date" class="form-control w-100 mb-1">
-                            <!-- Seat Allocation -->
-                            <div class="form-group">
-                                <label>Seat Allocation:</label>
-                                <div class="d-flex">
-                                    <div class="d-flex gap-2">
-                                        <select class="form-control me-2">
-                                            <option>Front Row</option>
-                                            <option>Middle Row</option>
-                                            <option>Back Row</option>
-                                        </select>
-                                    </div>
-                                    <button class="btn btn-primary">Book Tickets</button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Concert Details -->
-                <div class="col-12 col-lg-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Concert Details:</h5>
-                            <div class="form-group">
-                                <label>Concert Name:</label>
-                                <input type="text" class="form-control" placeholder="Kendrick Lamar" disabled />
-                            </div>
-                            <div class="form-group">
-                                <label>Concert Genre:</label>
-                                <input type="text" class="form-control" placeholder="Hip Hop" disabled />
-                            </div>
-                            <div class="form-group">
-                                <label>Age Limit:</label>
-                                <input type="number" class="form-control" placeholder="16+" disabled />
-                            </div>
-                            <div class="form-group">
-                                <label>Concert Times:</label>
-                                <input type="text" class="form-control" placeholder="7:00 PM - 10:00 PM" disabled />
-                            </div>
-                            <div class="form-group">
-                                <label>Concert Length:</label>
-                                <input type="text" class="form-control" placeholder="Estimated Time: 3hrs" disabled />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Social Link Row -->
+    <div class="container mt-4">
         <div class="row">
-            <!-- Social Media Links -->
-            <div class="card">
+            <div class="col-12 col-lg-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Ticket Information:</h5>
+                        {% if event.ticket_types.all() %}
+                            <ul>
+                            {% for ticket in event.ticket_types %}
+                                <li>
+                                    <strong>{{ ticket.type_name }}:</strong> ${{ "%.2f"|format(ticket.price) }} 
+                                    (Available: {{ ticket.quantity_available }}) <br>
+                                    <em>{{ ticket.description | default('')}}</em>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>Ticket information not yet available or this event might be free.</p>
+                        {% endif %}
+                        <a href="#" class="btn btn-primary mt-3">Book Tickets (Placeholder)</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Event Details:</h5>
+                        <p><strong>Date & Time:</strong> {{ event.start_datetime.strftime('%A, %B %d, %Y at %I:%M %p') if event.start_datetime else 'N/A' }}</p>
+                        <p><strong>Location:</strong> {{ event.location | default('N/A') }}</p>
+                        <p><strong>Venue:</strong> {{ event.venue | default('N/A') }}</p>
+                        <p><strong>Category:</strong> {{ event.event_category.name if event.event_category else 'N/A' }}</p>
+                        <p><strong>Genre:</strong> {{ event.genre | default('N/A') }}</p>
+                        <p><strong>Age Limit:</strong> {{ event.age_limit if event.age_limit is not none else 'N/A' }}{{ '+' if event.age_limit and event.age_limit > 0 else '' }}</p>
+                        <p><strong>Event Length:</strong> {{ event.length | default('N/A') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if event.artist_info %}
+    <div class="row mt-4">
+        <div class="col-sm-12 justify-content-center">
+            <div class="card card-slider rounded-4 overflow-hidden">
+                <div class="card-header fw-bold">Artist Information</div>
                 <div class="card-body">
-                    <h5 class="card-title">Social Media Links:</h5>
-                    <div class="d-flex justify-content-center">
-                        <div class="row g-3 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 text-center">
-
-
-
-                            <div class="col test p-0">
-                                <button type="button" class="btn img-btn"
-                                    style="background-image: url('static/img/FacebookNC.png');">
-                                </button>
-                            </div>
-
-                            <div class="col p-0">
-                                <button type="button" class="btn img-btn"
-                                    style="background-image: url('static/img/InstaNC.png');">
-                                </button>
-                            </div>
-
-                            <div class="col p-0">
-                                <button type="button" class="btn img-btn"
-                                    style="background-image: url('static/img/TwitterNC.png');">
-                                </button>
-                            </div>
-
-                            <div class="col p-0">
-                                <button type="button" class="btn img-btn"
-                                    style="background-image: url('static/img/YouTubeNC.png');">
-                                </button>
-                            </div>
-
-                            <div class="col p-0">
-                                <button type="button" class="btn img-btn"
-                                    style="background-image: url('static/img/RedditNC.png');">
-                                </button>
-                            </div>
-
-                            <div class="col p-0">
-                                <button type="button" class="btn img-btn"
-                                    style="background-image: url('static/img/SnapNC.png');">
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <p>{{ event.artist_info }}</p>
                 </div>
             </div>
         </div>
+    </div>
+    {% endif %}
+
+    {% if event.description %}
+    <div class="row mt-4">
+        <div class="col-sm-12">
+            <div class="card card-slider rounded-4 overflow-hidden">
+                <div class="card-header fw-bold">Event Description</div>
+                <div class="card-body">
+                    <p>{{ event.description }}</p>
+                </div>
+            </div>
         </div>
+    </div>
+    {% endif %}
+    
+    {% if event.policies %}
+    <div class="row mt-4">
+        <div class="col-sm-12">
+            <div class="card card-slider rounded-4 overflow-hidden">
+                <div class="card-header fw-bold">Event Policies</div>
+                <div class="card-body">
+                    <p>{{ event.policies }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
+    {% if event.facebook or event.instagram or event.twitter or event.youtube or event.twitch %}
+    <div class="row mt-4">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Follow Us:</h5>
+                    {% if event.facebook %}<a href="{{ event.facebook }}" target="_blank" class="btn btn-outline-primary m-1">Facebook</a>{% endif %}
+                    {% if event.instagram %}<a href="{{ event.instagram }}" target="_blank" class="btn btn-outline-danger m-1">Instagram</a>{% endif %}
+                    {% if event.twitter %}<a href="{{ event.twitter }}" target="_blank" class="btn btn-outline-info m-1">Twitter</a>{% endif %}
+                    {% if event.youtube %}<a href="{{ event.youtube }}" target="_blank" class="btn btn-outline-danger m-1">YouTube</a>{% endif %}
+                    {% if event.twitch %}<a href="{{ event.twitch }}" target="_blank" class="btn btn-outline-purple m-1">Twitch</a>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
-
-        <!--Third Row-->
+    <div class="container mt-4 mb-5">
         <div class="row">
-
-            <div class="col-sm-12 justify-content-center">
-                <!-- Artist Information Card -->
-                <div class="card-slider card rounded-4 overflow-hidden">
-                    <div class="artist-name-section position-relative bg-light" style="height: 400px;">
-
-                        <div class="card-header fw-bold">
-                            Artist Name & Information
-                        </div>
-
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-9 custom-border text-center">
-                                    <textarea class="form-control artist-creation-card" id="message" rows="4"
-                                        wrap="hard"
-                                        placeholder="Kendrick Lamar
-Kendrick Lamar Duckworth is an American rapper. Regarded as one of the greatest rappers of all time, he was awarded the 2018 Pulitzer Prize for Music, becoming the first musician outside of the classical and jazz genres to receive the honor. -Wikipedia"
-                                        disabled></textarea>
-                                </div>
-
-                                <div
-                                    class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center p-4">
-                                    <form class="w-100 text-center">
-                                        <label for="event-venue" class="form-label">
-                                            Venue:
-                                        </label>
-                                        <input type="text" id="event-venue" name="event-venue"
-                                            class="form-control w-100 mb-2 text-center" required
-                                            placeholder="U.S. Bank Stadium" disabled>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!--Forth Row-->
-        <div class="row">
-
-            <div class="col-sm-12">
-                <!-- Event Description Card -->
-                <div class="card-slider card rounded-4 overflow-hidden">
-                    <div class="position-relative bg-light" style="height: 600px;">
-
-                        <div class="card-header fw-bold">
-                            Event Description
-                        </div>
-
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-9 custom-border text-center">
-                                    <textarea class="form-control creation-card" id="message" rows="4" wrap="hard"
-                                        placeholder="Type Event Description Here"
-                                        disabled>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem veritatis cum accusamus accusantium ad magnam commodi, voluptas eligendi cupiditate. Distinctio perspiciatis neque praesentium vel aspernatur minus esse eum ad aliquid fugiat placeat accusantium explicabo molestias molestiae beatae, quisquam architecto quo consequuntur hic recusandae dolore officia nemo accusamus temporibus! Quo, voluptates. Aliquam sit sed exercitationem dolorum reiciendis iure veniam? Dolorem, veniam?</textarea>
-                                </div>
-
-                                <div
-                                    class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center p-5">
-                                    <form class="text-center">
-                                        <div class="mb-3">
-                                            <label for="eventStart" class="form-label">Event Start Date:</label>
-                                            <input type="date" id="eventStart" class="form-control text-center"
-                                                placeholder="Select start date" disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="eventEnd" class="form-label">Event End Date:</label>
-                                            <input type="date" id="eventEnd" class="form-control text-center"
-                                                placeholder="Select end date" disabled>
-                                        </div>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!--Fifth Row-->
-        <div class="row">
-
-            <div class="col-sm-12">
-                <!-- Event Policies Card -->
-                <div class="card-slider card rounded-4 overflow-hidden">
-                    <div class="position-relative bg-light" style="height: 520px;">
-
-                        <div class="card-header fw-bold">
-                            Event Policies
-                        </div>
-
-                        <div class="card-body">
-                            <div class="row text-center">
-                                <div class="col-md-12 custom-border text-center">
-                                    <textarea class="form-control event-policy" id="message" rows="4" wrap="hard"
-                                        placeholder="Type Event Policies Here"
-                                        disabled> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quia maxime voluptate ut praesentium iste officia animi laborum est officiis, magnam quam esse nesciunt porro ipsa quo deserunt non unde nihil ducimus, tempore quisquam. Quam saepe incidunt inventore, optio aperiam corrupti vitae corporis magnam doloremque fugiat impedit, iusto deserunt repellat dignissimos natus eligendi alias mollitia tempore dolorem tempora? Aperiam eveniet totam incidunt voluptate, officia pariatur. Officiis, id consequatur quidem numquam nam eveniet ipsam, tempore inventore soluta nulla, cupiditate ipsum repellendus facere. Cumque ipsum, voluptates, labore veniam atque ut optio ducimus, alias error distinctio consequuntur temporibus. Corporis doloremque molestiae modi veniam asperiores enim voluptate optio tempore non possimus voluptas reprehenderit nihil, cumque quam nulla obcaecati distinctio nostrum ipsa voluptatum! Voluptatibus molestiae accusantium pariatur voluptates quam ipsa voluptate! Deleniti omnis ducimus beatae inventore, reiciendis excepturi ex aliquam recusandae est qui unde nobis voluptate molestiae quos aspernatur similique vitae repellendus quaerat doloribus sed? Saepe expedita ipsam, quibusdam nihil atque ipsa dolorum unde sequi placeat aliquam. Voluptas error aut repudiandae facere est explicabo nulla quas dolorem totam placeat provident, aliquid perspiciatis! Atque consequuntur perferendis incidunt hic ad, aperiam eligendi corrupti tempore commodi dolore totam inventore voluptates sapiente qui quod consectetur est numquam quis deserunt? Facilis, suscipit, saepe non quisquam consectetur est sunt exercitationem aperiam, nihil neque illo. Dicta, facere. Voluptas facere consequatur, a atque voluptatibus vitae quibusdam, illum sed in porro magnam esse voluptatem impedit veniam unde minima praesentium soluta optio vel iure nobis et eum. Velit veniam nesciunt repudiandae distinctio nemo dolorum, at iusto asperiores, quam quasi saepe delectus quos eveniet voluptatibus possimus consequuntur quibusdam, harum repellendus. Reiciendis, a ratione! Mollitia odit cum illum ullam officiis illo, quaerat quod numquam nobis! Ab maxime repellendus ducimus a? Ea, voluptas repellendus delectus expedita nisi mollitia cumque officiis eveniet minus repellat? Cupiditate sit nam impedit id odio.</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Comment Section -->
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Comments</h5>
-                            
-                            <!-- Comment Form -->
-                            {% if current_user.is_authenticated %}
-                            <form method="POST" action="{{ url_for('event.comment', id=event.id) }}">
-                                {{ form.csrf_token }}
-                                <div class="form-group mb-3">
-                                    {{ form.text(class="form-control", placeholder="Write your comment here...") }}
-                                    {% if form.text.errors %}
-                                        <div class="alert alert-danger">
-                                            {% for error in form.text.errors %}
-                                                {{ error }}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                {{ form.submit(class="btn btn-primary") }}
-                            </form>
-                            {% else %}
-                            <div class="alert alert-info">
-                                Please <a href="{{ url_for('auth.login') }}">login</a> to post comments.
-                            </div>
-                            {% endif %}
-
-                            <!-- Comments List -->
-                            <div class="mt-4">
-                                {% for comment in event.comments %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between">
-                                            <h6 class="card-subtitle mb-2 text-muted">
-                                                {{ comment.user.firstName }} {{ comment.user.surname }}
-                                            </h6>
-                                            <small class="text-muted">
-                                                {{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}
-                                                {% if comment.is_edited %}
-                                                (edited)
-                                                {% endif %}
-                                            </small>
-                                        </div>
-                                        <p class="card-text">{{ comment.text }}</p>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Comments ({{ event.comments.count() }})</h5>
+                        
+                        {% if current_user.is_authenticated %}
+                        <form method="POST" action="{{ url_for('event.comment', id=event.id) }}" class="mb-4">
+                            {{ form.csrf_token }}
+                            <div class="mb-3">
+                                {{ form.text.label(class="form-label") }}
+                                {{ form.text(class="form-control", rows="3", placeholder="Write your comment here...") }}
+                                {% if form.text.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.text.errors %}
+                                            <span>{{ error }}</span><br>
+                                        {% endfor %}
                                     </div>
-                                </div>
-                                {% else %}
-                                <div class="alert alert-info">
-                                    No comments yet. Be the first to comment!
-                                </div>
-                                {% endfor %}
+                                {% endif %}
                             </div>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </form>
+                        {% else %}
+                        <div class="alert alert-info">
+                            Please <a href="{{ url_for('auth.login', next=request.url) }}">login</a> to post comments.
                         </div>
+                        {% endif %}
+
+                        <hr>
+                        <h6>Posted Comments:</h6>
+                        {% if event.comments.all() %}
+                            {% for comment_item in event.comments.order_by(Comment.created_at.desc()).all() %}
+                            <div class="card mb-3 bg-light">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            {{ comment_item.user.firstName if comment_item.user else 'Anonymous' }}
+                                            {% if comment_item.user and comment_item.user.surname %}{{ comment_item.user.surname }}{% endif %}
+                                        </h6>
+                                        <small class="text-muted">
+                                            {{ comment_item.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                            {% if comment_item.is_edited %}(edited){% endif %}
+                                        </small>
+                                    </div>
+                                    <p class="card-text">{{ comment_item.text }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <div class="alert alert-secondary">
+                            No comments yet. Be the first to comment!
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-
-    </main>
-
-</body>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-
-</html>
+    </div>
+    {% else %}
+    <div class="alert alert-danger text-center" role="alert">
+      Event not found or details could not be loaded.
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
