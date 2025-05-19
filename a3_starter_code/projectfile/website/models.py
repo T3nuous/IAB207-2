@@ -3,23 +3,25 @@ from datetime import datetime
 from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'users' # good practice to specify table name
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     firstName = db.Column(db.String(100), index=True, unique=False, nullable=False)
     surname = db.Column(db.String(100), index=True, unique=False, nullable=False)
     email = db.Column(db.String(100), index=True, nullable=False, unique=True)
     mobileNumber = db.Column(db.Integer, index=True, nullable=False, unique=True)
     streetAddress = db.Column(db.String(50), index=True, nullable=False)
-	# password should never stored in the DB, an encrypted password is stored
-	# the storage should be at least 255 chars long, depending on your hashing algorithm
     password_hash = db.Column(db.String(255), nullable=False)
-    # relation to call user.comments and comment.created_by
-    comments = db.relationship('Comment', backref='user')
+    role = db.Column(db.String(20), default='attendee')  # 'admin', 'creator', 'attendee'
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
     
-    # string print method
+    # Relationships
+    comments = db.relationship('Comment', backref='user', lazy='dynamic')
+    bookings = db.relationship('Booking', backref='user', lazy='dynamic')
+    events = db.relationship('Event', backref='creator', lazy='dynamic')
+    
     def __repr__(self):
-        return f"Name: {self.name}"
-    
+        return f"User: {self.firstName} {self.surname} ({self.role})"
 
 class ticket_type(db.Model):
     __tablename__ = 'ticket_type'
@@ -28,11 +30,12 @@ class ticket_type(db.Model):
     type_name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
+    quantity_available = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
     
-    # string print method
     def __repr__(self):
-        return f"Name: {self.type_name}"
+        return f"Ticket Type: {self.type_name} - ${self.price} ({self.quantity_available} available)"
 
 class Event(db.Model):
     __tablename__ = 'events'
@@ -57,6 +60,9 @@ class Event(db.Model):
     twitter = db.Column(db.String(255))
     youtube = db.Column(db.String(255))
     twitch = db.Column(db.String(255))
+    category_id = db.Column(db.Integer, db.ForeignKey('event_category.id'))
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
 
     # Foreign key
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -64,84 +70,65 @@ class Event(db.Model):
     # Relationships
     ticket_types = db.relationship('ticket_type', backref='event', lazy='dynamic')
     comments = db.relationship('Comment', backref='event', lazy='dynamic')
-    orders = db.relationship('Order', backref='event', lazy='dynamic')
+    bookings = db.relationship('Booking', backref='event', lazy='dynamic')
+    status_history = db.relationship('event_status', backref='event', lazy='dynamic')
 
     def __repr__(self):
-        return f"<Event {self.name}>"
-    
+        return f"Event: {self.name}"
+
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(400))
     created_at = db.Column(db.DateTime, default=datetime.now())
-    # add the foreign key
+    edited_at = db.Column(db.DateTime, nullable=True)
+    is_edited = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
 
-    # string print method
     def __repr__(self):
-        return f"Comment: {self.text}"
+        return f"Comment: {self.text[:50]}..."
 
-class Order(db.Model):
-    __tablename__ = 'orders'
+class Booking(db.Model):
+    __tablename__ = 'bookings'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-    ticket_type = db.Column(db.String(50), nullable=False)
+    ticket_type_id = db.Column(db.Integer, db.ForeignKey('ticket_type.id'))
     quantity = db.Column(db.Integer, nullable=False)
     total_price = db.Column(db.Float, nullable=False)
-    booking_date = db.Column(db.DateTime, default=datetime.now)
+    booking_date = db.Column(db.DateTime, default=datetime.now())
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
+    
+    # Relationship to ticket_type
+    ticket_type = db.relationship('ticket_type', backref='bookings')
 
     def __repr__(self):
-        return f"<Order {self.id} - User {self.user_id}>"
-    
-class ticket(db.Model):
-    __tablename__ = 'tickets'
-    id = db.Column(db.Integer, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id')) # ??
-    booking_id = db.Column(db.Integer, db.ForeignKey('bookings.id'))
-    quantity = db.Column(db.Integer, nullable=False)
-    total_price = db.Column(db.Float, nullable=False)
-    order_date = db.Column(db.DateTime, default=datetime.now())
-    
-        # string print method
-    def __repr__(self):
-        return f"Name: {self.name}"
-    
+        return f"Booking #{self.id} - {self.quantity} tickets"
 
-    
 class event_category(db.Model):
     __tablename__ = 'event_category'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
     
-    # string print method
+    # Relationship to events
+    events = db.relationship('Event', backref='category', lazy='dynamic')
+    
     def __repr__(self):
-        return f"Name: {self.name}"
-    
+        return f"Category: {self.name}"
+
 class event_status(db.Model):
     __tablename__ = 'event_status'
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     status_date = db.Column(db.DateTime, default=datetime.now())
     status = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
     
-    # string print method
     def __repr__(self):
-        return f"Name: {self.name}"
-    
-
-class Booking(db.Model):
-    __tablename__ = 'bookings'
-    id = db.Column(db.Integer, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    quantity = db.Column(db.Integer, nullable=False)
-    total_price = db.Column(db.Float, nullable=False)
-    order_date = db.Column(db.DateTime, default=datetime.now())
-    
-    # string print method
-    def __repr__(self):
-        return f"Name: {self.name}" 
+        return f"Status: {self.status} on {self.status_date}" 

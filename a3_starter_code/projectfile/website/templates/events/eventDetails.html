@@ -32,20 +32,14 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                            <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="eventCreation.html">Create Events</a>
+                            <a class="nav-link" href="{{ url_for('event.create') }}">Create Events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="eventDetails.html">All Events</a>
+                            <a class="nav-link" href="{{ url_for('main.booking_history') }}">Account</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="bookingHistory.html">Account</a>
-                        </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="#">Sign-Up</a>
-                        </li> -->
                     </ul>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -349,31 +343,64 @@ Kendrick Lamar Duckworth is an American rapper. Regarded as one of the greatest 
             </div>
         </div>
 
-        <!--Sixth Row-->
-        <div class="row">
-
-            <div class="col-sm-12">
-                <!-- Comments Card -->
-                <div class="card-slider card rounded-4 overflow-hidden">
-                    <div class="position-relative bg-light" style="height: 700px;">
-
-                        <div class="card-header fw-bold">
-                            Comment Section
-                        </div>
+        <!-- Comment Section -->
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
                         <div class="card-body">
-                            <div class="row border-bottom">
-                                {{render_form(form,"/events/{0}/comment".format(event.id))}}
+                            <h5 class="card-title">Comments</h5>
+                            
+                            <!-- Comment Form -->
+                            {% if current_user.is_authenticated %}
+                            <form method="POST" action="{{ url_for('event.comment', id=event.id) }}">
+                                {{ form.csrf_token }}
+                                <div class="form-group mb-3">
+                                    {{ form.text(class="form-control", placeholder="Write your comment here...") }}
+                                    {% if form.text.errors %}
+                                        <div class="alert alert-danger">
+                                            {% for error in form.text.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {{ form.submit(class="btn btn-primary") }}
+                            </form>
+                            {% else %}
+                            <div class="alert alert-info">
+                                Please <a href="{{ url_for('auth.login') }}">login</a> to post comments.
+                            </div>
+                            {% endif %}
+
+                            <!-- Comments List -->
+                            <div class="mt-4">
                                 {% for comment in event.comments %}
-                                <div class="col-md-12">
-                                    <b>{{comment.user}} <span class="ml-2 text-muted">Comment Date</span></b>
-                                    <p>{{comment.text}}</p>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="card-subtitle mb-2 text-muted">
+                                                {{ comment.user.firstName }} {{ comment.user.surname }}
+                                            </h6>
+                                            <small class="text-muted">
+                                                {{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                                {% if comment.is_edited %}
+                                                (edited)
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        <p class="card-text">{{ comment.text }}</p>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    No comments yet. Be the first to comment!
                                 </div>
                                 {% endfor %}
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 

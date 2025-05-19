@@ -33,10 +33,10 @@
                             <a class="nav-link" href="events/create">Create Events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="events/ID">Events</a>
+                            <a class="nav-link" href="/events/ID">Events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="bookingHistory.html">Account</a>
+                            <a class="nav-link {% if request.endpoint == 'main.booking_history' %}active{% endif %}" href="{{ url_for('main.booking_history') }}">Account</a>
                         </li>
                     </ul>
                     <form class="d-flex" role="search">
