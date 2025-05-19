@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% from "bootstrap5/form.html" import render_form %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/eventCreation.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container-fluid">
+        <div class="creation-banner row">
+            <div class="col-sm-12">
+                <div class="Title text-center justify-content-center py-3">
+                    <h1>{{ title | default('Edit Event') }}</h1>
+                </div>
+                {% if form.image.data %}
+                    <p class="text-center">Current Image:</p>
+                    <img src="{{ url_for('static', filename=form.image.data) }}" alt="Current Event Image" class="img-thumbnail mx-auto d-block mb-3" style="max-height: 200px;">
+                {% elif form.image_url.data %}
+                     <p class="text-center">Current Image URL:</p>
+                     <img src="{{ form.image_url.data }}" alt="Current Event Image from URL" class="img-thumbnail mx-auto d-block mb-3" style="max-height: 200px;">
+                {% endif %}
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('event.edit_event', id=event_id) }}" enctype="multipart/form-data" novalidate>
+            {{ form.csrf_token }}
+
+            <div class="container-fluid mt-4">
+                <div class="row">
+                    <div class="col-12 col-lg-7 mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Event Details</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ render_form(form) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-5 mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                 <h5 class="card-title mb-0">Ticket Types & Pricing</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text"><small>Define ticket types for your event. Fields for a ticket type are optional if you do not wish to offer that type, but if a price is set, a limit is required.</small></p>
+                                
+                                <div class="mb-3">
+                                    {{ ticketform.general_price.label(class="form-label") }}
+                                    {{ ticketform.general_price(class="form-control") }}
+                                    {% if ticketform.general_price.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.general_price.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+    
+                                <div class="mb-3">
+                                    {{ ticketform.general_limit.label(class="form-label") }}
+                                    {{ ticketform.general_limit(class="form-control") }}
+                                    {% if ticketform.general_limit.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.general_limit.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <hr>
+
+                                <div class="mb-3">
+                                    {{ ticketform.vip_price.label(class="form-label") }}
+                                    {{ ticketform.vip_price(class="form-control") }}
+                                    {% if ticketform.vip_price.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.vip_price.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ ticketform.vip_limit.label(class="form-label") }}
+                                    {{ ticketform.vip_limit(class="form-control") }}
+                                    {% if ticketform.vip_limit.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.vip_limit.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <hr>
+
+                                <div class="mb-3">
+                                    {{ ticketform.balcony_price.label(class="form-label") }}
+                                    {{ ticketform.balcony_price(class="form-control") }}
+                                    {% if ticketform.balcony_price.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.balcony_price.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ ticketform.balcony_limit.label(class="form-label") }}
+                                    {{ ticketform.balcony_limit(class="form-control") }}
+                                    {% if ticketform.balcony_limit.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.balcony_limit.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <hr>
+                                <p class="card-text"><small>Optional seat allocation details:</small></p>
+
+                                <div class="mb-3">
+                                    {{ ticketform.front_row.label(class="form-label") }}
+                                    {{ ticketform.front_row(class="form-control") }}
+                                    {% if ticketform.front_row.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.front_row.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ ticketform.middle_row.label(class="form-label") }}
+                                    {{ ticketform.middle_row(class="form-control") }}
+                                    {% if ticketform.middle_row.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.middle_row.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ ticketform.back_row.label(class="form-label") }}
+                                    {{ ticketform.back_row(class="form-control") }}
+                                    {% if ticketform.back_row.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in ticketform.back_row.errors %}
+                                                <span>{{ error }}</span><br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-sm-12 text-center">
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}
