@@ -17,7 +17,7 @@ class RegisterForm(FlaskForm):
     surname = StringField("Surname", validators=[InputRequired()])
     email = StringField("Email Address", validators=[InputRequired(), Email("Please enter a valid email")])
     mobileNumber = StringField("Mobile Number", validators=[InputRequired(), 
-                                                              Length(min=7, max=20, message="Field must be between 7 and 20 digits."), 
+                                                              Length(min=7, max=10, message="Field must be between 7 and 10 digits."), 
                                                               Regexp(r'^\+?[0-9\s\-()]*$', message="Please only input valid phone characters.")]) 
     streetAddress = StringField("Street Address",  validators=[InputRequired(), Length(max=150)]) 
     password=PasswordField("Password", validators=[InputRequired(),
