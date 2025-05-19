@@ -1,94 +1,64 @@
 {% extends 'base.html' %}
-<!doctype html>
-<html lang="en">
 
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/home.css') }}">
+{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>IAB207 Assessment 2</title>
-
-    {% block head %} 
-    <link rel="stylesheet" href="static/style/home.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    {% endblock %}
-
-
-</head>
-
-
-<body style="background-color: #141117;">
-
-    <header>
-
-        {% block header %}
-        <!--Jumbotron-->
-        <div class="p-5 mb-4 bg-light rounded-3 jumbotron-outer">
-            <div class="jumbotronback container-fluid py-5 d-flex flex-column justify-content-end">
-                <h1 class="display-5 fw-bold">AmpUpEvents</h1>
-                <p class="col-md-8 fs-4">Turn up the volume on unforgettable experiences.</p>
-                <button class="btn btn-primary btn-lg" type="button">Browse All Events</button>
-            </div>
+{% block header %}
+    <div class="p-5 mb-4 bg-light rounded-3 jumbotron-outer">
+        <div class="jumbotronback container-fluid py-5 d-flex flex-column justify-content-end">
+            <h1 class="display-5 fw-bold">AmpUpEvents</h1>
+            <p class="col-md-8 fs-4">Turn up the volume on unforgettable experiences.</p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg" type="button">Browse All Events</a>
         </div>
-
-        {% endblock %}
-
-    </header>
+    </div>
+{% endblock %}
 
 {% block content %}
-    <main>
+<main>
+    <div class="container-fluid text-center">
 
-
-        <div class="container-fluid text-center">
-
-            <!--First Row-->
-            <div class="row">
-
-                <div class="col-sm-12">
-
-                    <div>
-
-                        <h1 class="HeadingOne" style="color: #F6F1F4;"> Upcoming Events </h1>
-
-                    </div>
-
-
-                    <div id="carouselExampleFade" class="carousel slide carousel-fade">
-                        <div class="carousel-inner">
-                            {% for event in events %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div>
+                    <h1 class="HeadingOne" style="color: #F6F1F4;"> Upcoming Events </h1>
+                </div>
+                <div id="carouselExampleFade" class="carousel slide carousel-fade">
+                    <div class="carousel-inner">
+                        {% if events %}
+                            {% for event_item in events %}
                             <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                <a href="{{ url_for('event.details', id=event.id) }}" class="text-decoration-none text-dark">
+                                <a href="{{ url_for('event.details', id=event_item.id) }}" class="text-decoration-none text-dark">
                                     <div class="card rounded-4 overflow-hidden">
                                         <div class="position-relative bg-light" style="height: 500px;">
-                                            <img src='{{ event.image_url }}' class="w-100 h-100 object-fit-cover"
-                                                alt="Event Image">
-                                            <span class="status-text position-absolute top-0 end-0 p-2 fw-bold">Status: {{ event.status }}</span>
+                                            {% if event_item.image_filename %}
+                                                <img src="{{ url_for('static', filename=event_item.image_filename) }}" class="w-100 h-100 object-fit-cover" alt="{{ event_item.name }} Image">
+                                            {% else %}
+                                                <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="w-100 h-100 object-fit-cover" alt="Placeholder Image">
+                                            {% endif %}
+                                            <span class="status-text position-absolute top-0 end-0 p-2 fw-bold">Status: {{ event_item.status }}</span>
                                             <div class="event-name position-absolute top-50 start-50 translate-middle text-center">
-                                                {{ event.name }}
+                                                {{ event_item.name }}
                                             </div>
                                         </div>
-
                                         <div class="card-header fw-bold">
                                             Event Description
                                         </div>
-
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-md-12 col-lg-9 custom-border text-center">
-                                                    <p class="mb-0">{{ event.description }}</p>
+                                                    <p class="mb-0">{{ event_item.description | truncate(150) }}</p>
                                                 </div>
-
                                                 <div class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-between text-center">
-                                                    <label for="event-date">Date:</label>
-                                                    <input type="date" id="event-date" name="event-date"
-                                                        class="form-control w-100 mb-1 text-center" value="{{ event.start_date }}" disabled>
+                                                    <label>Date:</label>
+                                                    <input type="text" class="form-control w-100 mb-1 text-center" value="{{ event_item.start_datetime.strftime('%Y-%m-%d %H:%M') if event_item.start_datetime else 'N/A' }}" disabled>
                                                     <div class="form-group">
                                                         <label>Venue:</label>
                                                         <input type="text" class="form-control text-center"
-                                                            value="{{ event.venue }}" disabled />
+                                                            value="{{ event_item.venue | default('N/A') }}" disabled />
                                                     </div>
-                                                    <button class="btn btn-sm btn-secondary mt-2">Book Tickets</button>
+                                                    <span class="btn btn-sm btn-secondary mt-2">View Details</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -96,208 +66,157 @@
                                 </a>
                             </div>
                             {% endfor %}
-                        </div>
-
-                        <button class="carousel-control-prev custom-carousel-control" type="button"
-                            data-bs-target="#carouselExampleFade" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next custom-carousel-control" type="button"
-                            data-bs-target="#carouselExampleFade" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-
+                        {% else %}
+                            <div class="carousel-item active">
+                                <div class="d-flex justify-content-center align-items-center" style="height: 500px;">
+                                    <p>No upcoming events found.</p>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
-                </div>
-            </div>
-
-
-
-            <!--Second Row-->
-            <div class="row" style="background-color: #F6F1F4">
-
-                <h1 style="color: #141117;">
-                    Popular Events
-                </h1>
-                {% for event in events %}
-                <div class="col-lg-12 col-xl-4">
-                    <a href="{{ url_for('event.details', id=event.id) }}" class="text-decoration-none text-dark">
-                        <div class="card-slider card rounded-4 overflow-hidden">
-                            <div class="position-relative bg-light" style="height: 500px;">
-                                <img src='{{ event.image_url }}' class="w-100 h-100 object-fit-cover"
-                                    alt="Event Image">
-                                <span class="status-text position-absolute top-0 end-0 p-2 fw-bold">Status: {{ event.status }}</span>
-                                <div class="event-name position-absolute top-50 start-50 translate-middle text-center fw-bold fs-4">
-                                    {{ event.name }}</div>
-                            </div>
-
-                            <div class="card-header fw-bold">
-                                Event Description
-                            </div>
-
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12 col-lg-9 custom-border text-center">
-                                        <p class="mb-0">{{ event.description }}</p>
-                                    </div>
-
-                                    <div class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center text-center">
-                                        <label for="event-date">Date:</label>
-                                        <input type="date" id="event-date" name="event-date"
-                                            class="form-control text-center w-100 mb-1" value="{{ event.start_date }}" disabled>
-                                        <button class="btn btn-sm btn-secondary mt-2">Book Tickets</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                {% endfor %}
-            </div>
-
-
-
-            <div class="col-12">
-                <h1 class="HeadingThree" style="color: #F6F1F4;"> Events Categories </h1>
-            </div>
-
-
-            <!--Third row-->
-            <div class="row g-3 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 text-center">
-
-
-
-                <div class="col p-0">
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Blues.png');">
+                    <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
                     </button>
                 </div>
-
-                <div class="col p-0">
-                    <button type="button" class="btn img-btn"
-                        style="background-image: url('static/img/Classical.png');">
-                    </button>
-                </div>
-
-                <div class="col p-0">
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Country.png');">
-                    </button>
-                </div>
-
-                <div class="col p-0">
-                        <button type="button" class="btn img-btn"
-                            style="background-image: url('static/img/Electronic.png');">
-                        </button>
-                </div>
-
-                <div class="col p-0">
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Funk.png');">
-                    </button>
-                </div>
-
-                <div class="col p-0">
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Hip\ Hop.png');">
-                    </button>
-                </div>
-            </div>
-
-
-
-
-            <!--Forth Row-->
-            <div class="row g-0">
-
-                <div class="col-lg-2">
-
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Jazz.png');">
-                    </button>
-
-                </div>
-
-                <div class="col-lg-2">
-
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Metal.png');">
-                    </button>
-
-                </div>
-                <div class="col-lg-2">
-
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Pop.png');">
-                    </button>
-
-                </div>
-
-                <div class="col-lg-2">
-
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/R&B.png');">
-                    </button>
-
-                </div>
-
-                <div class="col-lg-2">
-
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Reggae.png');">
-                    </button>
-
-                </div>
-
-                <div class="col-lg-2">
-
-                    <button type="button" class="btn img-btn" style="background-image: url('static/img/Rock.png');">
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!--Fifth Row-->
-            <div class="row">
-
-                <h1 style="color: #F6F1F4;">
-                    Recommended Events
-                </h1>
-
-                {% for event in events %}
-                <div class="col-lg-12 col-xl-4">
-                    <a href="{{ url_for('event.details', id=event.id) }}" class="text-decoration-none text-dark">
-                        <div class="card-slider card rounded-4 overflow-hidden">
-                            <div class="position-relative bg-light" style="height: 500px;">
-                                <img src='{{ event.image_url }}' class="w-100 h-100 object-fit-cover"
-                                    alt="Event Image">
-                                <span class="status-text position-absolute top-0 end-0 p-2 fw-bold">Status: {{ event.status }}</span>
-                                <div class="event-name position-absolute top-50 start-50 translate-middle text-center fw-bold fs-4">
-                                    {{ event.name }}</div>
-                            </div>
-
-                            <div class="card-header fw-bold">
-                                Event Description
-                            </div>
-
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12 col-lg-9 custom-border text-center">
-                                        <p class="mb-0">{{ event.description }}</p>
-                                    </div>
-
-                                    <div class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center text-center">
-                                        <label for="event-date">Date:</label>
-                                        <input type="date" id="event-date" name="event-date"
-                                            class="form-control text-center w-100 mb-1" value="{{ event.start_date }}" disabled>
-                                        <button class="btn btn-sm btn-secondary mt-2">Book Tickets</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                {% endfor %}
             </div>
         </div>
-    </main>
-    {% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-</body>
+        <div class="row" style="background-color: #F6F1F4">
+            <h1 style="color: #141117;"> Popular Events </h1>
+            {% if events %}
+                {% for event_item in events | sort(attribute='id', reverse=True) %}
+                    {% if loop.index0 < 3 %}
+                    <div class="col-lg-12 col-xl-4">
+                        <a href="{{ url_for('event.details', id=event_item.id) }}" class="text-decoration-none text-dark">
+                            <div class="card-slider card rounded-4 overflow-hidden">
+                                <div class="position-relative bg-light" style="height: 500px;">
+                                    {% if event_item.image_filename %}
+                                        <img src="{{ url_for('static', filename=event_item.image_filename) }}" class="w-100 h-100 object-fit-cover" alt="{{ event_item.name }} Image">
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="w-100 h-100 object-fit-cover" alt="Placeholder Image">
+                                    {% endif %}
+                                    <span class="status-text position-absolute top-0 end-0 p-2 fw-bold">Status: {{ event_item.status }}</span>
+                                    <div class="event-name position-absolute top-50 start-50 translate-middle text-center fw-bold fs-4">
+                                        {{ event_item.name }}
+                                    </div>
+                                </div>
+                                <div class="card-header fw-bold">
+                                    Event Description
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-9 custom-border text-center">
+                                            <p class="mb-0">{{ event_item.description | truncate(150) }}</p>
+                                        </div>
+                                        <div class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center text-center">
+                                            <label>Date:</label>
+                                            <input type="text" class="form-control text-center w-100 mb-1" value="{{ event_item.start_datetime.strftime('%Y-%m-%d %H:%M') if event_item.start_datetime else 'N/A' }}" disabled>
+                                            <span class="btn btn-sm btn-secondary mt-2">View Details</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                 <p style="color: #141117;">No popular events to display.</p>
+            {% endif %}
+        </div>
+
+        <div class="col-12">
+            <h1 class="HeadingThree" style="color: #F6F1F4;"> Events Categories </h1>
+        </div>
+        <div class="row g-3 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 text-center">
+            <div class="col p-0">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Blues.png');"></button>
+            </div>
+            <div class="col p-0">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Classical.png');"></button>
+            </div>
+            <div class="col p-0">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Country.png');"></button>
+            </div>
+            <div class="col p-0">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Electronic.png');"></button>
+            </div>
+            <div class="col p-0">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Funk.png');"></button>
+            </div>
+            <div class="col p-0">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Hip Hop.png');"></button>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-lg-2">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Jazz.png');"></button>
+            </div>
+            <div class="col-lg-2">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Metal.png');"></button>
+            </div>
+            <div class="col-lg-2">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Pop.png');"></button>
+            </div>
+            <div class="col-lg-2">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/R&B.png');"></button>
+            </div>
+            <div class="col-lg-2">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Reggae.png');"></button>
+            </div>
+            <div class="col-lg-2">
+                <button type="button" class="btn img-btn" style="background-image: url('/static/img/Rock.png');"></button>
+            </div>
+        </div>
+
+        <div class="row">
+            <h1 style="color: #F6F1F4;"> Recommended Events </h1>
+            {% if events %}
+                {% for event_item in events %}
+                    {% if loop.index0 < 3 %}
+                    <div class="col-lg-12 col-xl-4">
+                        <a href="{{ url_for('event.details', id=event_item.id) }}" class="text-decoration-none text-dark">
+                            <div class="card-slider card rounded-4 overflow-hidden">
+                                <div class="position-relative bg-light" style="height: 500px;">
+                                    {% if event_item.image_filename %}
+                                        <img src="{{ url_for('static', filename=event_item.image_filename) }}" class="w-100 h-100 object-fit-cover" alt="{{ event_item.name }} Image">
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="w-100 h-100 object-fit-cover" alt="Placeholder Image">
+                                    {% endif %}
+                                    <span class="status-text position-absolute top-0 end-0 p-2 fw-bold">Status: {{ event_item.status }}</span>
+                                    <div class="event-name position-absolute top-50 start-50 translate-middle text-center fw-bold fs-4">
+                                        {{ event_item.name }}
+                                    </div>
+                                </div>
+                                <div class="card-header fw-bold">
+                                    Event Description
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-9 custom-border text-center">
+                                            <p class="mb-0">{{ event_item.description | truncate(150) }}</p>
+                                        </div>
+                                        <div class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center text-center">
+                                            <label>Date:</label>
+                                            <input type="text" class="form-control text-center w-100 mb-1" value="{{ event_item.start_datetime.strftime('%Y-%m-%d %H:%M') if event_item.start_datetime else 'N/A' }}" disabled>
+                                            <span class="btn btn-sm btn-secondary mt-2">View Details</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                 <p style="color: #F6F1F4;">No recommended events to display.</p>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}
