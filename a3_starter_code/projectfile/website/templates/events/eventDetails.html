@@ -361,73 +361,15 @@ Kendrick Lamar Duckworth is an American rapper. Regarded as one of the greatest 
                             Comment Section
                         </div>
                         <div class="card-body">
-                            <!-- Comment One -->
-                            <div class="row">
-                                <div class="col-md-12 custom-border">
-                                    <label for="event-comment" class="form-label">User: CurrentUser</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control event-comment"
-                                            placeholder="Leave a Comment Here!" aria-label="Leave a Comment Here!"
-                                            aria-describedby="button-addon2">
-
-                                        <button class="btn btn-outline-secondary" type="button">Post</button>
-                                    </div>
-                                    <div class="form-text" id="basic-addon4">Share Your Event Experience!</div>
+                            <div class="row border-bottom">
+                                {{render_form(form,"/events/{0}/comment".format(event.id))}}
+                                {% for comment in event.comments %}
+                                <div class="col-md-12">
+                                    <b>{{comment.user}} <span class="ml-2 text-muted">Comment Date</span></b>
+                                    <p>{{comment.text}}</p>
                                 </div>
+                                {% endfor %}
                             </div>
-
-                            <!-- Comment Two -->
-                            <div class="row">
-                                <div class="col-md-12 custom-border">
-                                    <label for="event-comment" class="form-label">User: Username4321</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control event-comment" placeholder="I love this artist"
-                                            aria-label="Comment Here" aria-describedby="button-addon2" disabled>
-
-                                        <button class="btn btn-outline-secondary" type="button">Reply</button>
-                                    </div>
-                                    <div class="form-text" id="basic-addon4">
-                                        <button class="btn btn-outline-secondary" type="button"
-                                            id="button-addon2">Like</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Comment Three -->
-                            <div class="row">
-                                <div class="col-md-12 custom-border">
-                                    <label for="event-comment" class="form-label">User: Username2468</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control event-comment" placeholder="Best concert I’ve ever been to, hands down. The energy was unreal!"
-                                            aria-label="Comment Here" aria-describedby="button-addon2" disabled>
-
-                                        <button class="btn btn-outline-secondary" type="button">Reply</button>
-                                    </div>
-                                    <div class="form-text" id="basic-addon4">
-                                        <button class="btn btn-outline-secondary" type="button"
-                                            id="button-addon2">Like</button>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <!-- Comment Four -->
-                            <div class="row">
-                                <div class="col-md-12 custom-border">
-                                    <label for="event-comment" class="form-label">User: Username1234</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control event-comment" placeholder="Vibes were immaculate. Crowd was super chill too!"
-                                            aria-label="Comment Here" aria-describedby="button-addon2" disabled>
-
-                                        <button class="btn btn-outline-secondary" type="button">Reply</button>
-                                    </div>
-                                    <div class="form-text" id="basic-addon4">
-                                        <button class="btn btn-outline-secondary" type="button"
-                                            id="button-addon2">Like</button>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
                 </div>
