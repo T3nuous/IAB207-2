@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% from "bootstrap5/form.html" import render_form %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/allEvents.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="row" style="background-color: #F6F1F4">
+            <h1 style="color: #141117;"> Popular Events </h1>
+            {% if events %}
+                {% for event_item in events | sort(attribute='id', reverse=True) %}
+                    {% if loop.index0 < 3 %}
+                    <div class="col-lg-12 col-xl-4">
+                        <a href="{{ url_for('event.details', id=event_item.id) }}" class="text-decoration-none text-dark">
+                            <div class="card-slider card rounded-4 overflow-hidden">
+                                <div class="position-relative bg-light" style="height: 500px;">
+                                    {% if event_item.image_filename %}
+                                        <img src="{{ url_for('static', filename=event_item.image_filename) }}" class="w-100 h-100 object-fit-cover" alt="{{ event_item.name }} Image">
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="w-100 h-100 object-fit-cover" alt="Placeholder Image">
+                                    {% endif %}
+                                    <span class="status-text position-absolute top-0 end-0 p-2 fw-bold">Status: {{ event_item.status }}</span>
+                                    <div class="event-name position-absolute top-50 start-50 translate-middle text-center fw-bold fs-4">
+                                        {{ event_item.name }}
+                                    </div>
+                                </div>
+                                <div class="card-header fw-bold">
+                                    Event Description
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-9 custom-border text-center">
+                                            <p class="mb-0">{{ event_item.description | truncate(150) }}</p>
+                                        </div>
+                                        <div class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center text-center">
+                                            <label>Date:</label>
+                                            <input type="text" class="form-control text-center w-100 mb-1" value="{{ event_item.start_datetime.strftime('%Y-%m-%d %H:%M') if event_item.start_datetime else 'N/A' }}" disabled>
+                                            <span class="btn btn-sm btn-secondary mt-2">View Details</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                 <p style="color: #141117;">No popular events to display.</p>
+            {% endif %}
+        </div>
+
+
+        {% endblock %}
