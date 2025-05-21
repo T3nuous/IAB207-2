@@ -13,7 +13,13 @@ eventbp = Blueprint('event', __name__, url_prefix='/events')
 def details(id):
     event = db.session.query(Event).filter_by(id=id).first_or_404()
     cform = CommentForm()
-    return render_template('events/eventDetails.html', event=event, form=cform)
+    comments = event.comments.order_by(Comment.created_at.desc()).all()
+    return render_template('events/eventDetails.html', event=event, form=cform, comments=comments)
+
+
+@eventbp.route('/eventspage')
+def allevents():
+    return render_template('events/allEvents.html')
 
 def check_upload_file(uploaded_file_data):
     if not uploaded_file_data or not uploaded_file_data.filename:
