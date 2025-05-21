@@ -19,7 +19,19 @@ def details(id):
 
 @eventbp.route('/eventspage')
 def allevents():
-    return render_template('events/allEvents.html')
+
+    genre_filter = request.args.get('genre', '')
+
+
+    if genre_filter:
+        events = Event.query.filter_by(genre=genre_filter).order_by(Event.start_datetime.asc()).all()
+    else:
+        events = Event.query.order_by(Event.start_datetime.asc()).all()
+
+    genres = [g[0] for g in db.session.query(Event.genre).distinct().filter(Event.genre.isnot(None)).all()]
+
+
+    return render_template('events/allEvents.html', events=events, genres=genres, selected_genre=genre_filter)
 
 def check_upload_file(uploaded_file_data):
     if not uploaded_file_data or not uploaded_file_data.filename:
