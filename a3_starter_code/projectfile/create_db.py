@@ -1,11 +1,10 @@
 from website import db, create_app
+
 from website.models import event_category
 
 app = create_app()
 ctx = app.app_context()
 ctx.push()
-
-db.create_all()
 
 def add_sample_categories():
     categories_to_add = [
@@ -30,3 +29,5 @@ add_sample_categories()
 
 print("Database tables created and sample categories processed.")
 ctx.pop()
+
+quit()

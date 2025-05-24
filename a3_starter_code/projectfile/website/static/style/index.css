@@ -1,0 +1,479 @@
+/* ===== MODERN HOME PAGE STYLES ===== */
+
+/* Main Body & Layout */
+body {
+    background: linear-gradient(135deg, #141117 0%, #1B1725 50%, #2A1B3D 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* Hero Section */
+.jumbotron-outer {
+    height: 700px;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.jumbotronback {
+    background: linear-gradient(rgba(20, 17, 23, 0.3), rgba(27, 23, 37, 0.6)), url("../img/home-hero.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    position: relative;
+    max-width: 100%;
+    color: #F9EBE0;
+}
+
+.jumbotronback::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.2));
+    border-radius: 30px;
+    z-index: 1;
+}
+
+.jumbotron-outer {
+    height: 700px;
+}
+
+.jumbotronback h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #ffffff, #ff82f9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color:rgba(248, 244, 244, 0.7);
+    background-clip: text;
+    position: relative;
+    z-index: 2;
+}
+
+.jumbotronback p {
+    font-size: 1.5rem;
+    color: #F9EBE0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    margin-bottom: 2rem;
+    max-width: 60%;
+    text-align: center;
+    z-index: 2;
+}
+
+.jumbotronback .btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 2;
+}
+
+.jumbotronback .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Main Content Sections */
+.container-fluid {
+    padding: 0;
+}
+
+.section {
+    padding: 4rem 0;
+    margin: 0;
+}
+
+.section-upcoming {
+    background: linear-gradient(135deg, #141117, #1B1725);
+    padding: 5rem 0;
+}
+
+.section-popular {
+    background: linear-gradient(135deg, #F6F1F4, #E8E2E6);
+    padding: 5rem 0;
+}
+
+.section-categories {
+    background: linear-gradient(135deg, #1B1725, #2A1B3D);
+    padding: 5rem 0;
+}
+
+.section-recommended {
+    background: linear-gradient(135deg, #141117, #1B1725);
+    padding: 5rem 0 8rem 0;
+}
+
+/* Section Headings */
+.section-title {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.section-title.light {
+    color: #F6F1F4;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.section-title.dark {
+    color: #141117;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin: 0 1rem 2rem 1rem;
+    background: white;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+}
+
+.card-img-container {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.card:hover img {
+    transform: scale(1.05);
+}
+
+.event-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 2.5rem;
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    transition: opacity 0.3s ease;
+}
+
+.card:hover .event-name {
+    opacity: 0;
+}
+
+.status-text {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 1.5rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-align: center;
+    border: none;
+}
+
+.card-body {
+    padding: 2rem;
+    background: white;
+}
+
+.custom-border {
+    border-right: 2px solid #e2e8f0;
+    padding-right: 1rem;
+}
+
+.card-body .form-control {
+    background: #f8f9fa;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 20px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-2px);
+}
+
+/* Carousel Styling */
+.carousel {
+    margin: 0 2rem;
+}
+
+.carousel-item {
+    transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+}
+
+.custom-carousel-control {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.custom-carousel-control:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-control-prev {
+    left: 2rem;
+}
+
+.carousel-control-next {
+    right: 2rem;
+}
+
+/* Category Buttons */
+.categories-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.img-btn {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    border: none;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    filter: brightness(0.7) saturate(0.8);
+    margin-bottom: 1rem;
+}
+
+.img-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.img-btn:hover {
+    filter: brightness(1) saturate(1.2);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+}
+
+.img-btn:hover::before {
+    opacity: 1;
+}
+
+/* Responsive Grid for Events */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    padding: 0 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.events-grid-single {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Empty State Styling */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #F6F1F4;
+}
+
+.empty-state h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #667eea;
+}
+
+.empty-state p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .jumbotronback h1 {
+        font-size: 3rem;
+    }
+    
+    .jumbotronback p {
+        max-width: 80%;
+    }
+    
+    .event-name {
+        font-size: 2rem;
+        padding: 0.8rem 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .jumbotronback {
+        padding: 2rem;
+        text-align: center;
+        align-items: center;
+    }
+    
+    .jumbotronback h1 {
+        font-size: 2.5rem;
+    }
+    
+    .jumbotronback p {
+        font-size: 1.2rem;
+        max-width: 100%;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+    }
+    
+    .event-name {
+        font-size: 1.5rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .custom-border {
+        border-right: none;
+        border-bottom: 2px solid #e2e8f0;
+        padding-right: 0;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .carousel {
+        margin: 0 1rem;
+    }
+    
+    .custom-carousel-control {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .carousel-control-prev {
+        left: 1rem;
+    }
+    
+    .carousel-control-next {
+        right: 1rem;
+    }
+    
+    .events-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+    
+    .img-btn {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .jumbotron-outer {
+        height: 500px;
+    }
+    
+    .jumbotronback h1 {
+        font-size: 2rem;
+    }
+    
+    .jumbotronback p {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .card {
+        margin: 0 0 2rem 0;
+    }
+    
+    .section {
+        padding: 3rem 0;
+    }
+}

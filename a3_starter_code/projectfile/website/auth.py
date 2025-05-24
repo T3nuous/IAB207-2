@@ -34,9 +34,6 @@ def login():
     return render_template('user.html', form=login_form, heading='Login')
 
 
-
-
-
 @auth_bp.route('/register', methods = ['GET', 'POST'])
 def register():
     form = RegisterForm()

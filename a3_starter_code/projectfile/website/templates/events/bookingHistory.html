@@ -1,101 +1,402 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style/booking.css') }}">
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/bookingHistory.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/creationHistory.css') }}">
 {% endblock %}
 
 {% block content %}
-<main>
-    <div class="container-fluid">
-        <!--First Row-->
-        <div class="row">
-            <div class="col-sm-12">
-                <!-- Account Details -->
-                <div class="col-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Account Details:</h5>
-                            <!-- Username -->
-                            <div class="form-group">
-                                <label style="text-align: left;">Username & Email</label>
-                                <div class="d-flex gap-2">
-                                    <input type="text" class="form-control" placeholder="Username" />
-                                    <input type="text" class="form-control me-2" placeholder="Email" disabled />
-                                </div>
-                            </div>
-                            <!-- Location -->
-                            <div class="form-group mb-3">
-                                <label>Location & Phone Number</label>
-                                <div class="d-flex gap-2">
-                                    <select class="form-control me-2">
-                                        <option>Use GPS</option>
-                                        <option>Australia</option>
-                                        <option>USA</option>
-                                        <option>UK</option>
-                                        <option>Japan</option>
-                                        <option>etc..</option>
-                                    </select>
-                                    <input type="number" class="form-control" placeholder="12345678" disabled />
-                                </div>
-                            </div>
+<!-- Hero Section -->
+<div class="booking-hero">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="hero-title">🎫 My Account & Bookings</h1>
+            <p class="hero-subtitle">Manage your account details and view your event history</p>
+        </div>
+    </div>
+</div>
 
-                            <label for="event-date">Account Creation Date</label>
-                            <input type="date" id="event-date" name="event-date"
-                                class="form-control text-center w-100 mb-1" disabled>
-                            <!-- Seat Allocation -->
-                            <div class="form-group text-align: left;">
-                                <label>Change Password</label>
-                                <div class="d-flex">
-                                    <button class="btn btn-primary">Change Password</button>
-                                </div>
+<div class="container">
+    <!-- Account Details Section -->
+    <div class="account-section">
+        <div class="account-card">
+            <div class="account-card-header">
+                <h5><i class="fas fa-user-circle"></i> Account Details</h5>
+            </div>
+            <div class="account-card-body">
+                <div class="row">
+                    <!-- User Information -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Username & Email</label>
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control" placeholder="{{ current_user.firstName }} {{ current_user.surname }}" disabled />
+                                <input type="text" class="form-control" placeholder="{{ current_user.email }}" disabled />
                             </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> Location & Phone</label>
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control" placeholder="{{ current_user.streetAddress }}" disabled />
+                                <input type="text" class="form-control" placeholder="{{ current_user.mobileNumber }}" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Management -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-alt"></i> Member Since</label>
+                            <input type="text" class="form-control" value="Member since registration" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-key"></i> Account Security</label>
+                            <button class="btn btn-change-password">
+                                <i class="fas fa-lock"></i> Change Password
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!--Second Row-->
-        <div class="row" style="background-color: #F6F1F4">
-            <h1 style="color: #141117; margin-top: 50px;">Previous Bookings</h1>
-            {% for event in events %}
-            <div class="col-lg-12 col-xl-4">
-                <a href="{{ url_for('event.details', id=event.id) }}" class="text-decoration-none text-dark">
-                    <div class="card-slider card rounded-4 overflow-hidden">
-                        <div class="position-relative bg-light" style="height: 500px;">
-                            <img src='{{ event.image_url }}' class="w-100 h-100 object-fit-cover" alt="Event Image">
-                            <div class="event-name position-absolute top-50 start-50 translate-middle text-center fw-bold fs-4">
-                                {{ event.name }}</div>
-                        </div>
+    <!-- Bookings Section -->
+    <div class="bookings-section">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i> Your Event History
+            </h2>
+            
+            {% if booking_history %}
+                <div class="row">
+                    {% for booking_item in booking_history %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <a href="{{ url_for('event.details', id=booking_item.event.id) }}" class="text-decoration-none">
+                                <div class="booking-card">
+                                    <!-- Event Image -->
+                                    <div class="booking-image-container">
+                                        {% if booking_item.event.image_filename %}
+                                            <img src="{{ url_for('static', filename=booking_item.event.image_filename) }}" 
+                                                 class="booking-image" 
+                                                 alt="{{ booking_item.event.name }}">
+                                        {% else %}
+                                            <div class="booking-image d-flex align-items-center justify-content-center">
+                                                <i class="fas fa-music text-white" style="font-size: 3rem;"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="booking-event-name">
+                                            {{ booking_item.event.name }}
+                                        </div>
+                                    </div>
 
-                        <div class="card-header fw-bold">
-                            Event Description
-                        </div>
+                                    <!-- Booking Info Header -->
+                                    <div class="booking-card-header">
+                                        <i class="fas fa-ticket-alt"></i> 
+                                        {% if booking_item.type == 'booking' %}
+                                            Booking #{{ booking_item.id }}
+                                        {% else %}
+                                            Order #{{ booking_item.id }}
+                                        {% endif %}
+                                    </div>
 
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-9 custom-border text-center">
-                                    <p class="mb-0">{{ event.description }}</p>
+                                    <!-- Booking Details -->
+                                    <div class="booking-card-body">
+                                        {% if booking_item.event.description %}
+                                            <div class="booking-description">
+                                                {{ booking_item.event.description[:120] }}{% if booking_item.event.description|length > 120 %}...{% endif %}
+                                            </div>
+                                        {% endif %}
 
-                                    <label for="event-date">Date Booked:</label>
-                                    <input type="date" id="event-date" name="event-date"
-                                        class="form-control text-center w-100 mb-1" value="{{ event.start_date }}" disabled>
+                                        <div class="booking-details-row row">
+                                            <!-- Event Information -->
+                                            <div class="col-md-8 booking-info-section">
+                                                <div class="mb-3">
+                                                    <span class="booking-label">
+                                                        <i class="fas fa-calendar"></i> Event Date
+                                                    </span>
+                                                    <div class="booking-value">
+                                                        {{ booking_item.event.start_datetime.strftime('%B %d, %Y') }}
+                                                    </div>
+                                                </div>
+                                                
+                                                {% if booking_item.event.location %}
+                                                    <div class="mb-3">
+                                                        <span class="booking-label">
+                                                            <i class="fas fa-map-marker-alt"></i> Location
+                                                        </span>
+                                                        <div class="booking-value">
+                                                            {{ booking_item.event.location }}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                
+                                                <div class="mb-3">
+                                                    <span class="booking-label">
+                                                        <i class="fas fa-credit-card"></i> Total Paid
+                                                    </span>
+                                                    <div class="booking-value">
+                                                        ${{ "%.2f"|format(booking_item.total_price|float) }}
+                                                    </div>
+                                                </div>
+
+                                                {% if booking_item.type == 'booking' and booking_item.ticket_type %}
+                                                    <div class="mb-3">
+                                                        <span class="booking-label">
+                                                            <i class="fas fa-ticket-alt"></i> Tickets
+                                                        </span>
+                                                        <div class="booking-value">
+                                                            {{ booking_item.quantity }}x {{ booking_item.ticket_type.type_name }}
+                                                        </div>
+                                                    </div>
+                                                {% elif booking_item.type == 'order' and booking_item.order_items %}
+                                                    <div class="mb-3">
+                                                        <span class="booking-label">
+                                                            <i class="fas fa-ticket-alt"></i> Tickets
+                                                        </span>
+                                                        <div class="booking-value">
+                                                            {% for item in booking_item.order_items %}
+                                                                {{ item.quantity }}x {{ item.ticket_type.type_name }}{% if not loop.last %}, {% endif %}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <!-- Booking Metadata -->
+                                            <div class="col-md-4 booking-meta-section">
+                                                <div class="mb-2">
+                                                    <span class="booking-label">
+                                                        <i class="fas fa-clock"></i> Event Time
+                                                    </span>
+                                                    <div class="booking-value">
+                                                        {{ booking_item.event.start_datetime.strftime('%I:%M %p') }}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-2">
+                                                    <span class="booking-label">
+                                                        <i class="fas fa-calendar-check"></i> Booked On
+                                                    </span>
+                                                    <div class="booking-value">
+                                                        {{ booking_item.booking_date.strftime('%m/%d/%Y') }}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-2">
+                                                    <span class="booking-label">
+                                                        <i class="fas fa-info-circle"></i> Status
+                                                    </span>
+                                                    <div class="booking-value booking-id">
+                                                        {{ booking_item.status.title() }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <div class="col-md-12 col-lg-3 d-flex flex-column align-items-center justify-content-center text-center">
-                                    <label for="event-date">Date:</label>
-                                    <input type="date" id="event-date" name="event-date"
-                                        class="form-control text-center w-100 mb-1" value="{{ event.start_date }}" disabled>
-                                    <input type="text" id="booking-id" name="booking-id"
-                                        class="form-control text-center w-100 mb-1" placeholder="ID:{{ event.id }}" disabled>
-                                </div>
-                            </div>
+                            </a>
                         </div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="no-bookings">
+                    <div class="no-bookings-icon">🎵</div>
+                    <h3>No Event History Yet</h3>
+                    <p>You haven't attended any events yet. Start exploring amazing music events near you!</p>
+                    <a href="{{ url_for('event.allevents') }}" class="btn-browse-events">
+                        <i class="fas fa-search"></i> Browse Events
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
-</main>
+
+    <!-- Creation History Section -->
+    <div class="creation-section">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-plus-circle"></i> Your Created Events
+            </h2>
+            
+            {% if creation_history %}
+                <div class="row">
+                    {% for creation_item in creation_history %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <a href="{{ url_for('event.details', id=creation_item.event.id) }}" class="text-decoration-none">
+                                <div class="creation-card">
+                                    <!-- Event Image -->
+                                    <div class="creation-image-container">
+                                        {% if creation_item.event.image_filename %}
+                                            <img src="{{ url_for('static', filename=creation_item.event.image_filename) }}" 
+                                                 class="creation-image" 
+                                                 alt="{{ creation_item.event.name }}">
+                                        {% else %}
+                                            <div class="creation-image d-flex align-items-center justify-content-center">
+                                                <i class="fas fa-calendar-plus text-white" style="font-size: 3rem;"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="creation-event-name">
+                                            {{ creation_item.event.name }}
+                                        </div>
+                                            
+                                        <div class="creation-status-badge status-{{ creation_item.event.current_status.lower().replace(' ', '-') }}">
+                                            {{ creation_item.event.current_status }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Creation Info Header -->
+                                    <div class="creation-card-header">
+                                        <i class="fas fa-calendar-plus"></i> Created Event
+                                    </div>
+
+                                    <!-- Creation Details -->
+                                    <div class="creation-card-body">
+                                        {% if creation_item.event.description %}
+                                            <div class="creation-description">
+                                                {{ creation_item.event.description[:120] }}{% if creation_item.event.description|length > 120 %}...{% endif %}
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="creation-details-row row">
+                                            <!-- Event Information -->
+                                            <div class="col-md-8 creation-info-section">
+                                                <div class="mb-3">
+                                                    <span class="creation-label">
+                                                        <i class="fas fa-calendar"></i> Event Date
+                                                    </span>
+                                                    <div class="creation-value">
+                                                        {{ creation_item.event.start_datetime.strftime('%B %d, %Y') }}
+                                                    </div>
+                                                </div>
+                                                
+                                                {% if creation_item.event.location %}
+                                                    <div class="mb-3">
+                                                        <span class="creation-label">
+                                                            <i class="fas fa-map-marker-alt"></i> Location
+                                                        </span>
+                                                        <div class="creation-value">
+                                                            {{ creation_item.event.location }}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                
+                                                <div class="mb-3">
+                                                    <span class="creation-label">
+                                                        <i class="fas fa-dollar-sign"></i> Total Revenue
+                                                    </span>
+                                                    <div class="creation-value">
+                                                        ${{ "%.2f"|format(creation_item.total_revenue) }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <span class="creation-label">
+                                                        <i class="fas fa-users"></i> Total Bookings
+                                                    </span>
+                                                    <div class="creation-value">
+                                                        {{ creation_item.total_bookings }} tickets sold
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <span class="creation-label">
+                                                        <i class="fas fa-ticket-alt"></i> Available Tickets
+                                                    </span>
+                                                    <div class="creation-value">
+                                                        {{ creation_item.available_tickets }} remaining
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Creation Metadata -->
+                                            <div class="col-md-4 creation-meta-section">
+                                                <div class="mb-2">
+                                                    <span class="creation-label">
+                                                        <i class="fas fa-clock"></i> Event Time
+                                                    </span>
+                                                    <div class="creation-value">
+                                                        {{ creation_item.event.start_datetime.strftime('%I:%M %p') }}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-2">
+                                                    <span class="creation-label">
+                                                        <i class="fas fa-calendar-plus"></i> Created On
+                                                    </span>
+                                                    <div class="creation-value">
+                                                        {{ creation_item.created_date.strftime('%m/%d/%Y') }}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-2">
+                                                    <span class="creation-label">
+                                                        <i class="fas fa-tag"></i> Category
+                                                    </span>
+                                                    <div class="creation-value">
+                                                        {{ creation_item.event.event_category.name }}
+                                                    </div>
+                                                </div>
+
+                                                <!-- Quick Actions -->
+                                                <div class="creation-actions mt-3">
+                                                    <a href="{{ url_for('event.edit_event', id=creation_item.event.id) }}" 
+                                                       class="btn btn-sm btn-outline-primary mb-1" 
+                                                       onclick="event.stopPropagation();">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                                    <a href="{{ url_for('event.details', id=creation_item.event.id) }}" 
+                                                       class="btn btn-sm btn-outline-info mb-1" 
+                                                       onclick="event.stopPropagation();">
+                                                        <i class="fas fa-eye"></i> View
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State for Creation History -->
+                <div class="no-creations">
+                    <div class="no-creations-icon">🎤</div>
+                    <h3>No Events Created Yet</h3>
+                    <p>You haven't created any events yet. Start by creating your first amazing event!</p>
+                    <a href="{{ url_for('event.create') }}" class="btn-create-event">
+                        <i class="fas fa-plus"></i> Create Event
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add some interactive JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add stagger animation to booking cards
+    const bookingCards = document.querySelectorAll('.booking-card');
+    bookingCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+    
+        // Add stagger animation to creation cards
+        const creationCards = document.querySelectorAll('.creation-card');
+        creationCards.forEach((card, index) => {card.style.animationDelay = `${index * 0.1}s`;});
+        // Change password button functionality
+        const changePasswordBtn = document.querySelector('.btn-change-password');
+        if (changePasswordBtn) {
+            changePasswordBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = "{{ url_for('main.change_password') }}";
+            });
+        }});   
+    </script>
 {% endblock %}

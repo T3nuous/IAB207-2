@@ -2,190 +2,413 @@
 {% from "bootstrap5/form.html" import render_form %}
 
 {% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/eventCreation.css') }}">
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='style/eventCreation.css') }}">
 {% endblock %}
 
 {% block content %}
-<main>
-    <div class="container-fluid">
-        <div class="creation-banner row">
-            <div class="col-sm-12">
-                <div class="Title text-center justify-content-center py-3">
-                    <h1>{{ title | default('Event Creation') }}</h1>
-                </div>
-
-                <div id="carouselExample" class="carousel slide mb-4">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="d-block w-100" alt="Placeholder Image 1" width="800" height="500">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="d-block w-100" alt="Placeholder Image 2" width="800" height="500">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="d-block w-100" alt="Placeholder Image 3" width="800" height="500">
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
+<!-- Hero Section -->
+<div class="creation-hero">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="hero-title">🎵 {{ title | default('Create Amazing Event') }}</h1>
+            <p class="hero-subtitle">Share your music with the world - create an unforgettable experience</p>
+            <div class="progress-indicator">
+                <span class="progress-step">
+                    <i class="fas fa-music"></i> Step 1: Event Details & Tickets
+                </span>
             </div>
         </div>
+    </div>
+</div>
 
-        <form method="POST" action="{{ url_for('event.create') }}" enctype="multipart/form-data" novalidate>
-            {{ form.csrf_token }}
-
-            <div class="container-fluid mt-4">
-                <div class="row">
-                    <div class="col-12 col-lg-7 mb-3">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Event Details</h5>
+<div class="container">
+    <form method="POST" action="{{ url_for('event.create') }}" enctype="multipart/form-data" novalidate>
+        {{ form.csrf_token }}
+        
+        <div class="row">
+            <!-- Event Details Section -->
+            <div class="col-12 col-lg-8 mb-4">
+                <div class="card creation-card">
+                    <div class="card-header-custom">
+                        <h5><i class="fas fa-calendar-plus"></i> Event Information</h5>
+                    </div>
+                    <div class="card-body-custom">
+                        <!-- Basic Info Section -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-info-circle"></i> Basic Information
+                            </h6>
+                            
+                            <div class="form-row">
+                                {{ form.name.label(class="form-label required-field") }}
+                                {{ form.name(class="form-control", placeholder="Enter an exciting event name...") }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.name.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="card-body">
-                                {{ render_form(form) }}
+                            
+                            <div class="form-row">
+                                {{ form.description.label(class="form-label") }}
+                                {{ form.description(class="form-control", rows="4", placeholder="Describe your event, artists, what makes it special...") }}
+                                {% if form.description.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.description.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="helper-text">Tell people what makes your event unique and exciting!</div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        {{ form.category.label(class="form-label required-field") }}
+                                        {{ form.category(class="form-select") }}
+                                        {% if form.category.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.category.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        {{ form.genre.label(class="form-label") }}
+                                        {{ form.genre(class="form-control", placeholder="e.g., Hip Hop, Rock, Pop, Jazz...") }}
+                                        {% if form.genre.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.genre.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-12 col-lg-5 mb-3">
-                        <div class="card">
-                            <div class="card-header">
-                                 <h5 class="card-title mb-0">Ticket Types & Pricing</h5>
+                        
+                        <!-- Date & Location Section -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-map-marker-alt"></i> When & Where
+                            </h6>
+                            
+                            <div class="form-row">
+                                {{ form.start_datetime.label(class="form-label required-field") }}
+                                {{ form.start_datetime(class="form-control") }}
+                                {% if form.start_datetime.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.start_datetime.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="helper-text">When does your event start?</div>
                             </div>
-                            <div class="card-body">
-                                <p class="card-text"><small>Define ticket types for your event. Fields for a ticket type are optional if you do not wish to offer that type, but if a price is set, a limit is required.</small></p>
-                                
-                                <div class="mb-3">
-                                    {{ ticketform.general_price.label(class="form-label") }}
-                                    {{ ticketform.general_price(class="form-control") }}
-                                    {% if ticketform.general_price.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.general_price.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        {{ form.location.label(class="form-label required-field") }}
+                                        {{ form.location(class="form-control", placeholder="e.g., 123 Music St, Brisbane") }}
+                                        {% if form.location.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.location.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
-    
-                                <div class="mb-3">
-                                    {{ ticketform.general_limit.label(class="form-label") }}
-                                    {{ ticketform.general_limit(class="form-control") }}
-                                    {% if ticketform.general_limit.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.general_limit.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <hr>
-
-                                <div class="mb-3">
-                                    {{ ticketform.vip_price.label(class="form-label") }}
-                                    {{ ticketform.vip_price(class="form-control") }}
-                                    {% if ticketform.vip_price.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.vip_price.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="mb-3">
-                                    {{ ticketform.vip_limit.label(class="form-label") }}
-                                    {{ ticketform.vip_limit(class="form-control") }}
-                                    {% if ticketform.vip_limit.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.vip_limit.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <hr>
-
-                                <div class="mb-3">
-                                    {{ ticketform.balcony_price.label(class="form-label") }}
-                                    {{ ticketform.balcony_price(class="form-control") }}
-                                    {% if ticketform.balcony_price.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.balcony_price.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="mb-3">
-                                    {{ ticketform.balcony_limit.label(class="form-label") }}
-                                    {{ ticketform.balcony_limit(class="form-control") }}
-                                    {% if ticketform.balcony_limit.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.balcony_limit.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <hr>
-                                <p class="card-text"><small>Optional seat allocation details:</small></p>
-
-                                <div class="mb-3">
-                                    {{ ticketform.front_row.label(class="form-label") }}
-                                    {{ ticketform.front_row(class="form-control") }}
-                                    {% if ticketform.front_row.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.front_row.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="mb-3">
-                                    {{ ticketform.middle_row.label(class="form-label") }}
-                                    {{ ticketform.middle_row(class="form-control") }}
-                                    {% if ticketform.middle_row.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.middle_row.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="mb-3">
-                                    {{ ticketform.back_row.label(class="form-label") }}
-                                    {{ ticketform.back_row(class="form-control") }}
-                                    {% if ticketform.back_row.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.back_row.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        {{ form.venue.label(class="form-label") }}
+                                        {{ form.venue(class="form-control", placeholder="e.g., Brisbane Convention Centre") }}
+                                        {% if form.venue.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.venue.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        
+                        <!-- Event Image Section -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-image"></i> Event Image
+                            </h6>
+                            
+                            <div class="image-preview">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h6>Upload Event Image</h6>
+                                {{ form.image(class="form-control", style="margin-top: 1rem;") }}
+                                {% if form.image.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.image.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="helper-text">JPG, PNG, or JPEG files only. This will be the main image for your event.</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Details Section -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-cogs"></i> Additional Details
+                            </h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        {{ form.age_limit.label(class="form-label") }}
+                                        {{ form.age_limit(class="form-control", placeholder="0 for all ages") }}
+                                        {% if form.age_limit.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.age_limit.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        {{ form.length.label(class="form-label") }}
+                                        {{ form.length(class="form-control", placeholder="e.g., 2 hours, All day") }}
+                                        {% if form.length.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.length.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                {{ form.artist_info.label(class="form-label") }}
+                                {{ form.artist_info(class="form-control", rows="3", placeholder="Tell us about the artists performing...") }}
+                                {% if form.artist_info.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.artist_info.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-row">
+                                {{ form.policies.label(class="form-label") }}
+                                {{ form.policies(class="form-control", rows="3", placeholder="Event policies, rules, what to bring, etc...") }}
+                                {% if form.policies.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.policies.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Social Media Section -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-share-alt"></i> Social Media Links
+                            </h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        <label class="form-label">
+                                            <i class="fab fa-facebook"></i> Facebook
+                                        </label>
+                                        {{ form.facebook(class="form-control", placeholder="https://facebook.com/yourevent") }}
+                                        {% if form.facebook.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.facebook.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        <label class="form-label">
+                                            <i class="fab fa-instagram"></i> Instagram
+                                        </label>
+                                        {{ form.instagram(class="form-control", placeholder="https://instagram.com/yourevent") }}
+                                        {% if form.instagram.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.instagram.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-row">
+                                        <label class="form-label">
+                                            <i class="fab fa-twitter"></i> Twitter</label>
+                                            {{ form.twitter(class="form-control", placeholder="https://twitter.com/yourevent") }}
+                                            {% if form.twitter.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.twitter.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="row mt-4">
-                <div class="col-sm-12 text-center">
+            <!-- Ticket Types Section -->
+            <div class="col-12 col-lg-4">
+                <div class="card creation-card">
+                    <div class="card-header-custom">
+                        <h5><i class="fas fa-ticket-alt"></i> Ticket Types & Pricing</h5>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="alert-info-custom">
+                            <i class="fas fa-info-circle"></i>
+                            <small>Define ticket types for your event. If you set a price, you must also set a quantity limit.</small>
+                        </div>
+                        
+                        <!-- General Tickets -->
+                        <div class="ticket-section">
+                            <h6 class="ticket-type-title">
+                                <i class="fas fa-users"></i> General Admission
+                            </h6>
+                            
+                            <div class="form-row">
+                                {{ ticketform.general_price.label(class="form-label") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ ticketform.general_price(class="form-control", placeholder="0.00") }}
+                                </div>
+                                {% if ticketform.general_price.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in ticketform.general_price.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-row">
+                                {{ ticketform.general_quantity.label(class="form-label") }}
+                                {{ ticketform.general_quantity(class="form-control", placeholder="How many tickets?") }}
+                                {% if ticketform.general_quantity.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in ticketform.general_quantity.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- VIP Tickets -->
+                        <div class="ticket-section">
+                            <h6 class="ticket-type-title">
+                                <i class="fas fa-crown"></i> VIP Experience
+                            </h6>
+                            
+                            <div class="form-row">
+                                {{ ticketform.vip_price.label(class="form-label") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ ticketform.vip_price(class="form-control", placeholder="0.00") }}
+                                </div>
+                                {% if ticketform.vip_price.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in ticketform.vip_price.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-row">
+                                {{ ticketform.vip_quantity.label(class="form-label") }}
+                                {{ ticketform.vip_quantity(class="form-control", placeholder="How many VIP tickets?") }}
+                                {% if ticketform.vip_quantity.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in ticketform.vip_quantity.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="helper-text text-center">
+                            <i class="fas fa-lightbulb"></i> 
+                            Leave price and quantity empty if you don't want to offer that ticket type.
+                        </div>
+                    </div>
                 </div>
             </div>
-        </form>
-    </div>
-</main>
+        </div>
+        
+        <!-- Submit Section -->
+        <div class="submit-section">
+            <h5 style="color: #2d3748; margin-bottom: 1.5rem;">Ready to launch your event?</h5>
+            <div>
+                <a href="{{ url_for('event.allevents') }}" class="btn btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-create">
+                    <i class="fas fa-rocket"></i> Create Event
+                </button>
+            </div>
+            <div class="helper-text mt-3">
+                Don't worry, you can edit your event details after creation!
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image upload preview
+    const imageInput = document.querySelector('input[type="file"]');
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            const preview = document.querySelector('.image-preview');
+            if (this.files && this.files[0]) {
+                preview.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1))';
+                preview.style.borderColor = '#667eea';
+            }
+        });
+    }
+    
+    // Form validation feedback
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            const submitBtn = document.querySelector('.btn-create');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Event...';
+            submitBtn.disabled = true;
+        });
+    }
+    
+    // Auto-resize textareas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    });
+    
+    // Ticket validation helper
+    const generalPrice = document.querySelector('input[name="general_price"]');
+    const generalQuantity = document.querySelector('input[name="general_quantity"]');
+    const vipPrice = document.querySelector('input[name="vip_price"]');
+    const vipQuantity = document.querySelector('input[name="vip_quantity"]');
+    
+    function validateTickets() {
+        // If price is set, quantity should be required
+        if (generalPrice && generalPrice.value && (!generalQuantity || !generalQuantity.value)) {
+            generalQuantity.style.borderColor = '#e53e3e';
+        } else if (generalQuantity) {
+            generalQuantity.style.borderColor = '#e2e8f0';
+        }
+        
+        if (vipPrice && vipPrice.value && (!vipQuantity || !vipQuantity.value)) {
+            vipQuantity.style.borderColor = '#e53e3e';
+        } else if (vipQuantity) {
+            vipQuantity.style.borderColor = '#e2e8f0';
+        }
+    }
+    
+    if (generalPrice) generalPrice.addEventListener('input', validateTickets);
+    if (vipPrice) vipPrice.addEventListener('input', validateTickets);
+});
+</script>
 {% endblock %}
