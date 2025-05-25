@@ -93,7 +93,7 @@ def register():
 
         #return redirect(url_for('auth.login'))
     
-        #the else is called when the HTTP request calling this page is a GET
+    #the else is called when the HTTP request calling this page is a GET
     else:
         return render_template('user.html', form=form, heading='Register')
     #return render_template('user.html', form=form)

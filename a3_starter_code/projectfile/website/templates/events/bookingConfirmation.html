@@ -147,34 +147,4 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add celebration animation
-    const successIcon = document.querySelector('.success-icon');
-    if (successIcon) {
-        successIcon.style.animation = 'bounce 1s ease-in-out';
-    }
-    
-    // Auto-scroll to top
-    window.scrollTo(0, 0);
-});
-
-// Add bounce animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes bounce {
-        0%, 20%, 60%, 100% {
-            transform: translateY(0);
-        }
-        40% {
-            transform: translateY(-20px);
-        }
-        80% {
-            transform: translateY(-10px);
-        }
-    }
-`;
-document.head.appendChild(style);
-</script>
 {% endblock %} 

@@ -175,23 +175,4 @@
         </div>
     </form>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('checkout-form');
-    const submitBtn = document.querySelector('.btn-confirm');
-    
-    form.addEventListener('submit', function(e) {
-        // Add loading state
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        submitBtn.disabled = true;
-        
-        // Show processing message
-        const processingAlert = document.createElement('div');
-        processingAlert.className = 'alert alert-info mt-3';
-        processingAlert.innerHTML = '<i class="fas fa-clock"></i> Processing your booking... Please do not refresh the page.';
-        form.appendChild(processingAlert);
-    });
-});
-</script>
 {% endblock %} 

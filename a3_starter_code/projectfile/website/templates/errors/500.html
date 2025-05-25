@@ -29,7 +29,7 @@
                         <a href="{{ url_for('main.index') }}" class="btn btn-danger btn-lg me-md-2">
                             <i class="fas fa-home"></i> Back to Home
                         </a>
-                        <a href="javascript:window.location.reload()" class="btn btn-outline-danger btn-lg">
+                        <a href="{{ request.url }}" class="btn btn-outline-danger btn-lg">
                             <i class="fas fa-redo"></i> Try Again
                         </a>
                     </div>
@@ -123,23 +123,4 @@
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-refresh after 30 seconds
-    setTimeout(function() {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert alert-info alert-dismissible fade show mt-3';
-        alertDiv.innerHTML = `
-            <i class="fas fa-info-circle"></i> 
-            Page will auto-refresh in 10 seconds...
-            <button type="button" class="btn-close" data-bs-dismiss="alert" onclick="clearTimeout(window.autoRefresh)"></button>
-        `;
-        document.querySelector('.container').appendChild(alertDiv);
-        
-        window.autoRefresh = setTimeout(function() {
-            window.location.reload();
-        }, 10000);
-    }, 30000);
-});
-</script>
 {% endblock %} 

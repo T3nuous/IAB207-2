@@ -393,32 +393,4 @@
     </form>
 </div>
 
-<!-- JavaScript for interactivity -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add stagger animation to form cards
-    const formCards = document.querySelectorAll('.form-card');
-    formCards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-    });
-    
-    // Image preview functionality
-    const imageInput = document.querySelector('input[type="file"]');
-    if (imageInput) {
-        imageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // You could add preview functionality here
-                    console.log('File selected:', file.name);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-});
-
-// Delete functionality removed - using cancel event instead
-</script>
 {% endblock %}

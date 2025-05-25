@@ -31,7 +31,7 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="genre" class="form-label fw-semibold">Music Genre</label>
-                    <select name="genre" id="genre" class="form-select genre-filter" onchange="this.form.submit()">
+                    <select name="genre" id="genre" class="form-select genre-filter">
                                                 <option value="">🎼 All Genres</option>
                         {% for genre in genres %}
                         <option value="{{ genre.id }}" {% if genre.id|string == selected_genre %}selected{% endif %}>
@@ -142,26 +142,4 @@
         </div>
     {% endif %}
 </div>
-
-<!-- Add Font Awesome if not already included -->
-<script>
-    // Add some interactive behavior
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add loading animation for filter changes
-        const genreSelect = document.getElementById('genre');
-        if (genreSelect) {
-            genreSelect.addEventListener('change', function() {
-                // Add loading state
-                this.style.opacity = '0.6';
-                this.disabled = true;
-                
-                // Submit will happen automatically, but we can add loading feedback
-                setTimeout(() => {
-                    this.style.opacity = '1';
-                    this.disabled = false;
-                }, 500);
-            });
-        }
-    });
-</script>
 {% endblock %}
