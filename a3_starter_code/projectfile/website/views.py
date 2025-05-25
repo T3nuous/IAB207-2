@@ -1,20 +1,15 @@
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
 from flask_login import login_required, current_user
 from . import db
 from .models import Event, Order, Comment
 from .forms import EventForm, BookingForm, CommentForm
 
-main_bp = Blueprint('main', __name__)
+main_bp = Blueprint('main', __name__)  # create main blueprint
 
 @main_bp.route('/')
 def index():
-    # list only Open events sorted by start time
-    events = (
-        Event.query
-             .filter_by(status='Open')
-             .order_by(Event.date_time)
-             .all()
-    )
+    # list all events sorted by start time (shows Sold Out/status badges)
+    events = Event.query.order_by(Event.date_time).all()
     return render_template('index.html', events=events)
 
 @main_bp.route('/event/new', methods=['GET', 'POST'])
@@ -41,7 +36,7 @@ def event_detail(event_id):
     # show event info with booking/comment forms
     event = Event.query.get_or_404(event_id)
     return render_template(
-        'event_details.html',
+        'event_detail.html',
         event=event,
         booking_form=BookingForm(),
         comment_form=CommentForm()
@@ -96,7 +91,7 @@ def bookings():
         user_id=current_user.id,
         status='Active'
     ).all()
-    return render_template('booking_history.html', orders=orders)
+    return render_template('bookings.html', orders=orders)
 
 @main_bp.route('/booking/<int:order_id>/cancel', methods=['POST'])
 @login_required
@@ -105,8 +100,8 @@ def cancel_booking(order_id):
     order = Order.query.get_or_404(order_id)
     if order.user_id != current_user.id:
         abort(403)  # forbid cancelling others
-    order.event.tickets_remaining += order.quantity  # refund tickets
-    order.status = 'Cancelled'                        # mark booking cancelled
+    order.event.tickets_remaining += order.quantity      # refund tickets
+    order.status = 'Cancelled'                           # mark booking cancelled
     db.session.commit()
     flash('Booking cancelled', 'success')
     return redirect(url_for('main.bookings'))
@@ -118,4 +113,8 @@ def booking_detail(order_id):
     order = Order.query.get_or_404(order_id)
     if order.user_id != current_user.id:
         abort(403)  # forbid viewing others
-    return render_template('booking_detail.html', order=order)
+    return render_template(
+        'booking_detail.html',
+        order=order,
+        total_price=order.total_price
+    )

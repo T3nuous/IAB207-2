@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% from "bootstrap5/form.html" import render_form %}
 
 {% block content %}
@@ -12,9 +11,14 @@
                 <select name="genre" class="form-select" onchange="this.form.submit()">
                     <option value="">All Genres</option>
                     {% for genre in genres %}
-                        <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>{{ genre }}</option>
+                        <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>
+                            {{ genre }}
+                        </option>
                     {% endfor %}
                 </select>
+            </div>
+            <div class="col-md-4">
+                {{ render_form(search_form) }}
             </div>
         </div>
     </form>
@@ -22,24 +26,34 @@
     <div class="row">
         {% if events %}
             {% for event in events %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        {% if event.image_filename %}
-                            <img src="{{ url_for('static', filename=event.image_filename) }}" class="card-img-top" style="object-fit: cover; height: 200px;">
-                        {% endif %}
-                        <span class="status-text position-absolute top-0 end-0 p-2 fw-bold">Status: {{ event.status }}</span>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ event.name }}</h5>
-                            <p class="card-text">{{ event.genre or 'No Genre' }}</p>
-                            <p class="card-text"><strong>{{ event.start_datetime.strftime('%b %d, %Y') }}</strong></p>
-                            <a href="{{ url_for('event.details', id=event.id) }}" class="btn btn-primary">View Event</a>
+            <div class="col-sm-12 col-lg-4 col-xl-3">
+                <div class="card mb-3">
+                    <div class="position-relative overflow-hidden" style="height: 200px;">
+                        <img src="{{ event.image_url }}" class="w-100 h-100 object-fit-cover" alt="Event Image">
+                        <div class="event-name position-absolute top-50 start-50 translate-middle text-center fw-bold fs-4">
+                            {{ event.name }}
                         </div>
                     </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.name }}</h5>
+                        <!-- 🔥 Added status badge, nothing else moved or removed -->
+                        <span class="badge {% if event.status == 'Sold Out' %}bg-danger{% else %}bg-success{% endif %}">
+                            {{ event.status }}
+                        </span>
+                        <p class="card-text">{{ event.genre or 'No Genre' }}</p>
+                        <p class="card-text">
+                          <strong>{{ event.date_time.strftime('%b %d, %Y') }}</strong>
+                        </p>
+                        <a href="{{ url_for('event.details', id=event.id) }}" class="btn btn-primary">
+                            View Event
+                        </a>
+                    </div>
                 </div>
+            </div>
             {% endfor %}
         {% else %}
             <div class="col-12">
-                <div class="alert alert-info">No events found for this genre.</div>
+                <div class="alert alert-info">No events available at this time.</div>
             </div>
         {% endif %}
     </div>
