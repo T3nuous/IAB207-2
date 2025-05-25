@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms.fields import (StringField, PasswordField, TextAreaField,
                             IntegerField, DateTimeField, SubmitField)
 from wtforms.validators import (InputRequired, Length, Email,
-                                EqualTo, NumberRange)
+                                EqualTo, NumberRange, Regexp)
 from datetime import datetime
 
 class LoginForm(FlaskForm):
@@ -61,3 +61,37 @@ class CommentForm(FlaskForm):
         InputRequired(), Length(max=500)
     ])
     submit = SubmitField('Post Comment')
+
+# Form for updating profile information
+class UpdateProfileForm(FlaskForm):
+    email = StringField(
+        'Email Address',
+        render_kw={'readonly': True}
+    )
+    phone = StringField(
+        'Phone Number',
+        validators=[
+            InputRequired('Enter your phone number'),
+            Regexp(
+                r'^\+?[\d\s\-]{7,20}$',
+                message='Enter a valid phone number'
+            )
+        ]
+    )
+    address = StringField(
+        'Address',
+        validators=[
+            InputRequired('Enter your address'),
+            Length(max=200)
+        ]
+    )
+    current_password = PasswordField('Current Password')  # only required if changing pw
+    new_password     = PasswordField(
+        'New Password',
+        validators=[ Length(min=8, message='Password must be at least 8 characters') ]
+    )
+    confirm_password = PasswordField(
+        'Confirm New Password',
+        validators=[ EqualTo('new_password', message='Passwords must match') ]
+    )
+    submit = SubmitField('Update Profile')

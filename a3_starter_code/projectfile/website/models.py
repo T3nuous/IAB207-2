@@ -8,6 +8,8 @@ class User(db.Model, UserMixin):
     name          = db.Column(db.String(150), nullable=False)   # display name
     emailid       = db.Column(db.String(150), unique=True, nullable=False)  # login email
     password_hash = db.Column(db.String(255), nullable=False)   # bcrypt hash
+    phone         = db.Column(db.String(20), nullable=True)     # user phone number
+    address       = db.Column(db.String(200), nullable=True)    # user mailing address
 
     orders        = db.relationship('Order',   back_populates='user')
     comments      = db.relationship('Comment', back_populates='author')
