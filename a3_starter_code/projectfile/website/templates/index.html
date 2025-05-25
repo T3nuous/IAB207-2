@@ -20,7 +20,7 @@
     <!-- Upcoming Events Section -->
     <section class="section-upcoming">
         <div class="container-fluid">
-            <h1 class="section-title light">🎵 Upcoming Events</h1>
+            <h1 class="section-title light">🎵 Upcoming Events</h1> <!-- https://getemoji.com/  -->
             
             {% if events %}
                 <div class="events-grid-single">
@@ -160,37 +160,37 @@
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Blues.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Blues'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=1'"> <!-- Blues -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Classical.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Classical'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=2'"> <!-- Classical-->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Country.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Country'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=3'"> <!-- Country -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Electronic.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Electronic'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=4'"> <!-- Electronic -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Funk.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Funk'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=5'"> <!-- Funk -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Hip Hop.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Hip-Hop'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=6'"> <!-- Hip Hop -->
                         </button>
                     </div>
                 </div>
@@ -200,37 +200,37 @@
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Jazz.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Jazz'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=7'"> <!-- Jazz -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Metal.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Metal'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=8'"> <!-- Metal -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Pop.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Pop'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=9'"> <!-- Pop -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/R&B.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=R&B'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=10'"> <!-- R&B -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Reggae.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Reggae'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=11'"> <!-- Reggae -->
                         </button>
                     </div>
                     <div class="col-6 col-md-4 col-lg-2">
                         <button type="button" class="img-btn" 
                                 style="background-image: url('{{ url_for('static', filename='img/Rock.png') }}');"
-                                onclick="window.location.href='{{ url_for('event.allevents') }}?category=Rock'">
+                                onclick="window.location.href='{{ url_for('event.allevents') }}?genre=12'"> <!-- Rock -->
                         </button>
                     </div>
                 </div>

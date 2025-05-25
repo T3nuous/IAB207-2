@@ -79,26 +79,14 @@
                             </div>
 
                             <div class="form-group">
-                                {{ form.category.label(class="form-label required-field") }}
-                                {{ form.category(class="form-select" + (" is-invalid" if form.category.errors else "")) }}
-                                {% if form.category.errors %}
+                                {{ form.genre.label(class="form-label required-field") }}
+                                {{ form.genre(class="form-control" + (" is-invalid" if form.genre.errors else "")) }}
+                                {% if form.genre.errors %}
                                     <div class="invalid-feedback">
-                                        {% for error in form.category.errors %}{{ error }}{% endfor %}
+                                        {% for error in form.genre.errors %}{{ error }}{% endfor %}
                                     </div>
                                 {% endif %}
                             </div>
-
-                            {% if form.genre %}
-                                <div class="form-group">
-                                    {{ form.genre.label(class="form-label") }}
-                                    {{ form.genre(class="form-control") }}
-                                    {% if form.genre.errors %}
-                                        <div class="invalid-feedback">
-                                            {% for error in form.genre.errors %}{{ error }}{% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
                         </div>
 
                         <div class="divider"></div>

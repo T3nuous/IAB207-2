@@ -198,6 +198,9 @@ h1 {
     justify-content: center;
 }
 
+.color-white {
+    color: #FFFFFF !important;
+}
 
 .test-row{
     background: linear-gradient(ltr,#141117,#7855d1)

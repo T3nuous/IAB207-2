@@ -14,7 +14,7 @@
     <div class="container hero-content">
         <div class="text-center">
             <h1 class="hero-title">🎵 {{ event.name | default('Event Name Not Available') }}</h1>
-            <p class="hero-subtitle">{{ event.event_category.name if event.event_category else 'Music Event' }}</p>
+            <p class="hero-subtitle">{{ event.genre_info.name if event.genre_info else 'Music Event' }}</p>
             <div class="status-badge status-{{ event.current_status.lower().replace(' ', '-') if event.current_status else 'open' }}">
                 <i class="fas fa-circle"></i> {{ event.current_status | default('Open') }}
             </div>
@@ -69,7 +69,20 @@
                         
                         {% endif %}
                         {% if current_user.is_authenticated %}
-                                                {% if event.current_status == 'Open' and event.ticket_types.all() %}                        <a href="{{ url_for('event.book_tickets', id=event.id) }}" class="btn-book-tickets">                            <i class="fas fa-shopping-cart"></i> Book Tickets                        </a>                        {% else %}                        <button class="btn-book-tickets" disabled style="opacity: 0.6; cursor: not-allowed;">                            <i class="fas fa-ban"></i>                            {% if event.current_status == 'Sold Out' %}Sold Out                            {% elif event.current_status == 'Cancelled' %}Event Cancelled                            {% elif event.current_status == 'Completed' %}Event Completed                            {% elif event.current_status == 'Inactive' %}Event Expired                            {% else %}Not Available                            {% endif %}                        </button>                        {% endif %}
+                            {% if event.current_status == 'Open' and event.ticket_types.all() %}
+                            <a href="{{ url_for('event.book_tickets', id=event.id) }}" class="btn-book-tickets">
+                                <i class="fas fa-shopping-cart"></i> Book Tickets</a>
+                                {% else %}
+                                <button class="btn-book-tickets" disabled style="opacity: 0.6; cursor: not-allowed;">
+                                    <i class="fas fa-ban"></i>
+                                    {% if event.current_status == 'Sold Out' %}Sold Out
+                                    {% elif event.current_status == 'Cancelled' %}Event Cancelled
+                                    {% elif event.current_status == 'Completed' %}Event Completed
+                                    {% elif event.current_status == 'Inactive' %}Event Expired
+                                    {% else %}Not Available
+                                    {% endif %}
+                                </button>
+                                {% endif %}
                         {% else %}
                         <a href="{{ url_for('auth.login', next=request.url) }}" class="btn-book-tickets">
                             <i class="fas fa-sign-in-alt"></i> Login to Book Tickets
@@ -120,17 +133,17 @@
                         </div>
                     {% endif %}
 
-                    {% if event.genre %}
+                                            {% if event.genre_info %}
                         <div class="detail-item">
                             <div class="detail-icon">
                                 <i class="fas fa-music"></i>
                             </div>
                             <div>
                                 <span class="detail-label">Genre:</span>
-                                <span class="detail-value">{{ event.genre }}</span>
+                                <span class="detail-value">{{ event.genre_info.name }}</span>
                             </div>
                         </div>
-                    {% endif %}
+                        {% endif %}
 
                     {% if event.age_limit is not none %}
                         <div class="detail-item">
@@ -285,29 +298,27 @@
                         <div class="comment-meta">
                             <div class="comment-date">
                                 {{ comment_item.created_at.strftime('%Y-%m-%d %H:%M') }}
-                                {% if comment_item.is_edited %}<em>(edited {{ comment_item.edited_at.strftime('%Y-%m-%d %H:%M') if comment_item.edited_at else '' }})</em>
-                                {% endif %}
+                                {% if comment_item.is_edited %}<em>(edited {{ comment_item.edited_at.strftime('%Y-%m-%d %H:%M') if comment_item.edited_at else '' }})</em>{% endif %}
                             </div>
                             {% if current_user.is_authenticated and comment_item.user_id == current_user.id %}
                             <div class="comment-actions">
                                 <a href="{{ url_for('event.edit_comment', event_id=event.id, comment_id=comment_item.id) }}"
-                                class="btn btn-sm btn-edit-comment" title="Edit comment">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            
-                        <form method="POST" action="{{ url_for('event.delete_comment', event_id=event.id, comment_id=comment_item.id) }}"
-                            style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                            {{ form.csrf_token }}
-                            <button type="submit" class="btn btn-sm btn-delete-comment" title="Delete comment">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
+                                   class="btn btn-sm btn-edit-comment" title="Edit comment">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="POST" action="{{ url_for('event.delete_comment', event_id=event.id, comment_id=comment_item.id) }}"
+                                      style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                    {{ form.csrf_token }}
+                                    <button type="submit" class="btn btn-sm btn-delete-comment" title="Delete comment">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
-                    {% endif %}
+                    <p class="comment-text">{{ comment_item.text }}</p>
                 </div>
-            </div>
-            <p class="comment-text">{{ comment_item.text }}</p>
-        </div>
             {% endfor %}
         {% else %}
             <div class="no-comments">
@@ -350,7 +361,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Image clicked - could open lightbox');
         });
     }
-    
             // Book tickets functionality - now implemented!    
             console.log('Booking system is ready!');
 });

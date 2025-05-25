@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, abort, session, jsonify
-from .models import Event, Comment, ticket_type, event_category, Order, OrderItem, Booking, User
+from .models import Event, Comment, ticket_type, Order, OrderItem, Booking, User, Genre
 from .forms import EventForm, TicketForm, CommentForm, CheckoutForm, BookingForm, EditCommentForm
 from . import db
 import os
@@ -24,11 +24,11 @@ def allevents():
 
     genre_filter = request.args.get('genre', '')
     if genre_filter:
-        events = Event.query.filter_by(genre=genre_filter).order_by(Event.start_datetime.asc()).all()
+        events = Event.query.filter_by(genre_id=genre_filter).order_by(Event.start_datetime.asc()).all()
     else:
         events = Event.query.order_by(Event.start_datetime.asc()).all()
 
-    genres = [g[0] for g in db.session.query(Event.genre).distinct().filter(Event.genre.isnot(None)).all()]
+    genres = db.session.scalars(db.select(Genre)).all()
 
 
     return render_template('events/allEvents.html', events=events, genres=genres, selected_genre=genre_filter)
@@ -55,13 +55,15 @@ def check_upload_file(uploaded_file_data):
 def create():
     form = EventForm()
     ticketform = TicketForm() 
+    
+    # Load genres for the dropdown
     try:
-        categories = db.session.scalars(db.select(event_category)).all()
-        form.category.choices = [(category.id, category.name) for category in categories]
+        genres = db.session.scalars(db.select(Genre)).all()
+        form.genre.choices = [(genre.id, genre.name) for genre in genres]
     except Exception as e:
-        current_app.logger.error(f"Error loading categories for event creation: {e}")
-        flash("Error loading page data. Please check category setup.", "danger")
-        form.category.choices = []
+        current_app.logger.error(f"Error loading genres for event creation: {e}")
+        flash("Error loading page data. Please check genre setup.", "danger")
+        form.genre.choices = [] 
 
     if request.method == 'POST':
         is_event_form_valid = form.validate_on_submit()
@@ -79,10 +81,9 @@ def create():
                 start_datetime=form.start_datetime.data,
                 location=form.location.data,
                 venue=form.venue.data,
-                category_id=form.category.data,
+                genre_id=form.genre.data,
                 created_by=current_user.id,
                 status='Open',
-                genre=form.genre.data,
                 age_limit=form.age_limit.data,
                 length=form.length.data,
                 artist_info=form.artist_info.data,
@@ -126,13 +127,14 @@ def edit_event(id):
     form = EventForm(request.form if request.method == 'POST' else None, obj=event_to_edit)
     ticketform = TicketForm(request.form if request.method == 'POST' else None) 
 
+    # Load genres for the dropdown
     try:
-        categories = db.session.scalars(db.select(event_category)).all()
-        form.category.choices = [(category.id, category.name) for category in categories]
+        genres = db.session.scalars(db.select(Genre)).all()
+        form.genre.choices = [(genre.id, genre.name) for genre in genres]
     except Exception as e:
-        current_app.logger.error(f"Error loading categories for event editing: {e}")
-        flash("Error loading page data. Please check category setup.", "danger")
-        form.category.choices = []
+        current_app.logger.error(f"Error loading genres for event editing: {e}")
+        flash("Error loading page data. Please check genre setup.", "danger")
+        form.genre.choices = [] 
 
     if request.method == 'POST':
         if form.validate() and ticketform.validate():
@@ -173,7 +175,8 @@ def edit_event(id):
                 current_app.logger.error(f"Error updating event: {e}")
                 flash(f"Error updating event: {str(e)}", "danger")
     else: 
-        form.category.data = event_to_edit.category_id 
+        # Set the current genre for the form
+        form.genre.data = event_to_edit.genre_id
         
         general_t = event_to_edit.ticket_types.filter_by(type_name='General Admission').first()
         if general_t:

@@ -49,7 +49,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><i class="fas fa-calendar-alt"></i> Member Since</label>
-                            <input type="text" class="form-control" value="Member since registration" disabled>
+                            <input type="text" class="form-control" value="Member since {{ current_user.created_at.strftime('%B %d, %Y') }}" disabled>
                         </div>
                         
                         <div class="form-group">
@@ -113,7 +113,7 @@
 
                                         <div class="booking-details-row row">
                                             <!-- Event Information -->
-                                            <div class="col-md-8 booking-info-section">
+                                            <div class="col-md-6 booking-info-section">
                                                 <div class="mb-3">
                                                     <span class="booking-label">
                                                         <i class="fas fa-calendar"></i> Event Date
@@ -167,7 +167,7 @@
                                             </div>
 
                                             <!-- Booking Metadata -->
-                                            <div class="col-md-4 booking-meta-section">
+                                            <div class="col-md-6 booking-meta-section">
                                                 <div class="mb-2">
                                                     <span class="booking-label">
                                                         <i class="fas fa-clock"></i> Event Time
@@ -314,8 +314,8 @@
                                             </div>
 
                                             <!-- Creation Metadata -->
-                                            <div class="col-md-4 creation-meta-section">
-                                                <div class="mb-2">
+                                            <div class="col-md-12 creation-meta-section">
+                                                <div class="mb-4">
                                                     <span class="creation-label">
                                                         <i class="fas fa-clock"></i> Event Time
                                                     </span>
@@ -324,7 +324,7 @@
                                                     </div>
                                                 </div>
                                                 
-                                                <div class="mb-2">
+                                                <div class="mb-4">
                                                     <span class="creation-label">
                                                         <i class="fas fa-calendar-plus"></i> Created On
                                                     </span>
@@ -333,12 +333,12 @@
                                                     </div>
                                                 </div>
                                                 
-                                                <div class="mb-2">
+                                                <div class="mb-4">
                                                     <span class="creation-label">
                                                         <i class="fas fa-tag"></i> Category
                                                     </span>
                                                     <div class="creation-value">
-                                                        {{ creation_item.event.event_category.name }}
+                                                        {{ creation_item.event.genre_info.name if creation_item.event.genre_info else 'Music Event' }}
                                                     </div>
                                                 </div>
 

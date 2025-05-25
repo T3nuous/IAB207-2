@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
 from .models import Event, Booking, Order, OrderItem, User
-from .forms import ChangePasswordForm
+from .forms import ChangePasswordForm, ProfileUpdateForm
 from sqlalchemy import desc
+from sqlalchemy.exc import IntegrityError
 from flask_bcrypt import check_password_hash, generate_password_hash
 from . import db
 
@@ -93,22 +94,88 @@ def booking_history():
                          booking_history=booking_history, 
                          creation_history=creation_history)
 
+@main_bp.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    """Comprehensive profile update page"""
+    form = ProfileUpdateForm(original_mobile=current_user.mobileNumber)
+    
+    if form.validate_on_submit():
+        try:
+            # Verify current password first
+            if not check_password_hash(current_user.password_hash, form.current_password.data):
+                flash('Current password is incorrect.', 'danger')
+                return render_template('auth/profile.html', form=form)
+            
+            # Track what's being updated
+            updates = []
+            
+            # Update mobile number if changed
+            if form.mobileNumber.data != current_user.mobileNumber:
+                current_user.mobileNumber = form.mobileNumber.data
+                updates.append('mobile number')
+            
+            # Update address if changed
+            if form.streetAddress.data != current_user.streetAddress:
+                current_user.streetAddress = form.streetAddress.data
+                updates.append('address')
+            
+            # Update password if provided
+            if form.new_password.data:
+                current_user.password_hash = generate_password_hash(form.new_password.data)
+                updates.append('password')
+            
+            # Update the updated_at timestamp
+            from datetime import datetime
+            current_user.updated_at = datetime.now()
+            
+            # Commit changes
+            db.session.commit()
+            
+            # Provide specific feedback
+            if updates:
+                update_text = ', '.join(updates)
+                flash(f'Your {update_text} {"has" if len(updates) == 1 else "have"} been successfully updated!', 'success')
+            else:
+                flash('No changes were made to your profile.', 'info')
+                
+            return redirect(url_for('main.profile'))
+            
+        except IntegrityError as e:
+            db.session.rollback()
+            if 'mobileNumber' in str(e):
+                flash('This mobile number is already registered to another account.', 'danger')
+            else:
+                flash('An error occurred while updating your profile. Please try again.', 'danger')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An unexpected error occurred: {str(e)}', 'danger')
+    
+    # Pre-populate form with current user data
+    if request.method == 'GET':
+        form.firstName.data = current_user.firstName
+        form.surname.data = current_user.surname
+        form.email.data = current_user.email
+        form.mobileNumber.data = current_user.mobileNumber
+        form.streetAddress.data = current_user.streetAddress
+    
+    return render_template('auth/profile.html', form=form)
+
 @main_bp.route('/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
-    form = ChangePasswordForm()
-    if form.validate_on_submit():
-        try:            
-            # Check if current password is correct            
-            if check_password_hash(current_user.password_hash, form.current_password.data):
-                # Update password
-                current_user.password_hash = generate_password_hash(form.new_password.data)
-                db.session.commit()
-                flash('Your password has been successfully changed!', 'success')
-                return redirect(url_for('main.booking_history'))
-            else:
-                flash('Current password is incorrect.', 'danger')
-        except Exception as e:
-            flash(f'Error processing password change: {str(e)}', 'danger')
-    
-    return render_template('auth/change_password.html', form=form)
+    """Legacy password change route - redirects to profile"""
+    flash('Password changes are now handled in your profile page.', 'info')
+    return redirect(url_for('main.profile'))
+
+# Test routes for error pages (remove in production)
+@main_bp.route('/test-404')
+def test_404():
+    """Test route to trigger 404 error page"""
+    abort(404)
+
+@main_bp.route('/test-500')
+def test_500():
+    """Test route to trigger 500 error page"""
+    # Intentionally cause a server error
+    raise Exception("This is a test 500 error")

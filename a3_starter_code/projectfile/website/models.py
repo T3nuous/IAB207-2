@@ -23,6 +23,21 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User: {self.firstName} {self.surname} ({self.role})"
 
+class Genre(db.Model):
+    __tablename__ = 'genres'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    description = db.Column(db.Text, nullable=True)
+    image_filename = db.Column(db.String(255), nullable=True)  # For genre images like Blues.png
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    
+    # Relationship
+    events = db.relationship('Event', backref='genre_info', lazy='dynamic')
+    
+    def __repr__(self):
+        return f"Genre: {self.name}"
+
 class ticket_type(db.Model):
     __tablename__ = 'ticket_type'
     id = db.Column(db.Integer, primary_key=True)
@@ -50,11 +65,8 @@ class Event(db.Model):
     venue = db.Column(db.String(100), nullable=True)
     
     # Music-specific fields    
-    genre = db.Column(db.String(50), nullable=True)  # Hip Hop, Rock, Pop, etc.    
+    genre_id = db.Column(db.Integer, db.ForeignKey('genres.id'), nullable=False)  # Reference to Genre table
     artist_info = db.Column(db.Text, nullable=True)
-    
-    # Foreign key to event_category table
-    category_id = db.Column(db.Integer, db.ForeignKey('event_category.id'), nullable=False)
     
     status = db.Column(db.String(20), default='Open', nullable=False)
     
@@ -74,7 +86,6 @@ class Event(db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     # Relationships
-    event_category = db.relationship('event_category', backref='events')
     
     ticket_types = db.relationship('ticket_type', backref='event', lazy='dynamic', cascade="all, delete-orphan")
     comments = db.relationship('Comment', backref='event', lazy='dynamic', cascade="all, delete-orphan")
@@ -180,18 +191,6 @@ class Booking(db.Model):
 
     def __repr__(self):
         return f"Booking #{self.id} - {self.quantity} tickets for event {self.event_id} ({self.booking_status})"
-
-class event_category(db.Model): 
-    __tablename__ = 'event_category'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
-    description = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    
-    
-    def __repr__(self):
-        return f"Category: {self.name}"
 
 class event_status(db.Model):
     __tablename__ = 'event_status'

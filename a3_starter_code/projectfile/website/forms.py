@@ -47,10 +47,9 @@ class EventForm(FlaskForm):
     start_datetime = DateTimeLocalField('Start Date and Time', format='%Y-%m-%dT%H:%M', validators=[InputRequired()])
     location = StringField('Location (e.g., Street Address, City)', validators=[InputRequired(), Length(max=100)])
     venue = StringField('Venue Name (e.g., Brisbane Convention Centre)', validators=[Optional(), Length(max=100)])
-    category = SelectField('Category', coerce=int, validators=[InputRequired(message="Please select a category.")])
     
     # Music-specific fields    
-    genre = StringField('Genre (e.g., Hip Hop, Rock, Pop)', validators=[Optional(), Length(max=50)])    
+    genre = SelectField('Genre', coerce=int, validators=[InputRequired(message="Please select a genre for your event.")])    
     artist_info = TextAreaField('Artist Information', validators=[Optional(), Length(max=2000)])
     
     # Event details
@@ -172,6 +171,60 @@ class ChangePasswordForm(FlaskForm):
     ])
     confirm_password = PasswordField('Confirm New Password', validators=[InputRequired('Please confirm your new password')])
     submit = SubmitField('Change Password')
+
+class ProfileUpdateForm(FlaskForm):
+    """Comprehensive form for updating user profile information"""
+    # Personal Information (Read-only)
+    firstName = StringField('First Name', render_kw={'readonly': True})
+    surname = StringField('Surname', render_kw={'readonly': True})
+    email = StringField('Email Address', render_kw={'readonly': True})
+    
+    # Editable Fields
+    mobileNumber = StringField('Mobile Number', validators=[
+        InputRequired('Mobile number is required'), 
+        Length(min=7, max=15, message="Mobile number must be between 7 and 15 characters."), 
+        Regexp(r'^\+?[0-9\s\-()]*$', message="Please enter a valid phone number (numbers, spaces, +, -, () only).")
+    ])
+    
+    streetAddress = StringField('Street Address', validators=[
+        InputRequired('Street address is required'), 
+        Length(min=5, max=150, message="Address must be between 5 and 150 characters.")
+    ])
+    
+    # Password Change Section (Optional)
+    current_password = PasswordField('Current Password (required to save changes)', validators=[
+        InputRequired('Please enter your current password to save changes')
+    ])
+    
+    new_password = PasswordField('New Password (leave blank to keep current)', validators=[
+        Optional(),
+        EqualTo('confirm_password', message="New passwords must match"),
+        Regexp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$', 
+               message="Password must be at least 8 characters and contain at least one uppercase letter, one symbol, and one number.")
+    ])
+    
+    confirm_password = PasswordField('Confirm New Password', validators=[Optional()])
+    
+    submit = SubmitField('Update Profile')
+    
+    def __init__(self, original_mobile=None, *args, **kwargs):
+        super(ProfileUpdateForm, self).__init__(*args, **kwargs)
+        self.original_mobile = original_mobile
+    
+    def validate_mobileNumber(self, field):
+        """Custom validation to check for duplicate mobile numbers"""
+        if field.data != self.original_mobile:
+            from .models import User
+            existing_user = User.query.filter_by(mobileNumber=field.data).first()
+            if existing_user:
+                raise ValidationError('This mobile number is already registered to another account.')
+    
+    def validate_new_password(self, field):
+        """Custom validation for new password"""
+        if field.data and not self.confirm_password.data:
+            raise ValidationError('Please confirm your new password.')
+        if not field.data and self.confirm_password.data:
+            raise ValidationError('Please enter a new password or leave both password fields blank.')
 
 class EditCommentForm(FlaskForm):
     """Form for editing existing comments"""

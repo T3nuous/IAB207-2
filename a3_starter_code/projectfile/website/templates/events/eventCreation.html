@@ -61,29 +61,15 @@
                                 <div class="helper-text">Tell people what makes your event unique and exciting!</div>
                             </div>
                             
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-row">
-                                        {{ form.category.label(class="form-label required-field") }}
-                                        {{ form.category(class="form-select") }}
-                                        {% if form.category.errors %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.category.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
+                            <div class="form-row">
+                                {{ form.genre.label(class="form-label required-field") }}
+                                {{ form.genre(class="form-control", placeholder="e.g., Hip Hop, Rock, Pop, Jazz...") }}
+                                {% if form.genre.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.genre.errors %}{{ error }}{% endfor %}
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-row">
-                                        {{ form.genre.label(class="form-label") }}
-                                        {{ form.genre(class="form-control", placeholder="e.g., Hip Hop, Rock, Pop, Jazz...") }}
-                                        {% if form.genre.errors %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.genre.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
+                                {% endif %}
+                                <div class="helper-text">What type of music or genre is this event?</div>
                             </div>
                         </div>
                         

@@ -50,9 +50,9 @@
                                 {% if event.venue %}
                                     <p class="mb-1"><i class="fas fa-building"></i> {{ event.venue }}</p>
                                 {% endif %}
-                                {% if event.genre %}
-                                    <p class="mb-1"><i class="fas fa-music"></i> {{ event.genre }}</p>
-                                {% endif %}
+                                                {% if event.genre_info %}
+                <p class="mb-1"><i class="fas fa-music"></i> {{ event.genre_info.name }}</p>
+                {% endif %}
                                 {% if event.age_limit %}
                                     <p class="mb-1"><i class="fas fa-user-check"></i> {{ event.age_limit }}+ only</p>
                                 {% endif %}
