@@ -27,8 +27,8 @@
               <div class="card-body">
                 <!-- 🔥 Added Order ID & Total Price only -->
                 <p class="mb-1"><strong>Order ID:</strong> {{ order.id }}</p>
-                <p class="mb-1"><strong>Date:</strong>
-                  {{ order.event.date_time.strftime('%d %b %Y, %H:%M') }}
+                <p class="mb-1"><strong>Booked on:</strong>
+                  {{ order.created_at.strftime('%d %b %Y, %H:%M') }}
                 </p>
                 <p class="mb-1"><strong>Quantity:</strong> {{ order.quantity }}</p>
                 <p class="mb-0"><strong>Total Price:</strong>

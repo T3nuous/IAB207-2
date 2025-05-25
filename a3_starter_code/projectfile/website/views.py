@@ -65,6 +65,10 @@ def book_event(event_id):
             db.session.add(order)
             db.session.commit()
             flash('Booking successful!', 'success')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"{getattr(form, field).label.text}: {error}", 'danger')
     return redirect(url_for('main.event_detail', event_id=event_id))
 
 @main_bp.route('/event/<int:event_id>/comment', methods=['POST'])
@@ -86,12 +90,12 @@ def post_comment(event_id):
 @main_bp.route('/bookings')
 @login_required
 def bookings():
-    # show active bookings for current user
-    orders = Order.query.filter_by(
-        user_id=current_user.id,
-        status='Active'
-    ).all()
-    return render_template('bookings.html', orders=orders)
+    # show all past and upcoming bookings for current user
+    orders = Order.query \
+        .filter_by(user_id=current_user.id) \
+        .order_by(Order.created_at.desc()) \
+        .all()
+    return render_template('events/bookingHistory.html', orders=orders)
 
 @main_bp.route('/booking/<int:order_id>/cancel', methods=['POST'])
 @login_required
@@ -100,8 +104,9 @@ def cancel_booking(order_id):
     order = Order.query.get_or_404(order_id)
     if order.user_id != current_user.id:
         abort(403)  # forbid cancelling others
-    order.event.tickets_remaining += order.quantity      # refund tickets
-    order.status = 'Cancelled'                           # mark booking cancelled
+    # refund tickets to event
+    order.event.tickets_remaining += order.quantity
+    order.status = 'Cancelled'  # mark booking cancelled
     db.session.commit()
     flash('Booking cancelled', 'success')
     return redirect(url_for('main.bookings'))
