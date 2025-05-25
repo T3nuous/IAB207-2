@@ -1,121 +1,55 @@
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
-from flask_login import login_required, current_user
 from . import db
-from .models import Event, Order, Comment
-from .forms import EventForm, BookingForm, CommentForm
+from datetime import datetime, timezone
+from flask_login import UserMixin
 
-main_bp = Blueprint('main', __name__)
+class User(db.Model, UserMixin):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)  # unique user ID
+    name = db.Column(db.String(150), nullable=False)  # display name
+    emailid = db.Column(db.String(150), unique=True, nullable=False)  # login email
+    password_hash = db.Column(db.String(255), nullable=False)  # bcrypt hash
 
-@main_bp.route('/')
-def index():
-    # list only Open events sorted by start time
-    events = (
-        Event.query
-             .filter_by(status='Open')
-             .order_by(Event.date_time)
-             .all()
+    orders = db.relationship('Order', back_populates='user')
+    comments = db.relationship('Comment', back_populates='author')
+
+class Event(db.Model):
+    __tablename__ = 'event'
+    id = db.Column(db.Integer, primary_key=True)  # unique event ID
+    name = db.Column(db.String(100), nullable=False)
+    date_time = db.Column(db.DateTime(timezone=True), nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    total_tickets = db.Column(db.Integer, nullable=False, default=0)
+    tickets_remaining = db.Column(db.Integer, nullable=False, default=0)
+    status = db.Column(db.String(20), nullable=False, default='Open')
+
+    orders = db.relationship('Order', back_populates='event')
+    comments = db.relationship('Comment', back_populates='event')
+
+class Order(db.Model):
+    __tablename__ = 'order'
+    id = db.Column(db.Integer, primary_key=True)  # unique booking ID
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)  # tickets booked
+    created_at = db.Column(
+        db.DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)  # UTC timestamp
     )
-    return render_template('index.html', events=events)
+    status = db.Column(db.String(20), nullable=False, default='Active')  # Active or Cancelled
 
-@main_bp.route('/event/new', methods=['GET', 'POST'])
-@login_required
-def create_event():
-    # display and process event creation form
-    form = EventForm()
-    if form.validate_on_submit():
-        evt = Event(
-            name=form.name.data,
-            date_time=form.date_time.data,
-            location=form.location.data,
-            total_tickets=form.total_tickets.data,
-            tickets_remaining=form.total_tickets.data  # set initial remaining
-        )
-        db.session.add(evt)
-        db.session.commit()
-        flash('Event created!', 'success')
-        return redirect(url_for('main.index'))
-    return render_template('create_event.html', form=form)
+    user = db.relationship('User', back_populates='orders')
+    event = db.relationship('Event', back_populates='orders')
 
-@main_bp.route('/event/<int:event_id>')
-def event_detail(event_id):
-    # show event info with booking/comment forms
-    event = Event.query.get_or_404(event_id)
-    return render_template(
-        'event_details.html',
-        event=event,
-        booking_form=BookingForm(),
-        comment_form=CommentForm()
+class Comment(db.Model):
+    __tablename__ = 'comment'
+    id = db.Column(db.Integer, primary_key=True)  # unique comment ID
+    body = db.Column(db.Text, nullable=False)  # comment content
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
+    created_at = db.Column(
+        db.DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)  # UTC timestamp
     )
 
-@main_bp.route('/event/<int:event_id>/book', methods=['POST'])
-@login_required
-def book_event(event_id):
-    # handle ticket booking request
-    form = BookingForm()
-    if form.validate_on_submit():
-        evt = Event.query.get_or_404(event_id)
-        # prevent oversell
-        if evt.tickets_remaining < form.quantity.data:
-            flash('Not enough tickets left.', 'danger')
-        else:
-            evt.tickets_remaining -= form.quantity.data  # deduct tickets
-            # auto-mark sold out
-            if evt.tickets_remaining == 0:
-                evt.status = 'Sold Out'
-            order = Order(
-                user_id=current_user.id,
-                event_id=event_id,
-                quantity=form.quantity.data
-            )
-            db.session.add(order)
-            db.session.commit()
-            flash('Booking successful!', 'success')
-    return redirect(url_for('main.event_detail', event_id=event_id))
-
-@main_bp.route('/event/<int:event_id>/comment', methods=['POST'])
-@login_required
-def post_comment(event_id):
-    # handle new comment submission
-    form = CommentForm()
-    if form.validate_on_submit():
-        comment = Comment(
-            body=form.body.data,
-            author_id=current_user.id,
-            event_id=event_id
-        )
-        db.session.add(comment)
-        db.session.commit()
-        flash('Comment posted.', 'success')
-    return redirect(url_for('main.event_detail', event_id=event_id))
-
-@main_bp.route('/bookings')
-@login_required
-def bookings():
-    # show active bookings for current user
-    orders = Order.query.filter_by(
-        user_id=current_user.id,
-        status='Active'
-    ).all()
-    return render_template('booking_history.html', orders=orders)
-
-@main_bp.route('/booking/<int:order_id>/cancel', methods=['POST'])
-@login_required
-def cancel_booking(order_id):
-    # allow user to cancel their own booking
-    order = Order.query.get_or_404(order_id)
-    if order.user_id != current_user.id:
-        abort(403)  # forbid cancelling others
-    order.event.tickets_remaining += order.quantity  # refund tickets
-    order.status = 'Cancelled'                        # mark booking cancelled
-    db.session.commit()
-    flash('Booking cancelled', 'success')
-    return redirect(url_for('main.bookings'))
-
-@main_bp.route('/booking/<int:order_id>')
-@login_required
-def booking_detail(order_id):
-    # show full details of a single booking
-    order = Order.query.get_or_404(order_id)
-    if order.user_id != current_user.id:
-        abort(403)  # forbid viewing others
-    return render_template('booking_detail.html', order=order)
+    author = db.relationship('User', back_populates='comments')
+    event = db.relationship('Event', back_populates='comments')
