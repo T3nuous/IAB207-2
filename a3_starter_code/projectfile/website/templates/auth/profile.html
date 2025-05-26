@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Profile Header -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-user-edit"></i> My Profile
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>{{ current_user.firstName }} {{ current_user.surname }}</h5>
+                            <p class="text-muted mb-1">
+                                <i class="fas fa-envelope"></i> {{ current_user.email }}
+                            </p>
+                            <p class="text-muted mb-1">
+                                <i class="fas fa-phone"></i> {{ current_user.mobileNumber }}
+                            </p>
+                            <p class="text-muted mb-1">
+                                <i class="fas fa-map-marker-alt"></i> {{ current_user.streetAddress }}
+                            </p>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar"></i> Member since {{ current_user.created_at.strftime('%B %d, %Y') }}
+                            </small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                 style="width: 80px; height: 80px;">
+                                <i class="fas fa-user fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Update Form -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-edit"></i> Update Profile Information
+                    </h4>
+                    <small class="text-muted">Update your contact information and password</small>
+                </div>
+                <div class="card-body">
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Personal Information (Read-only) -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-primary border-bottom pb-2 mb-3">
+                                    <i class="fas fa-id-card"></i> Personal Information
+                                </h5>
+                                <div class="alert alert-info" role="alert">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Note:</strong> Your name and email address cannot be changed. 
+                                    Contact support if you need to update these details.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.firstName.id }}" class="form-label">
+                                    <i class="fas fa-user"></i> First Name
+                                </label>
+                                {{ form.firstName(class="form-control bg-light") }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.surname.id }}" class="form-label">
+                                    <i class="fas fa-user"></i> Surname
+                                </label>
+                                {{ form.surname(class="form-control bg-light") }}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="{{ form.email.id }}" class="form-label">
+                                    <i class="fas fa-envelope"></i> Email Address
+                                </label>
+                                {{ form.email(class="form-control bg-light") }}
+                            </div>
+                        </div>
+
+                        <!-- Contact Information (Editable) -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-success border-bottom pb-2 mb-3">
+                                    <i class="fas fa-address-book"></i> Contact Information
+                                </h5>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="{{ form.mobileNumber.id }}" class="form-label">
+                                    <i class="fas fa-phone"></i> Mobile Number <span class="text-danger">*</span>
+                                </label>
+                                {{ form.mobileNumber(class="form-control" + (" is-invalid" if form.mobileNumber.errors else "")) }}
+                                {% if form.mobileNumber.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.mobileNumber.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Format: +1234567890 or (123) 456-7890
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="{{ form.streetAddress.id }}" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i> Street Address <span class="text-danger">*</span>
+                                </label>
+                                {{ form.streetAddress(class="form-control" + (" is-invalid" if form.streetAddress.errors else "")) }}
+                                {% if form.streetAddress.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.streetAddress.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Include street number, street name, city, and postal code
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-warning border-bottom pb-2 mb-3">
+                                    <i class="fas fa-shield-alt"></i> Security
+                                </h5>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="{{ form.current_password.id }}" class="form-label">
+                                    <i class="fas fa-key"></i> Current Password <span class="text-danger">*</span>
+                                </label>
+                                {{ form.current_password(class="form-control" + (" is-invalid" if form.current_password.errors else "")) }}
+                                {% if form.current_password.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.current_password.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Required to save any changes to your profile
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.new_password.id }}" class="form-label">
+                                    <i class="fas fa-lock"></i> New Password (Optional)
+                                </label>
+                                {{ form.new_password(class="form-control" + (" is-invalid" if form.new_password.errors else "")) }}
+                                {% if form.new_password.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.new_password.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.confirm_password.id }}" class="form-label">
+                                    <i class="fas fa-lock"></i> Confirm New Password
+                                </label>
+                                {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else "")) }}
+                                {% if form.confirm_password.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.confirm_password.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Password Requirements:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>At least 8 characters long</li>
+                                <li>Contains at least one uppercase letter</li>
+                                <li>Contains at least one number</li>
+                                <li>Contains at least one special character (!@#$%^&*)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="{{ url_for('main.booking_history') }}" class="btn btn-secondary me-md-2">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </a>
+                                    {{ form.submit(class="btn btn-primary") }}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt"></i> Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <a href="{{ url_for('main.booking_history') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-history"></i> Booking History
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <a href="{{ url_for('event.allevents') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-calendar"></i> Browse Events
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <a href="{{ url_for('event.create') }}" class="btn btn-outline-info w-100">
+                                <i class="fas fa-plus"></i> Create Event
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

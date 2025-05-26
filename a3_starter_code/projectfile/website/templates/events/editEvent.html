@@ -3,174 +3,394 @@
 
 {% block head %}
     {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/eventCreation.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/editEvent.css') }}">
 {% endblock %}
 
 {% block content %}
-<main>
-    <div class="container-fluid">
-        <div class="creation-banner row">
-            <div class="col-sm-12">
-                <div class="Title text-center justify-content-center py-3">
-                    <h1>{{ title | default('Edit Event') }}</h1>
+<!-- Hero Section -->
+<div class="edit-hero">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="hero-title">🎵 Edit Event</h1>
+            <p class="hero-subtitle">Update your music event details and settings</p>
+            <div class="progress-indicator">
+                <div class="progress-step">
+                    <i class="fas fa-edit"></i> Editing: {{ form.name.data or 'Untitled Event' }}
                 </div>
-                {% if form.image.data %}
-                    <p class="text-center">Current Image:</p>
-                    <img src="{{ url_for('static', filename=form.image.data) }}" alt="Current Event Image" class="img-thumbnail mx-auto d-block mb-3" style="max-height: 200px;">
-                {% elif form.image_url.data %}
-                     <p class="text-center">Current Image URL:</p>
-                     <img src="{{ form.image_url.data }}" alt="Current Event Image from URL" class="img-thumbnail mx-auto d-block mb-3" style="max-height: 200px;">
-                {% endif %}
             </div>
         </div>
+    </div>
+</div>
 
-        <form method="POST" action="{{ url_for('event.edit_event', id=event_id) }}" enctype="multipart/form-data" novalidate>
-            {{ form.csrf_token }}
+<div class="container">
+    <!-- Current Image Display -->
+    {% if form.image.data or form.image_url.data %}
+        <div class="current-image-section">
+            <h6 class="current-image-title">
+                <i class="fas fa-image"></i> Current Event Image
+            </h6>
+            {% if form.image.data %}
+                <img src="{{ url_for('static', filename=form.image.data) }}" 
+                     alt="Current Event Image" 
+                     class="current-image">
+            {% elif form.image_url.data %}
+                <img src="{{ form.image_url.data }}" 
+                     alt="Current Event Image from URL" 
+                     class="current-image">
+            {% endif %}
+        </div>
+    {% endif %}
 
-            <div class="container-fluid mt-4">
-                <div class="row">
-                    <div class="col-12 col-lg-7 mb-3">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Event Details</h5>
+    <form method="POST" action="{{ url_for('event.edit_event', id=event_id) }}" enctype="multipart/form-data" novalidate>
+        {{ form.csrf_token }}
+
+        <div class="row">
+            <!-- Event Details Section -->
+            <div class="col-lg-8 mb-4">
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <h5><i class="fas fa-info-circle"></i> Event Information</h5>
+                    </div>
+                    <div class="form-card-body">
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-pen"></i> Basic Details
+                            </h6>
+                            
+                            <div class="form-group">
+                                {{ form.name.label(class="form-label required-field") }}
+                                {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.name.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="card-body">
-                                {{ render_form(form) }}
+
+                            <div class="form-group">
+                                {{ form.description.label(class="form-label") }}
+                                {{ form.description(class="form-control", rows="4") }}
+                                {% if form.description.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.description.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.genre.label(class="form-label required-field") }}
+                                {{ form.genre(class="form-control" + (" is-invalid" if form.genre.errors else "")) }}
+                                {% if form.genre.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.genre.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-12 col-lg-5 mb-3">
-                        <div class="card">
-                            <div class="card-header">
-                                 <h5 class="card-title mb-0">Ticket Types & Pricing</h5>
+                        <div class="divider"></div>
+
+                        <!-- When & Where -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-calendar-alt"></i> When & Where
+                            </h6>
+                            
+                            <div class="form-group">
+                                {{ form.start_datetime.label(class="form-label required-field") }}
+                                {{ form.start_datetime(class="form-control" + (" is-invalid" if form.start_datetime.errors else "")) }}
+                                {% if form.start_datetime.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.start_datetime.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="card-body">
-                                <p class="card-text"><small>Define ticket types for your event. Fields for a ticket type are optional if you do not wish to offer that type, but if a price is set, a limit is required.</small></p>
-                                
-                                <div class="mb-3">
+
+                            <div class="form-group">
+                                {{ form.location.label(class="form-label required-field") }}
+                                {{ form.location(class="form-control" + (" is-invalid" if form.location.errors else "")) }}
+                                {% if form.location.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.location.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            {% if form.venue %}
+                                <div class="form-group">
+                                    {{ form.venue.label(class="form-label") }}
+                                    {{ form.venue(class="form-control") }}
+                                    {% if form.venue.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.venue.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Event Image -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-image"></i> Event Image
+                            </h6>
+                            
+                            <div class="image-upload-section">
+                                <div class="image-upload-icon">📸</div>
+                                <div class="image-upload-text">Upload New Event Image</div>
+                                <div class="image-upload-hint">Choose a new image file to replace the current one</div>
+                                {{ form.image(class="form-control mt-3") }}
+                                {% if form.image.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.image.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            {% if form.image_url %}
+                                <div class="form-group">
+                                    {{ form.image_url.label(class="form-label") }}
+                                    {{ form.image_url(class="form-control", placeholder="Or enter an image URL...") }}
+                                    {% if form.image_url.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.image_url.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Additional Details -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-cog"></i> Additional Details
+                            </h6>
+                            
+                            {% if form.artist_info %}
+                                <div class="form-group">
+                                    {{ form.artist_info.label(class="form-label") }}
+                                    {{ form.artist_info(class="form-control", rows="3") }}
+                                    {% if form.artist_info.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.artist_info.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            {% if form.age_limit %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.age_limit.label(class="form-label") }}
+                                            {{ form.age_limit(class="form-control") }}
+                                            {% if form.age_limit.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.age_limit.errors %}{{ error }}{% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% if form.length %}
+                                            <div class="form-group">
+                                                {{ form.length.label(class="form-label") }}
+                                                {{ form.length(class="form-control") }}
+                                                {% if form.length.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {% for error in form.length.errors %}{{ error }}{% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if form.policies %}
+                                <div class="form-group">
+                                    {{ form.policies.label(class="form-label") }}
+                                    {{ form.policies(class="form-control", rows="3") }}
+                                    {% if form.policies.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.policies.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Social Media -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-share-alt"></i> Social Media Links
+                            </h6>
+                            
+                            {% if form.facebook %}
+                                <div class="form-group">
+                                    {{ form.facebook.label(class="form-label") }}
+                                    {{ form.facebook(class="form-control", placeholder="https://facebook.com/your-event") }}
+                                    {% if form.facebook.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.facebook.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            {% if form.instagram %}
+                                <div class="form-group">
+                                    {{ form.instagram.label(class="form-label") }}
+                                    {{ form.instagram(class="form-control", placeholder="https://instagram.com/your-event") }}
+                                    {% if form.instagram.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.instagram.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            {% if form.twitter %}
+                                <div class="form-group">
+                                    {{ form.twitter.label(class="form-label") }}
+                                    {{ form.twitter(class="form-control", placeholder="https://twitter.com/your-event") }}
+                                    {% if form.twitter.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.twitter.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Configuration Section -->
+            <div class="col-lg-4 mb-4">
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <h5><i class="fas fa-ticket-alt"></i> Ticket Configuration</h5>
+                    </div>
+                    <div class="form-card-body">
+                        <div class="ticket-help-text">
+                            <i class="fas fa-info-circle"></i> 
+                            Define ticket types for your event. Fields are optional, but if a price is set, a quantity limit is required.
+                        </div>
+
+                        <!-- General Tickets -->
+                        <div class="ticket-section">
+                            <div class="ticket-type-title">
+                                <i class="fas fa-users"></i>
+                                General Admission
+                            </div>
+                            <div class="price-quantity-row">
+                                <div class="form-group">
                                     {{ ticketform.general_price.label(class="form-label") }}
                                     {{ ticketform.general_price(class="form-control") }}
                                     {% if ticketform.general_price.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.general_price.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
+                                        <div class="invalid-feedback">
+                                            {% for error in ticketform.general_price.errors %}{{ error }}{% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
-    
-                                <div class="mb-3">
-                                    {{ ticketform.general_limit.label(class="form-label") }}
-                                    {{ ticketform.general_limit(class="form-control") }}
-                                    {% if ticketform.general_limit.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.general_limit.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <hr>
-
-                                <div class="mb-3">
-                                    {{ ticketform.vip_price.label(class="form-label") }}
-                                    {{ ticketform.vip_price(class="form-control") }}
-                                    {% if ticketform.vip_price.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.vip_price.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="mb-3">
-                                    {{ ticketform.vip_limit.label(class="form-label") }}
-                                    {{ ticketform.vip_limit(class="form-control") }}
-                                    {% if ticketform.vip_limit.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.vip_limit.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <hr>
-
-                                <div class="mb-3">
-                                    {{ ticketform.balcony_price.label(class="form-label") }}
-                                    {{ ticketform.balcony_price(class="form-control") }}
-                                    {% if ticketform.balcony_price.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.balcony_price.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="mb-3">
-                                    {{ ticketform.balcony_limit.label(class="form-label") }}
-                                    {{ ticketform.balcony_limit(class="form-control") }}
-                                    {% if ticketform.balcony_limit.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.balcony_limit.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <hr>
-                                <p class="card-text"><small>Optional seat allocation details:</small></p>
-
-                                <div class="mb-3">
-                                    {{ ticketform.front_row.label(class="form-label") }}
-                                    {{ ticketform.front_row(class="form-control") }}
-                                    {% if ticketform.front_row.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.front_row.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="mb-3">
-                                    {{ ticketform.middle_row.label(class="form-label") }}
-                                    {{ ticketform.middle_row(class="form-control") }}
-                                    {% if ticketform.middle_row.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.middle_row.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="mb-3">
-                                    {{ ticketform.back_row.label(class="form-label") }}
-                                    {{ ticketform.back_row(class="form-control") }}
-                                    {% if ticketform.back_row.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {% for error in ticketform.back_row.errors %}
-                                                <span>{{ error }}</span><br>
-                                            {% endfor %}
+                                <div class="form-group">
+                                    {{ ticketform.general_quantity.label(class="form-label") }}
+                                    {{ ticketform.general_quantity(class="form-control") }}
+                                    {% if ticketform.general_quantity.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in ticketform.general_quantity.errors %}{{ error }}{% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
                             </div>
+                            
+                            {% if ticketform.general_description %}
+                                <div class="form-group">
+                                    {{ ticketform.general_description.label(class="form-label") }}
+                                    {{ ticketform.general_description(class="form-control", rows="2") }}
+                                    {% if ticketform.general_description.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in ticketform.general_description.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- VIP Tickets -->
+                        <div class="ticket-section">
+                            <div class="ticket-type-title">
+                                <i class="fas fa-crown"></i>
+                                VIP Experience
+                            </div>
+                            <div class="price-quantity-row">
+                                <div class="form-group">
+                                    {{ ticketform.vip_price.label(class="form-label") }}
+                                    {{ ticketform.vip_price(class="form-control") }}
+                                    {% if ticketform.vip_price.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in ticketform.vip_price.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ ticketform.vip_quantity.label(class="form-label") }}
+                                    {{ ticketform.vip_quantity(class="form-control") }}
+                                    {% if ticketform.vip_quantity.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in ticketform.vip_quantity.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            {% if ticketform.vip_description %}
+                                <div class="form-group">
+                                    {{ ticketform.vip_description.label(class="form-label") }}
+                                    {{ ticketform.vip_description(class="form-control", rows="2") }}
+                                    {% if ticketform.vip_description.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in ticketform.vip_description.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-section">
+            <h6 class="submit-title">
+                <i class="fas fa-save"></i> Save Changes
+            </h6>
+            <p class="text-muted mb-4">Review your changes and update the event</p>
             
-            <div class="row mt-4">
-                <div class="col-sm-12 text-center">
-                </div>
+            <div class="d-flex justify-content-center flex-wrap">
+                <button type="submit" class="btn btn-update">
+                    <i class="fas fa-save"></i> Update Event
+                </button>
+                <a href="{{ url_for('event.details', id=event_id) }}" class="btn btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('event.cancel_confirm', id=event_id) }}" class="btn btn-delete">
+                        <i class="fas fa-ban"></i> Cancel Event
+                    </a>
+                {% endif %}
             </div>
-        </form>
-    </div>
-</main>
+        </div>
+    </form>
+</div>
+
 {% endblock %}

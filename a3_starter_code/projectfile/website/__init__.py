@@ -45,4 +45,16 @@ def create_app():
     from . import events
     app.register_blueprint(events.eventbp)
     
+    # Register error handlers
+    from flask import render_template
+    
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('errors/404.html'), 404
+    
+    @app.errorhandler(500)
+    def internal_error(error):
+        db.session.rollback()
+        return render_template('errors/500.html'), 500
+    
     return app

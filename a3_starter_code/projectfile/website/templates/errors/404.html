@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-1 fw-bold">404</h1>
+        <h2 class="display-4 mb-3">🎵 Page Not Found</h2>
+        <p class="lead">Looks like this page hit a wrong note!</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <span class="display-1">🎼</span>
+                    </div>
+                    <h3 class="card-title mb-3">Oops! The page you're looking for doesn't exist.</h3>
+                    <p class="card-text text-muted mb-4">
+                        The page might have been moved, deleted, or you entered the wrong URL. 
+                        Don't worry, let's get you back to the music!
+                    </p>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
+                        <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-lg me-md-2">
+                            <i class="fas fa-home"></i> Back to Home
+                        </a>
+                        <a href="{{ url_for('event.allevents') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-calendar"></i> Browse Events
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-lightbulb text-warning"></i> What you can do:
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="{{ url_for('main.index') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-home text-primary"></i> Go to Homepage
+                        </a>
+                        <a href="{{ url_for('event.allevents') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-calendar text-success"></i> Browse All Events
+                        </a>
+                        <a href="{{ url_for('event.create') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-plus text-info"></i> Create New Event
+                        </a>
+                        <a href="{{ url_for('main.booking_history') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-history text-warning"></i> View Your Bookings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8 text-center">
+            <small class="text-muted">
+                <i class="fas fa-question-circle"></i> 
+                If you think this is an error, please contact our support team.
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %} 

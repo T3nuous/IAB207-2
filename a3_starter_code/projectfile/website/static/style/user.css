@@ -1,0 +1,57 @@
+/* Styling for user authentication pages (login/register) */
+
+/* Make the main content area have a light background for better readability */
+.user-content {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+}
+
+/* Ensure labels are dark and visible */
+.user-content label {
+    color: #333333 !important;
+    font-weight: 500;
+}
+
+/* Style the page header */
+.user-content .page-header h4 {
+    color: #333333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Style form inputs */
+.user-content .form-control {
+    margin-bottom: 1rem;
+}
+
+/* Style links */
+.user-content a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.user-content a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Style the submit button */
+.user-content .btn-primary {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* Additional text styling for better visibility */
+.user-content p {
+    color: #333333;
+}
+
+/* Error message styling */
+.user-content .alert {
+    margin-top: 1rem;
+} 

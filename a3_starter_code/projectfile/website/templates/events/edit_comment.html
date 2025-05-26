@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/edit_comment.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="edit-comment-hero">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="hero-title">✏️ Edit Comment</h1>
+            <p class="hero-subtitle">Update your comment on "{{ event.name }}"</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="edit-comment-card">
+        <div class="card-header">
+            <h4><i class="fas fa-edit"></i> Edit Your Comment</h4>
+            <p class="mb-0">Make changes to your comment and share your updated thoughts</p>
+        </div>
+        
+        <div class="card-body">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Original Comment -->
+            <div class="original-comment">
+                <div class="original-comment-label">
+                    <i class="fas fa-comment-dots"></i> Original Comment
+                </div>
+                <p class="original-comment-text">{{ comment.text }}</p>
+            </div>
+
+            <!-- Edit Info -->
+            <div class="edit-info">
+                <h6><i class="fas fa-info-circle"></i> Edit Information</h6>
+                <p>Edited comments will be marked as "(edited)" and show when they were last modified.</p>
+            </div>
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.text.label(class="form-label") }}
+                    {{ form.text(class="form-control", rows="5") }}
+                    {% if form.text.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.text.errors %}
+                                <small>{{ error }}</small><br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-update-comment") }}
+                </div>
+
+                <div class="form-group">
+                    <a href="{{ url_for('event.details', id=event.id) }}" class="btn btn-cancel">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

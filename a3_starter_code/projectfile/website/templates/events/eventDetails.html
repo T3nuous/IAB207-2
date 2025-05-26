@@ -7,218 +7,342 @@
 {% endblock %}
 
 {% block content %}
-<main>
-    {% if event %}
-    <div class="row creation-banner">
-        <div class="col-sm-12">
-            <div class="Title text-center justify-content-center py-3">
-                <h1>{{ event.name | default('Event Name Not Available') }}</h1>
-                <h2>Status: {{ event.status | default('N/A') }}</h2>
+{% if event %}
+<!-- Hero Section -->
+<div class="event-hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="text-center">
+            <h1 class="hero-title">🎵 {{ event.name | default('Event Name Not Available') }}</h1>
+            <p class="hero-subtitle">{{ event.genre_info.name if event.genre_info else 'Music Event' }}</p>
+            <div class="status-badge status-{{ event.current_status.lower().replace(' ', '-') if event.current_status else 'open' }}">
+                <i class="fas fa-circle"></i> {{ event.current_status | default('Open') }}
             </div>
+        </div>
+    </div>
+</div>
 
+<div class="container">
+    <!-- Event Image Section -->
+    <div class="event-image-section">
+        <div class="event-image-container">
             {% if event.image_filename %}
-            <div id="eventImageCarousel" class="carousel slide mb-4">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{{ url_for('static', filename=event.image_filename) }}" class="d-block w-100"
-                            alt="{{ event.name }} Image" style="max-height: 700px; object-fit: contain;">
-                    </div>
-                </div>
-            </div>
+                <img src="{{ url_for('static', filename=event.image_filename) }}" 
+                     class="event-image img-fluid" 
+                     alt="{{ event.name }} Image">
             {% else %}
-            <div class="text-center py-3">
-                <p>No image available for this event.</p>
-                <img src="{{ url_for('static', filename='img/grey.jpg') }}" class="d-block w-50 mx-auto"
-                    alt="Placeholder Image" style="max-height: 400px; object-fit: contain;">
-            </div>
+                <div class="image-placeholder">
+                    <i class="fas fa-music"></i>
+                    <h5>No image available for this event</h5>
+                    <p class="text-muted">Event details are available below</p>
+                </div>
             {% endif %}
         </div>
     </div>
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12 col-lg-6">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Ticket Information:</h5>
-                        {% if event.ticket_types.all() %}
-                        <ul>
+    <div class="row">
+        <!-- Ticket Information -->
+        <div class="col-lg-6 mb-4">
+            <div class="content-card">
+                <div class="content-card-header">
+                    <h5><i class="fas fa-ticket-alt"></i> Ticket Information</h5>
+                </div>
+                <div class="content-card-body">
+                    {% if event.ticket_types.all() %}
+                        <ul class="ticket-list">
                             {% for ticket in event.ticket_types %}
-                            <li>
-                                <strong>{{ ticket.type_name }}:</strong> ${{ "%.2f"|format(ticket.price) }}
-                                (Available: {{ ticket.quantity_available }}) <br>
-                                <em>{{ ticket.description | default('')}}</em>
-                            </li>
+                                <li class="ticket-item">
+                                    <div class="ticket-type">{{ ticket.type_name }}</div>
+                                    <div class="ticket-price">${{ "%.2f"|format(ticket.price) }}</div>
+                                    <div class="ticket-availability">Available: {{ ticket.quantity_available }} tickets</div>
+                                    {% if ticket.description %}
+                                        <div class="ticket-description">{{ ticket.description }}</div>
+                                    {% endif %}
+                                </li>
                             {% endfor %}
                         </ul>
-                        {% else %}
-                        <p>Ticket information not yet available or this event might be free.</p>
+                    {% else %}
+                        <div class="text-center py-3">
+                            <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
+                            <p>Ticket information not yet available or this event might be free.</p>
+                        </div>
+                        
                         {% endif %}
-                        <a href="#" class="btn btn-primary mt-3">Book Tickets (Placeholder)</a>
-                    </div>
+                        {% if current_user.is_authenticated %}
+                            {% if event.current_status == 'Open' and event.ticket_types.all() %}
+                            <a href="{{ url_for('event.book_tickets', id=event.id) }}" class="btn-book-tickets">
+                                <i class="fas fa-shopping-cart"></i> Book Tickets</a>
+                                {% else %}
+                                <button class="btn-book-tickets" disabled style="opacity: 0.6; cursor: not-allowed;">
+                                    <i class="fas fa-ban"></i>
+                                    {% if event.current_status == 'Sold Out' %}Sold Out
+                                    {% elif event.current_status == 'Cancelled' %}Event Cancelled
+                                    {% elif event.current_status == 'Completed' %}Event Completed
+                                    {% elif event.current_status == 'Inactive' %}Event Expired
+                                    {% else %}Not Available
+                                    {% endif %}
+                                </button>
+                                {% endif %}
+                        {% else %}
+                        <a href="{{ url_for('auth.login', next=request.url) }}" class="btn-book-tickets">
+                            <i class="fas fa-sign-in-alt"></i> Login to Book Tickets
+                        </a>
+                        {% endif %}
                 </div>
             </div>
+        </div>
 
-            <div class="col-12 col-lg-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Event Details:</h5>
-                        <p><strong>Date & Time:</strong> {{ event.start_datetime.strftime('%A, %B %d, %Y at %I:%M %p')
-                            if event.start_datetime else 'N/A' }}</p>
-                        <p><strong>Location:</strong> {{ event.location | default('N/A') }}</p>
-                        <p><strong>Venue:</strong> {{ event.venue | default('N/A') }}</p>
-                        <p><strong>Category:</strong> {{ event.event_category.name if event.event_category else 'N/A' }}
-                        </p>
-                        <p><strong>Genre:</strong> {{ event.genre | default('N/A') }}</p>
-                        <p><strong>Age Limit:</strong> {{ event.age_limit if event.age_limit is not none else 'N/A' }}{{
-                            '+' if event.age_limit and event.age_limit > 0 else '' }}</p>
-                        <p><strong>Event Length:</strong> {{ event.length | default('N/A') }}</p>
+        <!-- Event Details -->
+        <div class="col-lg-6 mb-4">
+            <div class="content-card">
+                <div class="content-card-header">
+                    <h5><i class="fas fa-info-circle"></i> Event Details</h5>
+                </div>
+                <div class="content-card-body">
+                    <div class="detail-item">
+                        <div class="detail-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div>
+                            <span class="detail-label">Date & Time:</span>
+                            <span class="detail-value">
+                                {{ event.start_datetime.strftime('%A, %B %d, %Y at %I:%M %p') if event.start_datetime else 'N/A' }}
+                            </span>
+                        </div>
                     </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <span class="detail-label">Location:</span>
+                            <span class="detail-value">{{ event.location | default('N/A') }}</span>
+                        </div>
+                    </div>
+
+                    {% if event.venue %}
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div>
+                                <span class="detail-label">Venue:</span>
+                                <span class="detail-value">{{ event.venue }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                                            {% if event.genre_info %}
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <div>
+                                <span class="detail-label">Genre:</span>
+                                <span class="detail-value">{{ event.genre_info.name }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    {% if event.age_limit is not none %}
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div>
+                                <span class="detail-label">Age Limit:</span>
+                                <span class="detail-value">{{ event.age_limit }}{{ '+' if event.age_limit > 0 else ' (All ages)' }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if event.length %}
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <span class="detail-label">Duration:</span>
+                                <span class="detail-value">{{ event.length }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Artist Information -->
     {% if event.artist_info %}
-    <div class="row mt-4">
-        <div class="col-sm-12 justify-content-center">
-            <div class="card card-slider rounded-4 overflow-hidden">
-                <div class="card-header fw-bold">Artist Information</div>
-                <div class="card-body">
-                    <p>{{ event.artist_info }}</p>
-                </div>
+        <div class="info-section">
+            <div class="info-section-header">
+                <i class="fas fa-microphone"></i> Artist Information
+            </div>
+            <div class="info-content">
+                {{ event.artist_info }}
             </div>
         </div>
-    </div>
     {% endif %}
 
+    <!-- Event Description -->
     {% if event.description %}
-    <div class="row mt-4">
-        <div class="col-sm-12">
-            <div class="card card-slider rounded-4 overflow-hidden">
-                <div class="card-header fw-bold">Event Description</div>
-                <div class="card-body">
-                    <p>{{ event.description }}</p>
-                </div>
+        <div class="info-section">
+            <div class="info-section-header">
+                <i class="fas fa-align-left"></i> Event Description
+            </div>
+            <div class="info-content">
+                {{ event.description }}
             </div>
         </div>
-    </div>
     {% endif %}
 
+    <!-- Event Policies -->
     {% if event.policies %}
-    <div class="row mt-4">
-        <div class="col-sm-12">
-            <div class="card card-slider rounded-4 overflow-hidden">
-                <div class="card-header fw-bold">Event Policies</div>
-                <div class="card-body">
-                    <p>{{ event.policies }}</p>
-                </div>
+        <div class="info-section">
+            <div class="info-section-header">
+                <i class="fas fa-gavel"></i> Event Policies
+            </div>
+            <div class="info-content">
+                {{ event.policies }}
             </div>
         </div>
-    </div>
     {% endif %}
 
-    {% if event.facebook or event.instagram or event.twitter or event.youtube or event.twitch %}
-    <div class="row mt-4">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Follow Us:</h5>
-                    {% if event.facebook %}<a href="{{ event.facebook }}" target="_blank"
-                        class="btn btn-outline-primary m-1">Facebook</a>{% endif %}
-                    {% if event.instagram %}<a href="{{ event.instagram }}" target="_blank"
-                        class="btn btn-outline-danger m-1">Instagram</a>{% endif %}
-                    {% if event.twitter %}<a href="{{ event.twitter }}" target="_blank"
-                        class="btn btn-outline-info m-1">Twitter</a>{% endif %}
-                    {% if event.youtube %}<a href="{{ event.youtube }}" target="_blank"
-                        class="btn btn-outline-danger m-1">YouTube</a>{% endif %}
-                    {% if event.twitch %}<a href="{{ event.twitch }}" target="_blank"
-                        class="btn btn-outline-purple m-1">Twitch</a>{% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="container mt-4 mb-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                {% if current_user.is_authenticated and event.created_by == current_user.id and event.status !=
-                'Cancelled' %}
-                <a href="{{ url_for('event.edit_event', id=event.id) }}" class="btn btn-warning btn-lg me-2">Edit
-                    Event</a>
-                <a href="{{ url_for('event.cancel_confirm', id=event.id) }}" class="btn btn-danger btn-lg">Cancel
-                    Event</a>
+    <!-- Social Media -->
+    {% if event.facebook or event.instagram or event.twitter %}
+        <div class="social-section">
+            <h5 class="social-title">
+                <i class="fas fa-share-alt"></i> Follow This Event
+            </h5>
+            <div class="social-buttons">
+                {% if event.facebook %}
+                    <a href="{{ event.facebook }}" target="_blank" class="social-btn social-facebook">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </a>
+                {% endif %}
+                {% if event.instagram %}
+                    <a href="{{ event.instagram }}" target="_blank" class="social-btn social-instagram">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                {% endif %}
+                {% if event.twitter %}
+                    <a href="{{ event.twitter }}" target="_blank" class="social-btn social-twitter">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
                 {% endif %}
             </div>
         </div>
-    </div>
+    {% endif %}
 
-    <div class="container mt-4 mb-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Comments ({{ event.comments.count() }})</h5>
+    <!-- Event Management Actions -->
+    {% if current_user.is_authenticated and event.created_by == current_user.id and event.current_status != 'Cancelled' %}
+        <div class="action-section">
+            <h5 class="action-title">
+                <i class="fas fa-cog"></i> Event Management
+            </h5>
+            <p class="text-muted mb-4">Manage your event settings and status</p>
+            <a href="{{ url_for('event.edit_event', id=event.id) }}" class="btn-edit">
+                <i class="fas fa-edit"></i> Edit Event
+            </a>
+            <a href="{{ url_for('event.cancel_confirm', id=event.id) }}" class="btn-cancel-event">
+                <i class="fas fa-ban"></i> Cancel Event
+            </a>
+        </div>
+    {% endif %}
 
-                        {% if current_user.is_authenticated %}
-                        <form method="POST" action="{{ url_for('event.comment', id=event.id) }}" class="mb-4">
-                            {{ form.csrf_token }}
-                            <div class="mb-3">
-                                {{ form.text.label(class="form-label") }}
-                                {{ form.text(class="form-control", rows="3", placeholder="Write your comment here...")
-                                }}
-                                {% if form.text.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.text.errors %}
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <h5 class="comments-header">
+            <i class="fas fa-comments"></i> Comments ({{ event.comments.count() }})
+        </h5>
+
+        {% if current_user.is_authenticated %}
+            <div class="comment-form">
+                <form method="POST" action="{{ url_for('event.comment', id=event.id) }}">
+                    {{ form.csrf_token }}
+                    <div class="mb-3">
+                        {{ form.text.label(class="form-label") }}
+                        {{ form.text(class="form-control comment-input", rows="3", placeholder="Share your thoughts about this event...") }}
+                        {% if form.text.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.text.errors %}
                                     <span>{{ error }}</span><br>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
+                                {% endfor %}
                             </div>
-                            {{ form.submit(class="btn btn-primary") }}
-                        </form>
-                        {% else %}
-                        <div class="alert alert-info">
-                            Please <a href="{{ url_for('auth.login', next=request.url) }}">login</a> to post comments.
-                        </div>
-                        {% endif %}
-
-                        <hr>
-                        <h6>Posted Comments:</h6>
-                        {% if comments %}
-                        {% for comment_item in comments %}
-                        <div class="card mb-3 bg-light">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="card-subtitle mb-2 text-muted">
-                                        {{ comment_item.user.firstName if comment_item.user else 'Anonymous' }}
-                                        {% if comment_item.user and comment_item.user.surname %}{{
-                                        comment_item.user.surname }}{% endif %}
-                                    </h6>
-                                    <small class="text-muted">
-                                        {{ comment_item.created_at.strftime('%Y-%m-%d %H:%M') }}
-                                        {% if comment_item.is_edited %}(edited){% endif %}
-                                    </small>
-                                </div>
-                                <p class="card-text">{{ comment_item.text }}</p>
-                            </div>
-                        </div>
-                        {% endfor %}
-                        {% else %}
-                        <div class="alert alert-secondary">
-                            No comments yet. Be the first to comment!
-                        </div>
                         {% endif %}
                     </div>
-                </div>
+                    {{ form.submit(class="btn-submit-comment") }}
+                </form>
             </div>
-        </div>
+        {% else %}
+            <div class="alert-info-custom">
+                <i class="fas fa-info-circle"></i>
+                Please <a href="{{ url_for('auth.login', next=request.url) }}">login</a> to post comments and join the conversation.
+            </div>
+        {% endif %}
+
+        <hr class="my-4">
+        
+        {% if comments %}
+            <h6 class="mb-3"><i class="fas fa-comment-dots"></i> Recent Comments</h6>
+            {% for comment_item in comments %}
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <i class="fas fa-user-circle"></i>
+                            {{ comment_item.user.firstName if comment_item.user else 'Anonymous' }}
+                            {% if comment_item.user and comment_item.user.surname %}{{ comment_item.user.surname }}
+                            {% endif %}
+                        </div>
+                        <div class="comment-meta">
+                            <div class="comment-date">
+                                {{ comment_item.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                {% if comment_item.is_edited %}<em>(edited {{ comment_item.edited_at.strftime('%Y-%m-%d %H:%M') if comment_item.edited_at else '' }})</em>{% endif %}
+                            </div>
+                            {% if current_user.is_authenticated and comment_item.user_id == current_user.id %}
+                            <div class="comment-actions">
+                                <a href="{{ url_for('event.edit_comment', event_id=event.id, comment_id=comment_item.id) }}"
+                                   class="btn btn-sm btn-edit-comment" title="Edit comment">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="POST" action="{{ url_for('event.delete_comment', event_id=event.id, comment_id=comment_item.id) }}"
+                                      style="display: inline;">
+                                    {{ form.csrf_token }}
+                                    <button type="submit" class="btn btn-sm btn-delete-comment" title="Delete comment">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <p class="comment-text">{{ comment_item.text }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-comments">
+                <i class="fas fa-comment-slash"></i>
+                <h6>No comments yet</h6>
+                <p>Be the first to share your thoughts about this event!</p>
+            </div>
+        {% endif %}
     </div>
-    {% else %}
-    <div class="alert alert-danger text-center" role="alert">
-        Event not found or details could not be loaded.
+</div>
+
+{% else %}
+<!-- Event Not Found -->
+<div class="container">
+    <div class="alert-custom text-center" role="alert">
+        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+        <h4>Event Not Found</h4>
+        <p>The event you're looking for could not be found or details could not be loaded.</p>
+        <a href="{{ url_for('event.allevents') }}" class="btn-book-tickets">
+            <i class="fas fa-arrow-left"></i> Back to Events
+        </a>
     </div>
-    {% endif %}
-</main>
+</div>
+{% endif %}
+
+
 {% endblock %}

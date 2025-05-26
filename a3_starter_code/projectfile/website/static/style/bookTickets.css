@@ -1,0 +1,253 @@
+/* Content Cards */
+.content-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    background: white;
+    transition: transform 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+}
+
+.content-card-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 1.5rem;
+    border: none;
+}
+
+.content-card-header h5 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.content-card-header i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.content-card-body {
+    padding: 2rem;
+}
+.color-white {
+    color: #FFFFFF !important;
+}
+
+/* Additional styles for booking page */
+.booking-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.status-open {
+    background: rgba(40, 167, 69, 0.2);
+    border: 2px solid #28a745;
+    color: #fff;
+}
+
+/* Ticket Selection Cards */
+.ticket-selection-card {
+    background: white;
+    border-radius: 20px;
+    padding: 0;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.ticket-selection-card:hover {
+    border-color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+.ticket-type-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 1.5rem;
+    font-weight: 700;
+    font-size: 1.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ticket-description {
+    color: #6c757d;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+/* Detail Items */
+.detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.detail-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+    margin-right: 0.5rem;
+}
+
+.detail-value {
+    color: #667eea;
+    font-weight: 700;
+}
+
+/* Quantity Selector */
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+.qty-input {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    width: 90px;
+    height: 45px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    padding: 0;
+    background: white;
+    transition: border-color 0.3s ease;
+}
+
+.qty-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+
+
+/* Summary Items */
+.summary-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item strong {
+    color: #495057;
+}
+
+/* Buttons */
+.btn-proceed {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    border-radius: 25px;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    color: white;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.btn-proceed:hover:not(:disabled) {
+    background: linear-gradient(135deg, #218838, #1bb394);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+    color: white;
+}
+
+.btn-proceed:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.btn-proceed i {
+    margin-right: 0.5rem;
+}
+
+/* Card Layout Improvements */
+.ticket-selection-card .row {
+    margin: 0;
+    padding: 2rem;
+}
+
+.ticket-selection-card .col-md-6 {
+    padding: 0 1rem;
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Sticky sidebar fix */
+.sticky-top {
+    position: sticky;
+    top: 2rem;
+    z-index: 1020;
+}
