@@ -6,4 +6,4 @@ if __name__ == '__main__':
     
     
 
-# 🎵 🎶 🎤 🎧 🎸 🎹 🎺 🎻 🥁 🎼 🎙️ 🎚️ 🎛️ 🔊 🔉 🔈 🎪 🎭 🎨 https://getemoji.com/
+# 🎵 🎶 🎤 🎧 🎸 🎹 🎺 🎻 🥁 🎼 🎙️ ⭐ 🌟 📅 🎚️ 🎛️ 🎫 🔊 🔉 🔈 🎉 🔥 🎪 🔐 🎭 🎨 🏢 📸 ✏️ https://getemoji.com/
