@@ -11,8 +11,8 @@
 <div class="booking-hero">
     <div class="container">
         <div class="text-center">
-            <h1 class="hero-title">🎫 My Account & Bookings</h1>
-            <p class="hero-subtitle">Manage your account details and view your event history</p>
+            <h1 class="hero-title">🎫 My Account & Orders</h1>
+            <p class="hero-subtitle">Manage your account details and view your order history</p>
         </div>
     </div>
 </div>
@@ -68,46 +68,42 @@
     <div class="bookings-section">
         <div class="container">
             <h2 class="section-title">
-                <i class="fas fa-history"></i> Your Event History
+                <i class="fas fa-shopping-cart"></i> Your Order History
             </h2>
             
             {% if booking_history %}
                 <div class="row">
-                    {% for booking_item in booking_history %}
+                    {% for order_item in booking_history %}
                         <div class="col-lg-4 col-md-6 mb-4">
-                            <a href="{{ url_for('event.details', id=booking_item.event.id) }}" class="text-decoration-none">
+                            <a href="{{ url_for('event.details', id=order_item.event.id) }}" class="text-decoration-none">
                                 <div class="booking-card">
                                     <!-- Event Image -->
                                     <div class="booking-image-container">
-                                        {% if booking_item.event.image_filename %}
-                                            <img src="{{ url_for('static', filename=booking_item.event.image_filename) }}" 
+                                        {% if order_item.event.image_filename %}
+                                            <img src="{{ url_for('static', filename=order_item.event.image_filename) }}" 
                                                  class="booking-image" 
-                                                 alt="{{ booking_item.event.name }}">
+                                                 alt="{{ order_item.event.name }}">
                                         {% else %}
                                             <div class="booking-image d-flex align-items-center justify-content-center">
                                                 <i class="fas fa-music text-white" style="font-size: 3rem;"></i>
                                             </div>
                                         {% endif %}
                                         <div class="booking-event-name">
-                                            {{ booking_item.event.name }}
+                                            {{ order_item.event.name }}
                                         </div>
                                     </div>
 
-                                    <!-- Booking Info Header -->
+                                    <!-- Order Info Header -->
                                     <div class="booking-card-header">
-                                        <i class="fas fa-ticket-alt"></i> 
-                                        {% if booking_item.type == 'booking' %}
-                                            Booking #{{ booking_item.id }}
-                                        {% else %}
-                                            Order #{{ booking_item.id }}
-                                        {% endif %}
+                                        <i class="fas fa-shopping-cart"></i> 
+                                        Order On {{ order_item.booking_date.strftime('%m/%d/%Y') }}
                                     </div>
 
-                                    <!-- Booking Details -->
+                                    <!-- Order Details -->
                                     <div class="booking-card-body">
-                                        {% if booking_item.event.description %}
+                                        {% if order_item.event.description %}
                                             <div class="booking-description">
-                                                {{ booking_item.event.description[:120] }}{% if booking_item.event.description|length > 120 %}...{% endif %}
+                                                {{ order_item.event.description[:120] }}{% if order_item.event.description|length > 120 %}...{% endif %}
                                             </div>
                                         {% endif %}
 
@@ -119,17 +115,17 @@
                                                         <i class="fas fa-calendar"></i> Event Date
                                                     </span>
                                                     <div class="booking-value">
-                                                        {{ booking_item.event.start_datetime.strftime('%B %d, %Y') }}
+                                                        {{ order_item.event.start_datetime.strftime('%B %d, %Y') }}
                                                     </div>
                                                 </div>
                                                 
-                                                {% if booking_item.event.location %}
+                                                {% if order_item.event.location %}
                                                     <div class="mb-3">
                                                         <span class="booking-label">
                                                             <i class="fas fa-map-marker-alt"></i> Location
                                                         </span>
                                                         <div class="booking-value">
-                                                            {{ booking_item.event.location }}
+                                                            {{ order_item.event.location }}
                                                         </div>
                                                     </div>
                                                 {% endif %}
@@ -139,26 +135,17 @@
                                                         <i class="fas fa-credit-card"></i> Total Paid
                                                     </span>
                                                     <div class="booking-value">
-                                                        ${{ "%.2f"|format(booking_item.total_price|float) }}
+                                                        ${{ "%.2f"|format(order_item.total_price|float) }}
                                                     </div>
                                                 </div>
 
-                                                {% if booking_item.type == 'booking' and booking_item.ticket_type %}
+                                                {% if order_item.order_items %}
                                                     <div class="mb-3">
                                                         <span class="booking-label">
                                                             <i class="fas fa-ticket-alt"></i> Tickets
                                                         </span>
                                                         <div class="booking-value">
-                                                            {{ booking_item.quantity }}x {{ booking_item.ticket_type.type_name }}
-                                                        </div>
-                                                    </div>
-                                                {% elif booking_item.type == 'order' and booking_item.order_items %}
-                                                    <div class="mb-3">
-                                                        <span class="booking-label">
-                                                            <i class="fas fa-ticket-alt"></i> Tickets
-                                                        </span>
-                                                        <div class="booking-value">
-                                                            {% for item in booking_item.order_items %}
+                                                            {% for item in order_item.order_items %}
                                                                 {{ item.quantity }}x {{ item.ticket_type.type_name }}{% if not loop.last %}, {% endif %}
                                                             {% endfor %}
                                                         </div>
@@ -166,23 +153,23 @@
                                                 {% endif %}
                                             </div>
 
-                                            <!-- Booking Metadata -->
+                                            <!-- Order Metadata -->
                                             <div class="col-md-6 booking-meta-section">
                                                 <div class="mb-2">
                                                     <span class="booking-label">
                                                         <i class="fas fa-clock"></i> Event Time
                                                     </span>
                                                     <div class="booking-value">
-                                                        {{ booking_item.event.start_datetime.strftime('%I:%M %p') }}
+                                                        {{ order_item.event.start_datetime.strftime('%I:%M %p') }}
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="mb-2">
                                                     <span class="booking-label">
-                                                        <i class="fas fa-calendar-check"></i> Booked On
+                                                        <i class="fas fa-calendar-check"></i> Ordered On
                                                     </span>
                                                     <div class="booking-value">
-                                                        {{ booking_item.booking_date.strftime('%m/%d/%Y') }}
+                                                        {{ order_item.booking_date.strftime('%m/%d/%Y') }}
                                                     </div>
                                                 </div>
                                                 
@@ -191,7 +178,7 @@
                                                         <i class="fas fa-info-circle"></i> Status
                                                     </span>
                                                     <div class="booking-value booking-id">
-                                                        {{ booking_item.status.title() }}
+                                                        {{ order_item.status.title() }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -205,9 +192,9 @@
             {% else %}
                 <!-- Empty State -->
                 <div class="no-bookings">
-                    <div class="no-bookings-icon">🎵</div>
-                    <h3>No Event History Yet</h3>
-                    <p>You haven't attended any events yet. Start exploring amazing music events near you!</p>
+                    <div class="no-bookings-icon">🛒</div>
+                    <h3>No Order History Yet</h3>
+                    <p>You haven't placed any orders yet. Start exploring amazing music events near you!</p>
                     <a href="{{ url_for('event.allevents') }}" class="btn-browse-events">
                         <i class="fas fa-search"></i> Browse Events
                     </a>
