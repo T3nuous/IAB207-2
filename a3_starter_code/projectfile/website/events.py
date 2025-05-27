@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, abort, session, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, abort, session
 from .models import Event, Comment, ticket_type, Order, OrderItem, Booking, User, Genre
 from .forms import EventForm, TicketForm, CommentForm, CheckoutForm, BookingForm, EditCommentForm
 from . import db
@@ -24,7 +24,12 @@ def allevents():
 
     genre_filter = request.args.get('genre', '')
     if genre_filter:
-        events = Event.query.filter_by(genre_id=genre_filter).order_by(Event.start_datetime.asc()).all()
+        # Filter by genre name instead of genre_id
+        genre = Genre.query.filter_by(name=genre_filter).first()
+        if genre:
+            events = Event.query.filter_by(genre_id=genre.id).order_by(Event.start_datetime.asc()).all()
+        else:
+            events = []
     else:
         events = Event.query.order_by(Event.start_datetime.asc()).all()
 
@@ -487,43 +492,3 @@ def clear_cart():
     return redirect(request.referrer or url_for('event.allevents'))
 
 
-@eventbp.route('/cart/update', methods=['POST'])
-@login_required
-def update_cart():
-    """Update cart quantities via AJAX"""
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'success': False, 'message': 'No data provided'})
-        
-        cart = session.get('cart')
-        if not cart:
-            return jsonify({'success': False, 'message': 'Cart is empty'})
-        
-        # Update cart items
-        for update in data.get('updates', []):
-            ticket_type_id = update.get('ticket_type_id')
-            new_quantity = update.get('quantity', 0)
-            
-            # Find and update the item
-            for item in cart['items']:
-                if item['ticket_type_id'] == ticket_type_id:
-                    if new_quantity <= 0:
-                        cart['items'].remove(item)
-                    else:
-                        item['quantity'] = new_quantity
-                        item['subtotal'] = float(item['price'] * new_quantity)
-                    break
-        
-        # Recalculate total
-        cart['total_amount'] = sum(item['subtotal'] for item in cart['items'])
-        session['cart'] = cart
-        
-        return jsonify({
-            'success': True, 
-            'total_amount': cart['total_amount'],
-            'item_count': len(cart['items'])
-        })
-        
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)})

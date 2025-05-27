@@ -34,7 +34,7 @@
                     <select name="genre" id="genre" class="form-select genre-filter">
                                                 <option value="">🎼 All Genres</option>
                         {% for genre in genres %}
-                        <option value="{{ genre.id }}" {% if genre.id|string == selected_genre %}selected{% endif %}>
+                        <option value="{{ genre.name }}" {% if genre.name == selected_genre %}selected{% endif %}>
                             🎵 {{ genre.name }}
                         </option>
                         {% endfor %}

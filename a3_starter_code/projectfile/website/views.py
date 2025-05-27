@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from flask_login import login_required, current_user
 from .models import Event, Booking, Order, OrderItem, User
 from .forms import ChangePasswordForm, ProfileUpdateForm
-from sqlalchemy import desc
+from sqlalchemy import desc, text
 from sqlalchemy.exc import IntegrityError
 from flask_bcrypt import check_password_hash, generate_password_hash
 from . import db
@@ -17,14 +17,7 @@ def index():
 @main_bp.route('/booking-history')
 @login_required
 def booking_history():
-    # Get actual bookings for the current user
-    # We'll get both individual bookings and orders with their events
-    user_bookings = (Booking.query
-                    .filter_by(user_id=current_user.id)
-                    .join(Event)
-                    .order_by(desc(Booking.booking_date))
-                    .all())
-    
+    # Get only orders for the current user (simplified approach)
     user_orders = (Order.query
                   .filter_by(user_id=current_user.id)
                   .join(Event)
@@ -37,24 +30,10 @@ def booking_history():
                           .order_by(desc(Event.created_at))
                           .all())
     
-    # Combine and organize booking data for the template
+    # Organize order history for the template
     booking_history = []
     
-    # Add individual bookings
-    for booking in user_bookings:
-        booking_info = {
-            'id': booking.id,
-            'type': 'booking',
-            'event': booking.event,
-            'booking_date': booking.booking_date,
-            'status': booking.booking_status,
-            'quantity': booking.quantity,
-            'total_price': booking.total_price,
-            'ticket_type': booking.ticket_type_booked
-        }
-        booking_history.append(booking_info)
-    
-    # Add orders
+    # Add orders only
     for order in user_orders:
         order_info = {
             'id': order.id,
@@ -66,9 +45,6 @@ def booking_history():
             'order_items': order.order_items
         }
         booking_history.append(order_info)
-    
-    # Sort all booking history by date (most recent first)
-    booking_history.sort(key=lambda x: x['booking_date'], reverse=True)
     
     # Organize created events data
     creation_history = []
@@ -168,14 +144,3 @@ def change_password():
     flash('Password changes are now handled in your profile page.', 'info')
     return redirect(url_for('main.profile'))
 
-# Test routes for error pages (remove in production)
-@main_bp.route('/test-404')
-def test_404():
-    """Test route to trigger 404 error page"""
-    abort(404)
-
-@main_bp.route('/test-500')
-def test_500():
-    """Test route to trigger 500 error page"""
-    # Intentionally cause a server error
-    raise Exception("This is a test 500 error")
