@@ -7,7 +7,7 @@ from flask_login import UserMixin
 # Inherits from UserMixin for Flask-Login integration (e.g., is_authenticated)
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)  # Primary key for the user
+    id = db.Column(db.Integer, primary_key=True)  # Unique identifier for the user.
     firstName = db.Column(db.String(100), index=True, unique=False, nullable=False)  # User's first name, indexed for faster searches
     surname = db.Column(db.String(100), index=True, unique=False, nullable=False)  # User's surname, indexed
     email = db.Column(db.String(100), index=True, nullable=False, unique=True)  # User's email, must be unique
@@ -38,7 +38,6 @@ class Genre(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)  # Last update timestamp
     
     # Relationship to the Event model
-    # 'events' links to Event model, 'genre_info' is the backreference in Event
     events = db.relationship('Event', backref='genre_info', lazy='dynamic')
     
     def __repr__(self):
@@ -47,7 +46,7 @@ class Genre(db.Model):
 # Defines the ticket_type data model for different kinds of tickets for an event
 class ticket_type(db.Model):
     __tablename__ = 'ticket_type'
-    id = db.Column(db.Integer, primary_key=True)  # Primary key for the ticket type
+    id = db.Column(db.Integer, primary_key=True)  # Unique identifier for the ticket type
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)  # Foreign key linking to the Event
     type_name = db.Column(db.String(100), nullable=False)  # Name of the ticket type (e.g., General, VIP)
     description = db.Column(db.Text, nullable=True) # Optional description for this ticket type
@@ -62,7 +61,7 @@ class ticket_type(db.Model):
 # Defines the Event data model
 class Event(db.Model):
     __tablename__ = 'events'
-    id = db.Column(db.Integer, primary_key=True) # Primary key for the event
+    id = db.Column(db.Integer, primary_key=True)  # Unique identifier for the event
     name = db.Column(db.String(120), index=True, nullable=False)  # Event name
     description = db.Column(db.Text, nullable=True)  # Optional detailed description of the event
     image_filename = db.Column(db.String(255), nullable=True)  # Filename of the event's image
@@ -91,7 +90,6 @@ class Event(db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     # Relationships to other models
-    # 'ticket_types' links to ticket_type model, 'event' is backreference in ticket_type
     # 'cascade' ensures that related ticket_types are deleted if the event is deleted
     ticket_types = db.relationship('ticket_type', backref='event', lazy='dynamic', cascade="all, delete-orphan")
     comments = db.relationship('Comment', backref='event', lazy='dynamic', cascade="all, delete-orphan")
@@ -128,13 +126,14 @@ class Event(db.Model):
         # Default to open if none of the above conditions are met
         return 'Open'
 
+    # Provides a string representation of the Event object.
     def __repr__(self):
         return f"Event: {self.name}"
     
 # Defines the Comment data model for user comments on events
 class Comment(db.Model):
     __tablename__ = 'comments'
-    id = db.Column(db.Integer, primary_key=True) # Primary key for comment
+    id = db.Column(db.Integer, primary_key=True) # Unique identifier for the comment
     text = db.Column(db.String(400), nullable=False)  # The content of the comment
     created_at = db.Column(db.DateTime, default=datetime.now)  # Timestamp of comment creation
     edited_at = db.Column(db.DateTime, nullable=True)  # Timestamp if the comment is edited
@@ -148,9 +147,9 @@ class Comment(db.Model):
 # Defines the Order data model, representing a purchase transaction
 class Order(db.Model):
     __tablename__ = 'orders'
-    id = db.Column(db.Integer, primary_key=True) #Primary key for order
+    id = db.Column(db.Integer, primary_key=True) # Unique identifier for the order
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # User who placed the order
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)# Event associated with the order (useful for context, though items link to ticket_types)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False) # Event associated with the order
     total_amount = db.Column(db.Numeric(10, 2), nullable=False) # Total amount for the order, using Numeric for precision
     order_status = db.Column(db.String(20), default='pending', nullable=False)  # pending, confirmed, cancelled
     order_date = db.Column(db.DateTime, default=datetime.now) # Date the order was placed
@@ -169,7 +168,7 @@ class Order(db.Model):
 # Defines the OrderItem data model, representing individual items within an Order
 class OrderItem(db.Model):
     __tablename__ = 'order_items'
-    id = db.Column(db.Integer, primary_key=True) # Primary key for OrderItem
+    id = db.Column(db.Integer, primary_key=True) # Unique identifier for the order item
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     ticket_type_id = db.Column(db.Integer, db.ForeignKey('ticket_type.id'), nullable=False) # Link to the specific ticket_type purchased
     quantity = db.Column(db.Integer, nullable=False) # Number of tickets of this type in this order item
@@ -187,7 +186,7 @@ class OrderItem(db.Model):
 # Defines the Booking data model
 class Booking(db.Model):
     __tablename__ = 'bookings'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True) # Unique identifier for the booking
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # User who made the booking
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False) # Event being booked
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)  # Link to order
@@ -196,8 +195,8 @@ class Booking(db.Model):
     total_price = db.Column(db.Numeric(10, 2), nullable=False)  # Better for currency
     booking_status = db.Column(db.String(20), default='confirmed', nullable=False)  # confirmed, cancelled, refunded
     booking_date = db.Column(db.DateTime, default=datetime.now) # When the booking was made
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    created_at = db.Column(db.DateTime, default=datetime.now) # Timestamp when the booking was created.
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now) # Timestamp of the last update.
 
      # Relationships
     ticket_type_booked = db.relationship('ticket_type', backref='bookings') # Access ticket_type via booking.ticket_type_booked
@@ -209,12 +208,13 @@ class Booking(db.Model):
 # Defines the event_status data model (historical status changes for an event)
 class event_status(db.Model):
     __tablename__ = 'event_status'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True) # Unique identifier for the status change
     event_id = db.Column(db.Integer, db.ForeignKey('events.id')) # Event this status change applies to
     status_date = db.Column(db.DateTime, default=datetime.now) # When this status was set
     status = db.Column(db.String(100), nullable=False) # The status value (e.g., 'Opened', 'Cancelled by User', 'Auto-Expired')
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    created_at = db.Column(db.DateTime, default=datetime.now) # Timestamp when the status change was recorded
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now) # Timestamp of the last update.
     
+    # Provides a string representation of the event_status object
     def __repr__(self):
         return f"Status: {self.status} on {self.status_date}"
