@@ -41,7 +41,7 @@ class EventForm(FlaskForm):
     description = TextAreaField('Event Description', validators=[Optional(), Length(max=2000)])
     image = FileField('Event Image (JPG, PNG, JPEG only)', validators=[
         Optional(), 
-        FileAllowed(['jpg', 'png', 'jpeg'], 'Only JPG, PNG, and JPEG images are allowed!')
+        FileAllowed(['jpg', 'png', 'jpeg', 'webp'], 'Only JPG, PNG, JPEG, and WEBP images are allowed!')
     ])
     image_url = StringField('Or Image URL', validators=[Optional(), URL()])
     start_datetime = DateTimeLocalField('Start Date and Time', format='%Y-%m-%dT%H:%M', validators=[InputRequired()])

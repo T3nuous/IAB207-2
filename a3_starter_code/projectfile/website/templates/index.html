@@ -101,10 +101,9 @@
         <div class="container-fluid">
             <h1 class="section-title dark">🔥 Popular Events</h1>
             
-            {% if events %}
+            {% if popular_events %}
                 <div class="events-grid">
-                    {% for event_item in events | sort(attribute='id', reverse=True) %}
-                        {% if loop.index0 < 3 %}
+                    {% for event_item in popular_events %}
                         <a href="{{ url_for('event.details', id=event_item.id) }}" class="text-decoration-none">
                             <div class="card">
                                 <div class="card-img-container">
@@ -137,7 +136,6 @@
                                 </div>
                             </div>
                         </a>
-                        {% endif %}
                     {% endfor %}
                 </div>
             {% else %}
@@ -231,10 +229,9 @@
         <div class="container-fluid">
             <h1 class="section-title light">⭐ Recommended Events</h1>
             
-            {% if events %}
+            {% if recommended_events %}
                 <div class="events-grid">
-                    {% for event_item in events %}
-                        {% if loop.index0 < 3 %}
+                    {% for event_item in recommended_events %}
                         <a href="{{ url_for('event.details', id=event_item.id) }}" class="text-decoration-none">
                             <div class="card">
                                 <div class="card-img-container">
@@ -267,7 +264,6 @@
                                 </div>
                             </div>
                         </a>
-                        {% endif %}
                     {% endfor %}
                 </div>
             {% else %}
