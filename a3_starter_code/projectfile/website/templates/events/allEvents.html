@@ -56,15 +56,23 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card event-card">
                         <div class="position-relative">
-                            {% if event.image_filename %}
-                                <img src="{{ url_for('static', filename=event.image_filename) }}" 
-                                     class="card-img-top event-image" 
-                                     alt="{{ event.name }}">
-                            {% else %}
-                                <div class="event-image d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-music text-white" style="font-size: 3rem;"></i>
-                                </div>
-                            {% endif %}
+                            <div class="event-image-container">
+                                {% if event.image_filename %}
+                                    {% if event.image_filename.startswith('http') %}
+                                        <img src="{{ event.image_filename }}" 
+                                             alt="{{ event.name }} Image" class="event-image">
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename=event.image_filename) }}" 
+                                             alt="{{ event.name }} Image" class="event-image">
+                                    {% endif %}
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='img/grey.jpg') }}" 
+                                         alt="No Image Available" class="event-image">
+                                         <div class="event-image d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-calendar-plus text-white" style="font-size: 3rem;"></i>
+                                        </div>
+                                {% endif %}
+                            </div>
                             
                             <div class="position-absolute top-0 end-0 m-3">
                                 <span class="event-status {{ event.current_status.lower().replace(' ', '-') }}">
@@ -94,7 +102,7 @@
                             
                             <div class="event-date">
                                 <i class="fas fa-calendar-alt"></i> 
-                                {{ event.start_datetime.strftime('%B %d, %Y') }}
+                                {{ event.start_datetime.strftime('%d/%m/%Y') }}
                             </div>
                             
                             <div class="event-date">
