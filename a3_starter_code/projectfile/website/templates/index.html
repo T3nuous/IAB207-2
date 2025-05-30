@@ -122,10 +122,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-8 custom-border">
+                                        <div class="col-md-7 custom-border">
                                             <p class="mb-0">{{ event_item.description | truncate(120) }}</p>
                                         </div>
-                                        <div class="col-md-4 text-center">
+                                        <div class="col-md-5 text-center">
                                             <label class="form-label fw-bold">📅 Date</label>
                                             <input type="text" class="form-control mb-2" 
                                                    value="{{ event_item.start_datetime.strftime('%m/%d/%Y') if event_item.start_datetime else 'N/A' }}" 
@@ -250,10 +250,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-8 custom-border">
+                                        <div class="col-md-7 custom-border">
                                             <p class="mb-0">{{ event_item.description | truncate(120) }}</p>
                                         </div>
-                                        <div class="col-md-4 text-center">
+                                        <div class="col-md-5 text-center">
                                             <label class="form-label fw-bold">📅 Date</label>
                                             <input type="text" class="form-control mb-2" 
                                                    value="{{ event_item.start_datetime.strftime('%m/%d/%Y') if event_item.start_datetime else 'N/A' }}" 
