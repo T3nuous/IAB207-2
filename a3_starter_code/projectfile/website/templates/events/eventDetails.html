@@ -25,18 +25,21 @@
 <div class="container">
     <!-- Event Image Section -->
     <div class="event-image-section">
-        <div class="event-image-container">
-            {% if event.image_filename %}
-                <img src="{{ url_for('static', filename=event.image_filename) }}" 
-                     class="event-image img-fluid" 
-                     alt="{{ event.name }} Image">
-            {% else %}
-                <div class="image-placeholder">
-                    <i class="fas fa-music"></i>
-                    <h5>No image available for this event</h5>
-                    <p class="text-muted">Event details are available below</p>
-                </div>
-            {% endif %}
+        <div class="col-md-5">
+            <div class="image-container">
+                {% if event.image_filename %}
+                    {% if event.image_filename.startswith('http') %}
+                        <img src="{{ event.image_filename }}" 
+                             alt="{{ event.name }} Image" class="img-fluid event-image">
+                    {% else %}
+                        <img src="{{ url_for('static', filename=event.image_filename) }}" 
+                             alt="{{ event.name }} Image" class="img-fluid event-image">
+                    {% endif %}
+                {% else %}
+                    <img src="{{ url_for('static', filename='img/grey.jpg') }}" 
+                         alt="No Image Available" class="img-fluid event-image">
+                {% endif %}
+            </div>
         </div>
     </div>
 

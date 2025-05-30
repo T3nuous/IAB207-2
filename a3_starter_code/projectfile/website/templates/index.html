@@ -32,8 +32,13 @@
                                     <div class="card">
                                         <div class="card-img-container">
                                             {% if event_item.image_filename %}
-                                                <img src="{{ url_for('static', filename=event_item.image_filename) }}" 
-                                                     alt="{{ event_item.name }} Image">
+                                                {% if event_item.image_filename.startswith('http') %}
+                                                    <img src="{{ event_item.image_filename }}" 
+                                                         alt="{{ event_item.name }} Image">
+                                                {% else %}
+                                                    <img src="{{ url_for('static', filename=event_item.image_filename) }}" 
+                                                         alt="{{ event_item.name }} Image">
+                                                {% endif %}
                                             {% else %}
                                                 <img src="{{ url_for('static', filename='img/grey.jpg') }}" 
                                                      alt="Placeholder Image">
@@ -53,7 +58,7 @@
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold">📅 Date & Time</label>
                                                         <input type="text" class="form-control" 
-                                                               value="{{ event_item.start_datetime.strftime('%B %d, %Y at %I:%M %p') if event_item.start_datetime else 'N/A' }}" 
+                                                               value="{{ event_item.start_datetime.strftime('%d/%m/%Y') if event_item.start_datetime else 'N/A' }}" 
                                                                disabled>
                                                     </div>
                                                     {% if event_item.venue %}
@@ -108,8 +113,13 @@
                             <div class="card">
                                 <div class="card-img-container">
                                     {% if event_item.image_filename %}
-                                        <img src="{{ url_for('static', filename=event_item.image_filename) }}" 
-                                             alt="{{ event_item.name }} Image">
+                                        {% if event_item.image_filename.startswith('http') %}
+                                            <img src="{{ event_item.image_filename }}" 
+                                                 alt="{{ event_item.name }} Image">
+                                        {% else %}
+                                            <img src="{{ url_for('static', filename=event_item.image_filename) }}" 
+                                                 alt="{{ event_item.name }} Image">
+                                        {% endif %}
                                     {% else %}
                                         <img src="{{ url_for('static', filename='img/grey.jpg') }}" 
                                              alt="Placeholder Image">
@@ -128,7 +138,7 @@
                                         <div class="col-md-5 text-center">
                                             <label class="form-label fw-bold">📅 Date</label>
                                             <input type="text" class="form-control mb-2" 
-                                                   value="{{ event_item.start_datetime.strftime('%m/%d/%Y') if event_item.start_datetime else 'N/A' }}" 
+                                                   value="{{ event_item.start_datetime.strftime('%d/%m/%Y') if event_item.start_datetime else 'N/A' }}" 
                                                    disabled>
                                             <span class="btn btn-secondary btn-sm">View Details</span>
                                         </div>
@@ -236,8 +246,13 @@
                             <div class="card">
                                 <div class="card-img-container">
                                     {% if event_item.image_filename %}
-                                        <img src="{{ url_for('static', filename=event_item.image_filename) }}" 
-                                             alt="{{ event_item.name }} Image">
+                                        {% if event_item.image_filename.startswith('http') %}
+                                            <img src="{{ event_item.image_filename }}" 
+                                                 alt="{{ event_item.name }} Image">
+                                        {% else %}
+                                            <img src="{{ url_for('static', filename=event_item.image_filename) }}" 
+                                                 alt="{{ event_item.name }} Image">
+                                        {% endif %}
                                     {% else %}
                                         <img src="{{ url_for('static', filename='img/grey.jpg') }}" 
                                              alt="Placeholder Image">
@@ -256,7 +271,7 @@
                                         <div class="col-md-5 text-center">
                                             <label class="form-label fw-bold">📅 Date</label>
                                             <input type="text" class="form-control mb-2" 
-                                                   value="{{ event_item.start_datetime.strftime('%m/%d/%Y') if event_item.start_datetime else 'N/A' }}" 
+                                                   value="{{ event_item.start_datetime.strftime('%d/%m/%Y') if event_item.start_datetime else 'N/A' }}" 
                                                    disabled>
                                             <span class="btn btn-secondary btn-sm">View Details</span>
                                         </div>
