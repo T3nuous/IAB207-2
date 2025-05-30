@@ -2,17 +2,72 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from flask_login import login_required, current_user
 from .models import Event, Booking, Order, OrderItem, User
 from .forms import ChangePasswordForm, ProfileUpdateForm
-from sqlalchemy import desc, text
+from sqlalchemy import desc, text, func
 from sqlalchemy.exc import IntegrityError
 from flask_bcrypt import check_password_hash, generate_password_hash
 from . import db
+from datetime import datetime
 
 main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    events = Event.query.all()
-    return render_template('index.html', events=events)
+    # Filter out cancelled and inactive events - only show upcoming active events
+    upcoming_events = Event.query.filter(
+        Event.status.notin_(['Cancelled', 'Inactive']),
+        Event.start_datetime > datetime.now()  # Only future events
+    ).order_by(Event.start_datetime.asc()).all()
+    
+    # Get popular events based on ticket sales (including past events for popularity)
+    popular_events_query = db.session.query(
+        Event,
+        func.sum(Booking.quantity).label('total_tickets_sold')
+    ).join(
+        Booking, Event.id == Booking.event_id
+    ).filter(
+        Booking.booking_status == 'confirmed',
+        Event.status.notin_(['Cancelled', 'Inactive'])
+    ).group_by(
+        Event.id
+    ).order_by(
+        text('total_tickets_sold DESC')
+    ).limit(3).all()
+    
+    # Extract just the Event objects from the query results
+    popular_events = [result[0] for result in popular_events_query] if popular_events_query else []
+    
+    # If we don't have enough popular events with sales, fill with upcoming events
+    if len(popular_events) < 3:
+        remaining_count = 3 - len(popular_events)
+        # Get upcoming events that aren't already in popular_events
+        popular_event_ids = [event.id for event in popular_events]
+        additional_events = [event for event in upcoming_events 
+                           if event.id not in popular_event_ids][:remaining_count]
+        popular_events.extend(additional_events)
+    
+    # Get recommended events (events with least ticket sales - need promotion)
+    # Use LEFT JOIN to include events with no bookings (0 sales)
+    recommended_events_query = db.session.query(
+        Event,
+        func.coalesce(func.sum(Booking.quantity), 0).label('total_tickets_sold')
+    ).outerjoin(  # LEFT JOIN to include events with no bookings
+        Booking, (Event.id == Booking.event_id) & (Booking.booking_status == 'confirmed')
+    ).filter(
+        Event.status.notin_(['Cancelled', 'Inactive']),
+        Event.start_datetime > datetime.now()  # Only future events for recommendations
+    ).group_by(
+        Event.id
+    ).order_by(
+        text('total_tickets_sold ASC'),  # Ascending - events with 0 sales come first
+        Event.created_at.desc()  # Then by newest for events with same sales
+    ).limit(3).all()
+    
+    recommended_events = [result[0] for result in recommended_events_query] if recommended_events_query else []
+    
+    return render_template('index.html', 
+                         events=upcoming_events, 
+                         popular_events=popular_events,
+                         recommended_events=recommended_events)
 
 @main_bp.route('/booking-history')
 @login_required
@@ -102,7 +157,6 @@ def profile():
                 updates.append('password')
             
             # Update the updated_at timestamp
-            from datetime import datetime
             current_user.updated_at = datetime.now()
             
             # Commit changes

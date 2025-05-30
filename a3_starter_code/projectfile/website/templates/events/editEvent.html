@@ -24,18 +24,19 @@
 
 <div class="container">
     <!-- Current Image Display -->
-    {% if form.image.data or form.image_url.data %}
+    {% set current_event = event %}
+    {% if current_event and current_event.image_filename %}
         <div class="current-image-section">
             <h6 class="current-image-title">
                 <i class="fas fa-image"></i> Current Event Image
             </h6>
-            {% if form.image.data %}
-                <img src="{{ url_for('static', filename=form.image.data) }}" 
-                     alt="Current Event Image" 
-                     class="current-image">
-            {% elif form.image_url.data %}
-                <img src="{{ form.image_url.data }}" 
+            {% if current_event.image_filename.startswith('http') %}
+                <img src="{{ current_event.image_filename }}" 
                      alt="Current Event Image from URL" 
+                     class="current-image">
+            {% else %}
+                <img src="{{ url_for('static', filename=current_event.image_filename) }}" 
+                     alt="Current Event Image" 
                      class="current-image">
             {% endif %}
         </div>

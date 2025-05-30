@@ -49,18 +49,60 @@ def allevents():
 # saves the file, and returns the database path for the uploaded file
 # Handles potential errors during file saving
 def check_upload_file(uploaded_file_data):
+    print(f"DEBUG: check_upload_file called with: {uploaded_file_data}")
+    
     if not uploaded_file_data or not uploaded_file_data.filename:
+
+        print("DEBUG: No file or empty filename")
+        return None
+    
+    print(f"DEBUG: Original filename: '{uploaded_file_data.filename}'")
+    filename = secure_filename(uploaded_file_data.filename)
+    print(f"DEBUG: Secure filename: '{filename}'")
+    
+    upload_folder_abs = os.path.join(current_app.root_path, 'static', 'img', 'events')
+    print(f"DEBUG: Upload folder: '{upload_folder_abs}'")
+    
+    if not os.path.exists(upload_folder_abs):
+        print("DEBUG: Creating upload directory")
+        os.makedirs(upload_folder_abs, exist_ok=True)
+    else:
+        print("DEBUG: Upload directory exists")
+    
         return None # No file uploaded
     filename = secure_filename(uploaded_file_data.filename)
     upload_folder_abs = os.path.join(current_app.root_path, 'static', 'img', 'events') # Absolute path to upload folder
     if not os.path.exists(upload_folder_abs):
         os.makedirs(upload_folder_abs, exist_ok=True) # Create folder if it doesn't exist
+        
     upload_path_abs = os.path.join(upload_folder_abs, filename)
+    print(f"DEBUG: Full upload path: '{upload_path_abs}'")
+    
     try:
+
+        print("DEBUG: Attempting to save file...")
+        uploaded_file_data.save(upload_path_abs)
+        print("DEBUG: File save() completed")
+        
+        # Verify file was actually saved
+        if os.path.exists(upload_path_abs):
+            file_size = os.path.getsize(upload_path_abs)
+            print(f"DEBUG: File saved successfully - {filename} ({file_size} bytes)")
+        else:
+            print("DEBUG: ERROR - File was not saved to disk!")
+            flash("Error: File was not saved to disk", "danger")
+            return None
+        
+        db_upload_path = os.path.join('img', 'events', filename).replace(os.sep, '/')
+        print(f"DEBUG: Database path: '{db_upload_path}'")
+        flash(f"Image uploaded successfully: {filename}", "success")
+
         uploaded_file_data.save(upload_path_abs) # Save the uploaded file
         db_upload_path = os.path.join('img', 'events', filename).replace(os.sep, '/') # Path to store in DB
+
         return db_upload_path
     except Exception as e:
+        print(f"DEBUG: EXCEPTION during file save: {e}")
         current_app.logger.error(f"Failed to save uploaded file: {e}")
         flash(f"Error uploading image: {str(e)}", "danger")
         return None # Return None on error
@@ -84,13 +126,29 @@ def create():
         form.genre.choices = []   # Set empty choices on error
 
     if request.method == 'POST':
+
+        
+        # Check what's in the request files
+        for key, file in request.files.items():
+            print(f"DEBUG: File '{key}': {file}, filename: {getattr(file, 'filename', 'No filename')}")
+        
+        if form.errors:
+            print(f"DEBUG: Form errors: {form.errors}")
+        if ticketform.errors:
+            print(f"DEBUG: Ticket form errors: {ticketform.errors}")
+            
+        if form.validate() and ticketform.validate():
+
         is_event_form_valid = form.validate_on_submit() # Validate the event form
         is_ticketform_valid = ticketform.validate() # Validate the ticket form
 
         if is_event_form_valid and is_ticketform_valid:
+
             image_filename_to_save = None
             if form.image.data and form.image.data.filename:
                 image_filename_to_save = check_upload_file(form.image.data)
+            elif form.image_url.data and form.image_url.data.strip():
+                image_filename_to_save = form.image_url.data.strip()
             
             # Create a new Event object from form data
             new_event = Event(
@@ -147,27 +205,125 @@ def edit_event(id):
         flash("You are not authorized to edit this event.", "danger")
         return redirect(url_for('event.details', id=id))
 
-    form = EventForm(request.form if request.method == 'POST' else None, obj=event_to_edit)
-    ticketform = TicketForm(request.form if request.method == 'POST' else None) 
+    # Initialize forms 
+    form = EventForm()
+    ticketform = TicketForm()
+    
+    if request.method == 'GET':
+        # For GET requests, populate from existing event data (except file fields)
+        form.name.data = event_to_edit.name
+        form.description.data = event_to_edit.description
+        form.start_datetime.data = event_to_edit.start_datetime
+        form.location.data = event_to_edit.location
+        form.venue.data = event_to_edit.venue
+        form.age_limit.data = event_to_edit.age_limit
+        form.length.data = event_to_edit.length
+        form.artist_info.data = event_to_edit.artist_info
+        form.policies.data = event_to_edit.policies
+        form.facebook.data = event_to_edit.facebook
+        form.instagram.data = event_to_edit.instagram
+        form.twitter.data = event_to_edit.twitter
+        
+        # Populate image_url field if current image is a URL
+        if event_to_edit.image_filename and event_to_edit.image_filename.startswith('http'):
+            form.image_url.data = event_to_edit.image_filename
 
-    # Load genres for the dropdown
+    # Load genres for the dropdown (for both GET and POST)
     try:
         genres = db.session.scalars(db.select(Genre)).all()
         form.genre.choices = [(genre.id, genre.name) for genre in genres]
     except Exception as e:
         current_app.logger.error(f"Error loading genres for event editing: {e}")
         flash("Error loading page data. Please check genre setup.", "danger")
-        form.genre.choices = [] 
+        form.genre.choices = []
+    
+    # Set the current genre and populate ticket data for GET requests
+    if request.method == 'GET':
+        form.genre.data = event_to_edit.genre_id
+        
+        # Populate ticket form data from existing tickets
+        general_t = event_to_edit.ticket_types.filter_by(type_name='General Admission').first()
+        if general_t:
+            ticketform.general_price.data = int(general_t.price) if general_t.price is not None else None
+            ticketform.general_quantity.data = general_t.quantity_available
+        
+        vip_t = event_to_edit.ticket_types.filter_by(type_name='VIP').first()
+        if vip_t:
+            ticketform.vip_price.data = int(vip_t.price) if vip_t.price is not None else None
+            ticketform.vip_quantity.data = vip_t.quantity_available
 
     if request.method == 'POST':
+
+        print(f"DEBUG: POST request received")
+        print(f"DEBUG: Request content type: {request.content_type}")
+        print(f"DEBUG: Request files keys: {list(request.files.keys())}")
+        print(f"DEBUG: Request form keys: {list(request.form.keys())}")
+        
+        # Check what's in the request files - detailed
+        print(f"DEBUG: Raw request.files: {request.files}")
+        for key, file in request.files.items():
+            print(f"DEBUG: File '{key}': {file}, filename: {getattr(file, 'filename', 'No filename')}")
+            if hasattr(file, 'content_length'):
+                print(f"DEBUG: File '{key}' content_length: {file.content_length}")
+        
+        # Check if image field exists in form
+        print(f"DEBUG: 'image' in request.files: {'image' in request.files}")
+        print(f"DEBUG: 'image' in request.form: {'image' in request.form}")
+        
+        # Try to get the file directly from request
+        direct_file = request.files.get('image')
+        print(f"DEBUG: Direct file from request.files.get('image'): {direct_file}")
+        if direct_file:
+            print(f"DEBUG: Direct file filename: {direct_file.filename}")
+            print(f"DEBUG: Direct file content_type: {getattr(direct_file, 'content_type', 'Unknown')}")
+        
+        print(f"DEBUG: Form validation - form.validate(): {form.validate()}")
+        print(f"DEBUG: Ticket form validation - ticketform.validate(): {ticketform.validate()}")
+        
+        if form.errors:
+            print(f"DEBUG: Form errors: {form.errors}")
+        if ticketform.errors:
+            print(f"DEBUG: Ticket form errors: {ticketform.errors}")
+            
+        if form.validate() and ticketform.validate():
+            print("=== DEBUG: Starting image update process ===")
+            # Store the current image filename before populate_obj potentially overwrites it
+            current_image_filename = event_to_edit.image_filename
+            print(f"DEBUG: Current image in DB: '{current_image_filename}'")
+            
+            form.populate_obj(event_to_edit) 
+            print(f"DEBUG: Image after populate_obj: '{event_to_edit.image_filename}'")
+            
+            # Handle image upload - exactly like in creation function
+            image_filename_to_save = current_image_filename  # Default to current image
+            print(f"DEBUG: Default image to save: '{image_filename_to_save}'")
+            
+            print(f"DEBUG: form.image.data = {form.image.data}")
+            print(f"DEBUG: form.image_url.data = '{form.image_url.data}'")
+            
+
         if form.validate() and ticketform.validate(): # Validate both forms
             form.populate_obj(event_to_edit)  # Update event object with form data
 
             # Handle new image upload
             if form.image.data and form.image.data.filename:
+                print(f"DEBUG: File upload detected: '{form.image.data.filename}'")
                 new_image_filename = check_upload_file(form.image.data)
+                print(f"DEBUG: Upload result: '{new_image_filename}'")
                 if new_image_filename:
-                    event_to_edit.image_filename = new_image_filename
+                    image_filename_to_save = new_image_filename
+                    print(f"DEBUG: Image updated to: '{image_filename_to_save}'")
+            
+            # Handle image URL (additional feature for edit)
+            elif form.image_url.data and form.image_url.data.strip():
+                print(f"DEBUG: Using image URL: '{form.image_url.data.strip()}'")
+                image_filename_to_save = form.image_url.data.strip()
+                print(f"DEBUG: Image updated to URL: '{image_filename_to_save}'")
+            
+            # Set the final image filename
+            event_to_edit.image_filename = image_filename_to_save
+            print(f"DEBUG: Final image filename set to: '{event_to_edit.image_filename}'")
+            print("=== DEBUG: Image update process complete ===")
             
             # Update or create ticket types
             ticket_types_to_update = {
@@ -199,21 +355,7 @@ def edit_event(id):
                 db.session.rollback()
                 current_app.logger.error(f"Error updating event: {e}")
                 flash(f"Error updating event: {str(e)}", "danger")
-    else: 
-        # Set the current genre for the form
-        form.genre.data = event_to_edit.genre_id
-        
-        general_t = event_to_edit.ticket_types.filter_by(type_name='General Admission').first()
-        if general_t:
-            ticketform.general_price.data = int(general_t.price) if general_t.price is not None else None
-            ticketform.general_quantity.data = general_t.quantity_available
-        
-        vip_t = event_to_edit.ticket_types.filter_by(type_name='VIP').first()
-        if vip_t:
-            ticketform.vip_price.data = int(vip_t.price) if vip_t.price is not None else None
-            ticketform.vip_quantity.data = vip_t.quantity_available
-
-    return render_template('events/editEvent.html', form=form, ticketform=ticketform, event_id=event_to_edit.id, title=f"Edit Event: {event_to_edit.name}")
+    return render_template('events/editEvent.html', form=form, ticketform=ticketform, event_id=event_to_edit.id, event=event_to_edit, title=f"Edit Event: {event_to_edit.name}")
 
 # Route to display a confirmation page before cancelling an event
 # Requires login and checks if the current user is the event creator and event is not already cancelled
@@ -520,5 +662,3 @@ def clear_cart():
     session.pop('cart', None)
     flash("Your cart has been cleared.", "info")
     return redirect(request.referrer or url_for('event.allevents'))
-
-
