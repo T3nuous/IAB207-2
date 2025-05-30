@@ -9,16 +9,22 @@ from flask_wtf.csrf import generate_csrf
 from decimal import Decimal
 from datetime import datetime
 
+# Blueprint for event-related routes
 eventbp = Blueprint('event', __name__, url_prefix='/events')
 
+# Route to display the details of a specific event
+# It fetches the event by its ID or returns a 404 error if not found
+# It also fetches comments for the event and orders them by creation date
 @eventbp.route('/<int:id>')
 def details(id):
     event = db.session.query(Event).filter_by(id=id).first_or_404()
     cform = CommentForm()
-    comments = event.comments.order_by(Comment.created_at.desc()).all()
+    comments = event.comments.order_by(Comment.created_at.desc()).all() # Fetch comments, newest first
     return render_template('events/eventDetails.html', event=event, form=cform, comments=comments)
 
-
+# Route to display all events
+# It can be filtered by genre using a query parameter
+# It fetches all events or events of a specific genre, ordered by start date
 @eventbp.route('/eventspage')
 def allevents():
 
@@ -29,19 +35,24 @@ def allevents():
         if genre:
             events = Event.query.filter_by(genre_id=genre.id).order_by(Event.start_datetime.asc()).all()
         else:
-            events = []
+            events = [] # No events if genre not found
     else:
-        events = Event.query.order_by(Event.start_datetime.asc()).all()
+        events = Event.query.order_by(Event.start_datetime.asc()).all() # Fetch all events
 
-    genres = db.session.scalars(db.select(Genre)).all()
+    genres = db.session.scalars(db.select(Genre)).all() # Fetch all genres for filter options
 
 
     return render_template('events/allEvents.html', events=events, genres=genres, selected_genre=genre_filter)
 
+# Function to handle file uploads for event images
+# It secures the filename, creates the upload directory if it doesn't exist
+# saves the file, and returns the database path for the uploaded file
+# Handles potential errors during file saving
 def check_upload_file(uploaded_file_data):
     print(f"DEBUG: check_upload_file called with: {uploaded_file_data}")
     
     if not uploaded_file_data or not uploaded_file_data.filename:
+
         print("DEBUG: No file or empty filename")
         return None
     
@@ -58,10 +69,17 @@ def check_upload_file(uploaded_file_data):
     else:
         print("DEBUG: Upload directory exists")
     
+        return None # No file uploaded
+    filename = secure_filename(uploaded_file_data.filename)
+    upload_folder_abs = os.path.join(current_app.root_path, 'static', 'img', 'events') # Absolute path to upload folder
+    if not os.path.exists(upload_folder_abs):
+        os.makedirs(upload_folder_abs, exist_ok=True) # Create folder if it doesn't exist
+        
     upload_path_abs = os.path.join(upload_folder_abs, filename)
     print(f"DEBUG: Full upload path: '{upload_path_abs}'")
     
     try:
+
         print("DEBUG: Attempting to save file...")
         uploaded_file_data.save(upload_path_abs)
         print("DEBUG: File save() completed")
@@ -78,13 +96,20 @@ def check_upload_file(uploaded_file_data):
         db_upload_path = os.path.join('img', 'events', filename).replace(os.sep, '/')
         print(f"DEBUG: Database path: '{db_upload_path}'")
         flash(f"Image uploaded successfully: {filename}", "success")
+
+        uploaded_file_data.save(upload_path_abs) # Save the uploaded file
+        db_upload_path = os.path.join('img', 'events', filename).replace(os.sep, '/') # Path to store in DB
+
         return db_upload_path
     except Exception as e:
         print(f"DEBUG: EXCEPTION during file save: {e}")
         current_app.logger.error(f"Failed to save uploaded file: {e}")
         flash(f"Error uploading image: {str(e)}", "danger")
-        return None
+        return None # Return None on error
 
+# Route for creating a new event
+# Requires login. Handles GET requests for displaying the form and POST requests for form submission
+# Validates event and ticket forms, saves event and ticket data to the database
 @eventbp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
@@ -98,9 +123,10 @@ def create():
     except Exception as e:
         current_app.logger.error(f"Error loading genres for event creation: {e}")
         flash("Error loading page data. Please check genre setup.", "danger")
-        form.genre.choices = [] 
+        form.genre.choices = []   # Set empty choices on error
 
     if request.method == 'POST':
+
         
         # Check what's in the request files
         for key, file in request.files.items():
@@ -112,12 +138,19 @@ def create():
             print(f"DEBUG: Ticket form errors: {ticketform.errors}")
             
         if form.validate() and ticketform.validate():
+
+        is_event_form_valid = form.validate_on_submit() # Validate the event form
+        is_ticketform_valid = ticketform.validate() # Validate the ticket form
+
+        if is_event_form_valid and is_ticketform_valid:
+
             image_filename_to_save = None
             if form.image.data and form.image.data.filename:
                 image_filename_to_save = check_upload_file(form.image.data)
             elif form.image_url.data and form.image_url.data.strip():
                 image_filename_to_save = form.image_url.data.strip()
             
+            # Create a new Event object from form data
             new_event = Event(
                 name=form.name.data,
                 description=form.description.data,
@@ -137,8 +170,8 @@ def create():
                 twitter=form.twitter.data
             )
             try:
-                db.session.add(new_event)
-                db.session.flush()
+                db.session.add(new_event) # Add event to session
+                db.session.flush() # Flush to get new_event.id for ticket types
                 if ticketform.general_price.data is not None and ticketform.general_quantity.data is not None:
                     general_ticket = ticket_type(
                         event_id=new_event.id, type_name='General Admission',
@@ -159,11 +192,15 @@ def create():
                 flash(f"Error creating event: {str(e)}", "danger")
     return render_template('events/eventCreation.html', form=form, ticketform=ticketform, title="Create New Event")
 
+# Route for editing an existing event
+# Requires login and checks if the current user is the event creator
+# Handles GET for displaying the form pre-filled with event data and POST for form submission
 @eventbp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_event(id):
     event_to_edit = db.session.query(Event).filter_by(id=id).first_or_404()
 
+    # Authorization check: only event creator can edit
     if event_to_edit.created_by != current_user.id:
         flash("You are not authorized to edit this event.", "danger")
         return redirect(url_for('event.details', id=id))
@@ -216,6 +253,7 @@ def edit_event(id):
             ticketform.vip_quantity.data = vip_t.quantity_available
 
     if request.method == 'POST':
+
         print(f"DEBUG: POST request received")
         print(f"DEBUG: Request content type: {request.content_type}")
         print(f"DEBUG: Request files keys: {list(request.files.keys())}")
@@ -263,6 +301,11 @@ def edit_event(id):
             print(f"DEBUG: form.image.data = {form.image.data}")
             print(f"DEBUG: form.image_url.data = '{form.image_url.data}'")
             
+
+        if form.validate() and ticketform.validate(): # Validate both forms
+            form.populate_obj(event_to_edit)  # Update event object with form data
+
+            # Handle new image upload
             if form.image.data and form.image.data.filename:
                 print(f"DEBUG: File upload detected: '{form.image.data.filename}'")
                 new_image_filename = check_upload_file(form.image.data)
@@ -282,6 +325,7 @@ def edit_event(id):
             print(f"DEBUG: Final image filename set to: '{event_to_edit.image_filename}'")
             print("=== DEBUG: Image update process complete ===")
             
+            # Update or create ticket types
             ticket_types_to_update = {
                 'General Admission': (ticketform.general_price.data, ticketform.general_quantity.data),
                 'VIP': (ticketform.vip_price.data, ticketform.vip_quantity.data)
@@ -289,8 +333,8 @@ def edit_event(id):
 
             for type_name_key, (price_data, limit_data) in ticket_types_to_update.items():
                 existing_ticket = event_to_edit.ticket_types.filter_by(type_name=type_name_key).first()
-                if price_data is not None and limit_data is not None:
-                    if existing_ticket:
+                if price_data is not None and limit_data is not None: 
+                    if existing_ticket: # Update existing ticket
                         existing_ticket.price = float(price_data) 
                         existing_ticket.quantity_available = limit_data
                     else:
@@ -301,7 +345,7 @@ def edit_event(id):
                             quantity_available=limit_data
                         )
                         db.session.add(new_ticket)
-                elif existing_ticket:
+                elif existing_ticket: # If no data provided but ticket exists, delete it
                     db.session.delete(existing_ticket)
             try:
                 db.session.commit()
@@ -313,6 +357,8 @@ def edit_event(id):
                 flash(f"Error updating event: {str(e)}", "danger")
     return render_template('events/editEvent.html', form=form, ticketform=ticketform, event_id=event_to_edit.id, event=event_to_edit, title=f"Edit Event: {event_to_edit.name}")
 
+# Route to display a confirmation page before cancelling an event
+# Requires login and checks if the current user is the event creator and event is not already cancelled
 @eventbp.route('/<int:id>/cancel_confirm', methods=['GET'])
 @login_required
 def cancel_confirm(id):
@@ -323,8 +369,10 @@ def cancel_confirm(id):
     if event.status == 'Cancelled':
         flash("This event has already been cancelled.", "info")
         return redirect(url_for('event.details', id=id))
-    return render_template('events/cancel_confirm.html', event=event, csrf_token=generate_csrf)
+    return render_template('events/cancel_confirm.html', event=event, csrf_token=generate_csrf) # Pass CSRF token
 
+# Route to handle the confirmed cancellation of an event.
+# Requires login and checks authorization and event status. Updates event status to 'Cancelled'
 @eventbp.route('/<int:id>/cancel_confirmed', methods=['POST'])
 @login_required
 def cancel_event_confirmed(id):
@@ -345,26 +393,31 @@ def cancel_event_confirmed(id):
         flash(f"Error cancelling event: {str(e)}", "danger")
     return redirect(url_for('event.details', id=id))
 
+# Route for adding a comment to an event
+# Requires login. Validates comment form and saves the new comment to the database
 @eventbp.route('/<int:id>/comment', methods=['POST'])
 @login_required
 def comment(id):
     form = CommentForm()
-    event = db.session.query(Event).filter_by(id=id).first_or_404()
+    event = db.session.query(Event).filter_by(id=id).first_or_404() # Ensure event exists
     if form.validate_on_submit():
         new_comment = Comment(text=form.text.data, event_id=event.id, user_id=current_user.id)
         db.session.add(new_comment)
         db.session.commit()
         flash('Your comment has been added successfully.', 'success')
-    else:
+    else: # Handle form validation errors
         for field, errors_list in form.errors.items():
             for error in errors_list:
                 flash(f"Error in {getattr(form, field).label.text}: {error}", 'danger')
-    return redirect(url_for('event.details', id=id))
+    return redirect(url_for('event.details', id=id)) # Redirect back to event details
 
+# Route for editing an existing comment
+# Requires login and checks if the current user is the comment author
+# Handles GET for displaying the edit form and POST for submitting changes
 @eventbp.route('/<int:event_id>/comment/<int:comment_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_comment(event_id, comment_id):
-    comment = db.session.query(Comment).filter_by(id=comment_id).first_or_404()
+    comment = db.session.query(Comment).filter_by(id=comment_id).first_or_404() # Fetch comment or 404
     event = db.session.query(Event).filter_by(id=event_id).first_or_404()
     
     # Check if the current user is the author of the comment
@@ -374,7 +427,7 @@ def edit_comment(event_id, comment_id):
     
     form = EditCommentForm()
     
-    if request.method == 'GET':
+    if request.method == 'GET': 
         form.text.data = comment.text
     
     if form.validate_on_submit():
@@ -383,10 +436,11 @@ def edit_comment(event_id, comment_id):
         comment.is_edited = True
         db.session.commit()
         flash('Your comment has been updated successfully.', 'success')
-        return redirect(url_for('event.details', id=event_id))
+        return redirect(url_for('event.details', id=event_id)) # Redirect to event details
     
     return render_template('events/edit_comment.html', form=form, comment=comment, event=event)
 
+# Route for deleting an existing comment
 @eventbp.route('/<int:event_id>/comment/<int:comment_id>/delete', methods=['POST'])
 @login_required
 def delete_comment(event_id, comment_id):
@@ -397,10 +451,10 @@ def delete_comment(event_id, comment_id):
         flash('You can only delete your own comments.', 'danger')
         return redirect(url_for('event.details', id=event_id))
     
-    db.session.delete(comment)
+    db.session.delete(comment) # Delete comment from database
     db.session.commit()
     flash('Your comment has been deleted successfully.', 'success')
-    return redirect(url_for('event.details', id=event_id))
+    return redirect(url_for('event.details', id=event_id)) # Redirect to event details
 
 # ===============================
 # BOOKING SYSTEM ROUTES
@@ -608,107 +662,3 @@ def clear_cart():
     session.pop('cart', None)
     flash("Your cart has been cleared.", "info")
     return redirect(request.referrer or url_for('event.allevents'))
-
-# ===============================
-# TEST ROUTE FOR IMAGE UPLOAD
-# ===============================
-
-@eventbp.route('/test-upload', methods=['GET', 'POST'])
-def test_upload():
-    """Test route for debugging image uploads"""
-    if request.method == 'POST':
-        print("=== TEST UPLOAD DEBUG ===")
-        print(f"Request files: {request.files}")
-        print(f"Request form: {request.form}")
-        
-        # Test file upload
-        if 'test_image' in request.files:
-            file = request.files['test_image']
-            print(f"File object: {file}")
-            print(f"Filename: {file.filename}")
-            
-            if file and file.filename:
-                result = check_upload_file(file)
-                print(f"Upload result: {result}")
-                if result:
-                    flash(f"SUCCESS: File uploaded as {result}", "success")
-                else:
-                    flash("FAILED: File upload failed", "danger")
-        
-        # Test URL
-        test_url = request.form.get('test_url')
-        if test_url:
-            print(f"Test URL: {test_url}")
-            flash(f"URL received: {test_url}", "info")
-        
-        return redirect(url_for('event.test_upload'))
-    
-    # GET request - show the test form
-    from flask import render_template_string
-    
-    test_template = '''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Image Upload Test</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body class="container mt-4">
-        <h2>Image Upload Test</h2>
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' if category == 'success' else 'info' }} alert-dismissible">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        
-        <form method="post" enctype="multipart/form-data" class="mb-4">
-            <div class="mb-3">
-                <label class="form-label">Select image file:</label>
-                <input type="file" name="test_image" class="form-control" accept="image/*">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Or enter image URL:</label>
-                <input type="url" name="test_url" class="form-control" placeholder="https://example.com/image.jpg">
-            </div>
-            <button type="submit" class="btn btn-primary">Test Upload</button>
-        </form>
-        
-        <div class="mt-4">
-            <h4>Current files in upload directory:</h4>
-            <ul class="list-group">
-            {% for file in files %}
-                <li class="list-group-item">{{ file.name }} ({{ file.size }} bytes)</li>
-            {% endfor %}
-            </ul>
-        </div>
-        
-        <div class="mt-3">
-            <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Back to Main</a>
-        </div>
-        
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
-    </html>
-    '''
-    
-    # List current files
-    upload_folder = os.path.join(current_app.root_path, 'static', 'img', 'events')
-    files = []
-    if os.path.exists(upload_folder):
-        for filename in os.listdir(upload_folder):
-            filepath = os.path.join(upload_folder, filename)
-            if os.path.isfile(filepath):
-                files.append({
-                    'name': filename,
-                    'size': os.path.getsize(filepath)
-                })
-    
-    return render_template_string(test_template, files=files)
-
-

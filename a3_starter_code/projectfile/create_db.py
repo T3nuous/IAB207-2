@@ -1,9 +1,11 @@
 from website import db, create_app
 from website.models import Genre
 
+# Create the Flask app and push the context to allow database operations
 app = create_app()
 ctx = app.app_context()
 ctx.push()
+# Create all database tables based on the defined models
 db.create_all()
 
 def add_sample_genres():
@@ -24,6 +26,7 @@ def add_sample_genres():
     ]
     
     for genre_data in genres_to_add:
+        # Check if the genre already exists in the database
         existing_genre = db.session.scalar(db.select(Genre).filter_by(name=genre_data['name']))
         if not existing_genre:
             new_genre = Genre(
@@ -34,13 +37,16 @@ def add_sample_genres():
             db.session.add(new_genre)
             print(f"Added genre: {genre_data['name']}")
     
+    # Commit the changes to the database
     db.session.commit()
     print("Sample genres checked/added.")
 
+# Add sample genres to the database
 add_sample_genres()
 
 print("Database tables created successfully.")
 print("Genre system initialized with predefined music genres.")
 ctx.pop()
 
+# Quit the script
 quit()
