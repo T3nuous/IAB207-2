@@ -283,7 +283,7 @@
                     <div class="form-card-body">
                         <div class="ticket-help-text">
                             <i class="fas fa-info-circle"></i> 
-                            Define ticket types for your event. Fields are optional, but if a price is set, a quantity limit is required.
+                            Define ticket types for your event. The quantity represents the <strong>total</strong> number of tickets for this type. Currently available quantities will be automatically calculated.
                         </div>
 
                         <!-- General Tickets -->
@@ -292,6 +292,14 @@
                                 <i class="fas fa-users"></i>
                                 General Admission
                             </div>
+                            {% if ticket_sales_info.general_sold > 0 %}
+                            <div class="ticket-sales-info" style="background-color: #e3f2fd; padding: 8px; border-radius: 4px; margin-bottom: 10px;">
+                                <small class="text-info">
+                                    <i class="fas fa-chart-line"></i> 
+                                    {{ ticket_sales_info.general_sold }} tickets sold | {{ ticket_sales_info.general_available }} currently available
+                                </small>
+                            </div>
+                            {% endif %}
                             <div class="price-quantity-row">
                                 <div class="form-group">
                                     {{ ticketform.general_price.label(class="form-label") }}
@@ -332,6 +340,14 @@
                                 <i class="fas fa-crown"></i>
                                 VIP Experience
                             </div>
+                            {% if ticket_sales_info.vip_sold > 0 %}
+                            <div class="ticket-sales-info" style="background-color: #e3f2fd; padding: 8px; border-radius: 4px; margin-bottom: 10px;">
+                                <small class="text-info">
+                                    <i class="fas fa-chart-line"></i> 
+                                    {{ ticket_sales_info.vip_sold }} tickets sold | {{ ticket_sales_info.vip_available }} currently available
+                                </small>
+                            </div>
+                            {% endif %}
                             <div class="price-quantity-row">
                                 <div class="form-group">
                                     {{ ticketform.vip_price.label(class="form-label") }}

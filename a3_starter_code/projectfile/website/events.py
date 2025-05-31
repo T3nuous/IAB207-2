@@ -47,48 +47,32 @@ def check_upload_file(uploaded_file_data):
     '''
     check the upload file
     '''
-    print(f"DEBUG: check_upload_file called with: {uploaded_file_data}")
-    
     if not uploaded_file_data or not uploaded_file_data.filename:
-        print("DEBUG: No file or empty filename")
         return None
     
-    print(f"DEBUG: Original filename: '{uploaded_file_data.filename}'")
     filename = secure_filename(uploaded_file_data.filename)
-    print(f"DEBUG: Secure filename: '{filename}'")
     
     upload_folder_abs = os.path.join(current_app.root_path, 'static', 'img', 'events')
-    print(f"DEBUG: Upload folder: '{upload_folder_abs}'")
     
     if not os.path.exists(upload_folder_abs):
-        print("DEBUG: Creating upload directory")
         os.makedirs(upload_folder_abs, exist_ok=True)
-    else:
-        print("DEBUG: Upload directory exists")
     
     upload_path_abs = os.path.join(upload_folder_abs, filename)
-    print(f"DEBUG: Full upload path: '{upload_path_abs}'")
     
     try:
-        print("DEBUG: Attempting to save file...")
         uploaded_file_data.save(upload_path_abs)
-        print("DEBUG: File save() completed")
         
         # Verify file was actually saved
         if os.path.exists(upload_path_abs):
             file_size = os.path.getsize(upload_path_abs)
-            print(f"DEBUG: File saved successfully - {filename} ({file_size} bytes)")
         else:
-            print("DEBUG: ERROR - File was not saved to disk!")
             flash("Error: File was not saved to disk", "danger")
             return None
         
         db_upload_path = os.path.join('img', 'events', filename).replace(os.sep, '/')
-        print(f"DEBUG: Database path: '{db_upload_path}'")
         flash(f"Image uploaded successfully: {filename}", "success")
         return db_upload_path
     except Exception as e:
-        print(f"DEBUG: EXCEPTION during file save: {e}")
         current_app.logger.error(f"Failed to save uploaded file: {e}")
         flash(f"Error uploading image: {str(e)}", "danger")
         return None
@@ -112,16 +96,6 @@ def create():
         form.genre.choices = [] 
 
     if request.method == 'POST':
-        
-        # Check what's in the request files
-        for key, file in request.files.items():
-            print(f"DEBUG: File '{key}': {file}, filename: {getattr(file, 'filename', 'No filename')}")
-        
-        if form.errors:
-            print(f"DEBUG: Form errors: {form.errors}")
-        if ticketform.errors:
-            print(f"DEBUG: Ticket form errors: {ticketform.errors}")
-            
         if form.validate() and ticketform.validate():
             image_filename_to_save = None
             if form.image.data and form.image.data.filename:
@@ -222,79 +196,58 @@ def edit_event(id):
         general_t = event_to_edit.ticket_types.filter_by(type_name='General Admission').first()
         if general_t:
             ticketform.general_price.data = int(general_t.price) if general_t.price is not None else None
-            ticketform.general_quantity.data = general_t.quantity_available
+            # Calculate total quantity = available + sold
+            general_sold = sum(booking.quantity for booking in general_t.bookings if booking.booking_status == 'confirmed')
+            ticketform.general_quantity.data = general_t.quantity_available + general_sold
         
         vip_t = event_to_edit.ticket_types.filter_by(type_name='VIP').first()
         if vip_t:
             ticketform.vip_price.data = int(vip_t.price) if vip_t.price is not None else None
-            ticketform.vip_quantity.data = vip_t.quantity_available
+            # Calculate total quantity = available + sold
+            vip_sold = sum(booking.quantity for booking in vip_t.bookings if booking.booking_status == 'confirmed')
+            ticketform.vip_quantity.data = vip_t.quantity_available + vip_sold
+
+    # Calculate ticket sales information for display in template
+    ticket_sales_info = {}
+    general_t = event_to_edit.ticket_types.filter_by(type_name='General Admission').first()
+    if general_t:
+        general_sold = sum(booking.quantity for booking in general_t.bookings if booking.booking_status == 'confirmed')
+        ticket_sales_info['general_sold'] = general_sold
+        ticket_sales_info['general_available'] = general_t.quantity_available
+    else:
+        ticket_sales_info['general_sold'] = 0
+        ticket_sales_info['general_available'] = 0
+    
+    vip_t = event_to_edit.ticket_types.filter_by(type_name='VIP').first()
+    if vip_t:
+        vip_sold = sum(booking.quantity for booking in vip_t.bookings if booking.booking_status == 'confirmed')
+        ticket_sales_info['vip_sold'] = vip_sold
+        ticket_sales_info['vip_available'] = vip_t.quantity_available
+    else:
+        ticket_sales_info['vip_sold'] = 0
+        ticket_sales_info['vip_available'] = 0
 
     if request.method == 'POST':
-        print(f"DEBUG: POST request received")
-        print(f"DEBUG: Request content type: {request.content_type}")
-        print(f"DEBUG: Request files keys: {list(request.files.keys())}")
-        print(f"DEBUG: Request form keys: {list(request.form.keys())}")
-        
-        # Check what's in the request files - detailed
-        print(f"DEBUG: Raw request.files: {request.files}")
-        for key, file in request.files.items():
-            print(f"DEBUG: File '{key}': {file}, filename: {getattr(file, 'filename', 'No filename')}")
-            if hasattr(file, 'content_length'):
-                print(f"DEBUG: File '{key}' content_length: {file.content_length}")
-        
-        # Check if image field exists in form
-        print(f"DEBUG: 'image' in request.files: {'image' in request.files}")
-        print(f"DEBUG: 'image' in request.form: {'image' in request.form}")
-        
-        # Try to get the file directly from request
-        direct_file = request.files.get('image')
-        print(f"DEBUG: Direct file from request.files.get('image'): {direct_file}")
-        if direct_file:
-            print(f"DEBUG: Direct file filename: {direct_file.filename}")
-            print(f"DEBUG: Direct file content_type: {getattr(direct_file, 'content_type', 'Unknown')}")
-        
-        print(f"DEBUG: Form validation - form.validate(): {form.validate()}")
-        print(f"DEBUG: Ticket form validation - ticketform.validate(): {ticketform.validate()}")
-        
-        if form.errors:
-            print(f"DEBUG: Form errors: {form.errors}")
-        if ticketform.errors:
-            print(f"DEBUG: Ticket form errors: {ticketform.errors}")
-            
         if form.validate() and ticketform.validate():
-            print("=== DEBUG: Starting image update process ===")
             # Store the current image filename before populate_obj potentially overwrites it
             current_image_filename = event_to_edit.image_filename
-            print(f"DEBUG: Current image in DB: '{current_image_filename}'")
             
             form.populate_obj(event_to_edit) 
-            print(f"DEBUG: Image after populate_obj: '{event_to_edit.image_filename}'")
             
             # Handle image upload - exactly like in creation function
             image_filename_to_save = current_image_filename  # Default to current image
-            print(f"DEBUG: Default image to save: '{image_filename_to_save}'")
-            
-            print(f"DEBUG: form.image.data = {form.image.data}")
-            print(f"DEBUG: form.image_url.data = '{form.image_url.data}'")
             
             if form.image.data and form.image.data.filename:
-                print(f"DEBUG: File upload detected: '{form.image.data.filename}'")
                 new_image_filename = check_upload_file(form.image.data)
-                print(f"DEBUG: Upload result: '{new_image_filename}'")
                 if new_image_filename:
                     image_filename_to_save = new_image_filename
-                    print(f"DEBUG: Image updated to: '{image_filename_to_save}'")
             
             # Handle image URL (additional feature for edit)
             elif form.image_url.data and form.image_url.data.strip():
-                print(f"DEBUG: Using image URL: '{form.image_url.data.strip()}'")
                 image_filename_to_save = form.image_url.data.strip()
-                print(f"DEBUG: Image updated to URL: '{image_filename_to_save}'")
             
             # Set the final image filename
             event_to_edit.image_filename = image_filename_to_save
-            print(f"DEBUG: Final image filename set to: '{event_to_edit.image_filename}'")
-            print("=== DEBUG: Image update process complete ===")
             
             ticket_types_to_update = {
                 'General Admission': (ticketform.general_price.data, ticketform.general_quantity.data),
@@ -305,8 +258,17 @@ def edit_event(id):
                 existing_ticket = event_to_edit.ticket_types.filter_by(type_name=type_name_key).first()
                 if price_data is not None and limit_data is not None:
                     if existing_ticket:
+                        # Calculate how many tickets have been sold for this ticket type
+                        sold_tickets = sum(booking.quantity for booking in existing_ticket.bookings if booking.booking_status == 'confirmed')
+                        
+                        # Check if the new quantity is less than already sold tickets
+                        if limit_data < sold_tickets:
+                            flash(f"Cannot set {type_name_key} quantity to {limit_data}. {sold_tickets} tickets have already been sold.", "danger")
+                            return render_template('events/editEvent.html', form=form, ticketform=ticketform, event_id=event_to_edit.id, event=event_to_edit, title=f"Edit Event: {event_to_edit.name}", ticket_sales_info=ticket_sales_info)
+                        
                         existing_ticket.price = float(price_data) 
-                        existing_ticket.quantity_available = limit_data
+                        # New available quantity = new total quantity - sold tickets
+                        existing_ticket.quantity_available = limit_data - sold_tickets
                     else:
                         new_ticket = ticket_type(
                             event_id=event_to_edit.id,
@@ -316,6 +278,11 @@ def edit_event(id):
                         )
                         db.session.add(new_ticket)
                 elif existing_ticket:
+                    # Check if any tickets have been sold before deleting
+                    sold_tickets = sum(booking.quantity for booking in existing_ticket.bookings if booking.booking_status == 'confirmed')
+                    if sold_tickets > 0:
+                        flash(f"Cannot remove {type_name_key} tickets. {sold_tickets} tickets have already been sold.", "danger")
+                        return render_template('events/editEvent.html', form=form, ticketform=ticketform, event_id=event_to_edit.id, event=event_to_edit, title=f"Edit Event: {event_to_edit.name}", ticket_sales_info=ticket_sales_info)
                     db.session.delete(existing_ticket)
             try:
                 db.session.commit()
@@ -325,7 +292,7 @@ def edit_event(id):
                 db.session.rollback()
                 current_app.logger.error(f"Error updating event: {e}")
                 flash(f"Error updating event: {str(e)}", "danger")
-    return render_template('events/editEvent.html', form=form, ticketform=ticketform, event_id=event_to_edit.id, event=event_to_edit, title=f"Edit Event: {event_to_edit.name}")
+    return render_template('events/editEvent.html', form=form, ticketform=ticketform, event_id=event_to_edit.id, event=event_to_edit, title=f"Edit Event: {event_to_edit.name}", ticket_sales_info=ticket_sales_info)
 
 @eventbp.route('/<int:id>/cancel_confirm', methods=['GET'])
 @login_required

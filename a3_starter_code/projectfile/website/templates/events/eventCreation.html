@@ -135,107 +135,7 @@
                             </div>
                         </div>
                         
-                        <!-- Additional Details Section -->
-                        <div class="form-section">
-                            <h6 class="section-title">
-                                <i class="fas fa-cogs"></i> Additional Details
-                            </h6>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-row">
-                                        {{ form.age_limit.label(class="form-label") }}
-                                        {{ form.age_limit(class="form-control", placeholder="0 for all ages") }}
-                                        {% if form.age_limit.errors %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.age_limit.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-row">
-                                        {{ form.length.label(class="form-label") }}
-                                        {{ form.length(class="form-control", placeholder="e.g., 2 hours, All day") }}
-                                        {% if form.length.errors %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.length.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                {{ form.artist_info.label(class="form-label") }}
-                                {{ form.artist_info(class="form-control", rows="3", placeholder="Tell us about the artists performing...") }}
-                                {% if form.artist_info.errors %}
-                                    <div class="invalid-feedback">
-                                        {% for error in form.artist_info.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="form-row">
-                                {{ form.policies.label(class="form-label") }}
-                                {{ form.policies(class="form-control", rows="3", placeholder="Event policies, rules, what to bring, etc...") }}
-                                {% if form.policies.errors %}
-                                    <div class="invalid-feedback">
-                                        {% for error in form.policies.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
                         
-                        <!-- Social Media Section -->
-                        <div class="form-section">
-                            <h6 class="section-title">
-                                <i class="fas fa-share-alt"></i> Social Media Links
-                            </h6>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-row">
-                                        <label class="form-label">
-                                            <i class="fab fa-facebook"></i> Facebook
-                                        </label>
-                                        {{ form.facebook(class="form-control", placeholder="https://facebook.com/yourevent") }}
-                                        {% if form.facebook.errors %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.facebook.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-row">
-                                        <label class="form-label">
-                                            <i class="fab fa-instagram"></i> Instagram
-                                        </label>
-                                        {{ form.instagram(class="form-control", placeholder="https://instagram.com/yourevent") }}
-                                        {% if form.instagram.errors %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.instagram.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-row">
-                                        <label class="form-label">
-                                            <i class="fab fa-twitter"></i> Twitter</label>
-                                            {{ form.twitter(class="form-control", placeholder="https://twitter.com/yourevent") }}
-                                            {% if form.twitter.errors %}
-                                            <div class="invalid-feedback">
-                                                {% for error in form.twitter.errors %}{{ error }}{% endfor %}
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -315,6 +215,113 @@
                         <div class="helper-text text-center">
                             <i class="fas fa-lightbulb"></i> 
                             Leave price and quantity empty if you don't want to offer that ticket type.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Details Section -->
+            <div class="col-12 col-lg-12 mb-4">
+                <div class="card creation-card">
+                    <h6 class="card-header-custom">
+                        <i class="fas fa-cogs"></i> Additional Details
+                    </h6>
+                    <div class="card-body-custom">
+                        <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-row">
+                                    {{ form.age_limit.label(class="form-label") }}
+                                    {{ form.age_limit(class="form-control", placeholder="0 for all ages") }}
+                                    {% if form.age_limit.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.age_limit.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-row">
+                                    {{ form.length.label(class="form-label") }}
+                                    {{ form.length(class="form-control", placeholder="e.g., 2 hours, All day") }}
+                                    {% if form.length.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.length.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            {{ form.artist_info.label(class="form-label") }}
+                            {{ form.artist_info(class="form-control", rows="3", placeholder="Tell us about the artists performing...") }}
+                            {% if form.artist_info.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.artist_info.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-row">
+                            {{ form.policies.label(class="form-label") }}
+                            {{ form.policies(class="form-control", rows="3", placeholder="Event policies, rules, what to bring, etc...") }}
+                            {% if form.policies.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.policies.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Social Media Section -->
+                    <div class="form-section">
+                        <h6 class="section-title">
+                            <i class="fas fa-share-alt"></i> Social Media Links
+                        </h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-row">
+                                    <label class="form-label">
+                                        <i class="fab fa-facebook"></i> Facebook
+                                    </label>
+                                    {{ form.facebook(class="form-control", placeholder="https://facebook.com/yourevent") }}
+                                    {% if form.facebook.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.facebook.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-row">
+                                    <label class="form-label">
+                                        <i class="fab fa-instagram"></i> Instagram
+                                    </label>
+                                    {{ form.instagram(class="form-control", placeholder="https://instagram.com/yourevent") }}
+                                    {% if form.instagram.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.instagram.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-row">
+                                    <label class="form-label">
+                                        <i class="fab fa-twitter"></i> Twitter</label>
+                                        {{ form.twitter(class="form-control", placeholder="https://twitter.com/yourevent") }}
+                                        {% if form.twitter.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.twitter.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

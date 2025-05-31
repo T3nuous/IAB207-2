@@ -84,11 +84,11 @@ class EventForm(FlaskForm):
 class TicketForm(FlaskForm): 
     """Form for creating multiple ticket types for an event"""
     general_price = DecimalField('General Ticket Price ($)', validators=[Optional(), NumberRange(min=0, message="Price cannot be negative.")], places=2)
-    general_quantity = IntegerField('General Ticket Quantity', validators=[Optional(), NumberRange(min=1, message="Must be a positive number.")])
+    general_quantity = IntegerField('Total General Tickets (including sold)', validators=[Optional(), NumberRange(min=1, message="Must be a positive number.")])
     general_description = TextAreaField('General Ticket Description', validators=[Optional(), Length(max=500)])
     
     vip_price = DecimalField('VIP Ticket Price ($)', validators=[Optional(), NumberRange(min=0, message="Price cannot be negative.")], places=2)
-    vip_quantity = IntegerField('VIP Ticket Quantity', validators=[Optional(), NumberRange(min=1, message="Must be a positive number.")])
+    vip_quantity = IntegerField('Total VIP Tickets (including sold)', validators=[Optional(), NumberRange(min=1, message="Must be a positive number.")])
     vip_description = TextAreaField('VIP Ticket Description', validators=[Optional(), Length(max=500)])
 
     # Validates that at least one ticket type is provided and that quantity is specified if a price is set
