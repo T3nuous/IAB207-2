@@ -1,4 +1,14 @@
-/* Hero Section */
+/* =================================================================
+   EDITEVENT.CSS - Event Editing Page Styling
+   =================================================================
+   This CSS file contains all the styling for editing existing events
+   including hero section, current image display, form sections, and validation
+   ================================================================= */
+
+/* =================================================================
+   HERO SECTION
+   ================================================================= */
+/* Hero banner for event editing page with gradient background */
 .edit-hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -6,18 +16,21 @@
     margin-bottom: 3rem;
 }
 
+/* Main title in edit hero section */
 .hero-title {
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 1rem;
 }
 
+/* Subtitle in edit hero section */
 .hero-subtitle {
     font-size: 1.2rem;
     opacity: 0.9;
     margin-bottom: 2rem;
 }
 
+/* Progress indicator for multi-step editing process */
 .progress-indicator {
     background: rgba(255, 255, 255, 0.2);
     padding: 1rem;
@@ -25,13 +38,17 @@
     margin-top: 1rem;
 }
 
+/* Individual progress step styling */
 .progress-step {
     color: white;
     font-weight: 600;
     font-size: 0.9rem;
 }
 
-/* Current Image Display */
+/* =================================================================
+   CURRENT IMAGE DISPLAY
+   ================================================================= */
+/* Section displaying the current event image */
 .current-image-section {
     background: white;
     border-radius: 20px;
@@ -41,6 +58,7 @@
     text-align: center;
 }
 
+/* Title for current image section */
 .current-image-title {
     color: #2d3748;
     font-weight: 700;
@@ -48,13 +66,17 @@
     font-size: 1.1rem;
 }
 
+/* Current event image styling */
 .current-image {
     max-height: 250px;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Form Sections */
+/* =================================================================
+   FORM CARD CONTAINERS
+   ================================================================= */
+/* Base styling for form section cards */
 .form-card {
     border: none;
     border-radius: 20px;
@@ -64,6 +86,7 @@
     background: white;
 }
 
+/* Header section of form cards with gradient background */
 .form-card-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -71,6 +94,7 @@
     border: none;
 }
 
+/* Title styling within form card headers */
 .form-card-header h5 {
     margin: 0;
     font-weight: 700;
@@ -79,20 +103,26 @@
     align-items: center;
 }
 
+/* Icon styling within form card headers */
 .form-card-header i {
     margin-right: 0.75rem;
     font-size: 1.1rem;
 }
 
+/* Body content area of form cards */
 .form-card-body {
     padding: 2rem;
 }
 
-/* Form Styling */
+/* =================================================================
+   FORM SECTION ORGANIZATION
+   ================================================================= */
+/* Individual sections within forms (basic info, details, etc.) */
 .form-section {
     margin-bottom: 2rem;
 }
 
+/* Section titles within forms with icon support */
 .section-title {
     color: #2d3748;
     font-weight: 700;
@@ -104,15 +134,21 @@
     align-items: center;
 }
 
+/* Icons within section titles */
 .section-title i {
     margin-right: 0.5rem;
     color: #667eea;
 }
 
+/* =================================================================
+   FORM CONTROLS & INPUTS
+   ================================================================= */
+/* Form group containers for consistent spacing */
 .form-group {
     margin-bottom: 1.5rem;
 }
 
+/* Form field labels */
 .form-label {
     color: #4a5568;
     font-weight: 600;
@@ -120,6 +156,7 @@
     display: block;
 }
 
+/* Base styling for all form inputs and selects */
 .form-control, .form-select {
     border-radius: 10px;
     border: 2px solid #e2e8f0;
@@ -128,17 +165,22 @@
     width: 100%;
 }
 
+/* Focus state for form inputs - highlights with brand color */
 .form-control:focus, .form-select:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     outline: none;
 }
 
+/* Invalid state for form inputs - red border for validation errors */
 .form-control.is-invalid {
     border-color: #e53e3e;
 }
 
-/* Ticket Section Styling */
+/* =================================================================
+   TICKET CONFIGURATION SECTION
+   ================================================================= */
+/* Container for ticket type configuration */
 .ticket-section {
     background: #f8f9fa;
     border-radius: 15px;
@@ -147,6 +189,7 @@
     border: 2px solid #e2e8f0;
 }
 
+/* Title for each ticket type section */
 .ticket-type-title {
     color: #667eea;
     font-weight: 700;
@@ -156,6 +199,7 @@
     align-items: center;
 }
 
+/* Icons within ticket type titles with gradient background */
 .ticket-type-title i {
     margin-right: 0.75rem;
     background: linear-gradient(135deg, #667eea, #764ba2);
@@ -165,6 +209,7 @@
     font-size: 0.9rem;
 }
 
+/* Help text for ticket configuration guidance */
 .ticket-help-text {
     background: rgba(102, 126, 234, 0.1);
     border: 1px solid rgba(102, 126, 234, 0.2);
@@ -175,6 +220,7 @@
     color: #4a5568;
 }
 
+/* Grid layout for price and quantity fields */
 .price-quantity-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -182,7 +228,10 @@
     margin-bottom: 1rem;
 }
 
-/* Submit Section */
+/* =================================================================
+   SUBMIT SECTION
+   ================================================================= */
+/* Container for form submission buttons */
 .submit-section {
     background: white;
     border-radius: 20px;
@@ -192,6 +241,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Title for submit section */
 .submit-title {
     color: #2d3748;
     font-weight: 700;
@@ -199,6 +249,10 @@
     margin-bottom: 1rem;
 }
 
+/* =================================================================
+   ACTION BUTTONS
+   ================================================================= */
+/* Update event button with gradient background */
 .btn-update {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -212,12 +266,14 @@
     min-width: 180px;
 }
 
+/* Hover effect for update button - lift and glow */
 .btn-update:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
     color: white;
 }
 
+/* Cancel button with transparent background and border */
 .btn-cancel {
     background: transparent;
     border: 2px solid #6c757d;
@@ -232,12 +288,14 @@
     display: inline-block;
 }
 
+/* Hover effect for cancel button */
 .btn-cancel:hover {
     background: #6c757d;
     color: white;
     text-decoration: none;
 }
 
+/* Delete event button with red gradient background */
 .btn-delete {
     background: linear-gradient(135deg, #e53e3e, #c53030);
     border: none;
@@ -250,13 +308,17 @@
     min-width: 180px;
 }
 
+/* Hover effect for delete button - lift with red glow */
 .btn-delete:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(229, 62, 62, 0.4);
     color: white;
 }
 
-/* Error Styling */
+/* =================================================================
+   VALIDATION & ERROR HANDLING
+   ================================================================= */
+/* Error message styling for form validation */
 .invalid-feedback {
     display: block !important;
     color: #e53e3e;
@@ -265,12 +327,16 @@
     font-size: 0.875rem;
 }
 
+/* Red asterisk indicator for required fields */
 .required-field::after {
     content: " *";
     color: #e53e3e;
 }
 
-/* Image Upload Section */
+/* =================================================================
+   IMAGE UPLOAD SECTION
+   ================================================================= */
+/* Container for image upload with dashed border */
 .image-upload-section {
     border: 2px dashed #e2e8f0;
     border-radius: 15px;
@@ -281,28 +347,36 @@
     margin-bottom: 1.5rem;
 }
 
+/* Hover state for image upload area */
 .image-upload-section:hover {
     border-color: #667eea;
     background: #f0f4ff;
 }
 
+/* Upload icon within image upload area */
 .image-upload-icon {
     font-size: 3rem;
     color: #a0aec0;
     margin-bottom: 1rem;
 }
 
+/* Upload instruction text */
 .image-upload-text {
     color: #4a5568;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
 
+/* Upload hint text for file format guidance */
 .image-upload-hint {
     font-size: 0.9rem;
     color: #718096;
 }
 
+/* =================================================================
+   LAYOUT UTILITIES
+   ================================================================= */
+/* Visual divider with gradient effect */
 .divider {
     border: none;
     height: 2px;

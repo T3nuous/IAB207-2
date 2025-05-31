@@ -1,4 +1,14 @@
-/* Hero Section */
+/* =================================================================
+   EVENTDETAILS.CSS - Event Detail Page Styling
+   =================================================================
+   This CSS file contains all the styling for individual event detail pages
+   including hero section, event information, tickets, comments, and actions
+   ================================================================= */
+
+/* =================================================================
+   HERO SECTION
+   ================================================================= */
+/* Main hero banner for event detail page with gradient background */
 .event-hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -8,6 +18,7 @@
     overflow: hidden;
 }
 
+/* Dark overlay to improve text readability over hero background */
 .hero-overlay {
     position: absolute;
     top: 0;
@@ -18,11 +29,13 @@
     z-index: 1;
 }
 
+/* Content container for hero text - positioned above overlay */
 .hero-content {
     position: relative;
     z-index: 2;
 }
 
+/* Main event title in hero section */
 .hero-title {
     font-size: 3rem;
     font-weight: 800;
@@ -30,12 +43,17 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Event subtitle/description in hero */
 .hero-subtitle {
     font-size: 1.3rem;
     opacity: 0.9;
     margin-bottom: 1rem;
 }
 
+/* =================================================================
+   STATUS BADGES
+   ================================================================= */
+/* Base styling for event status badges */
 .status-badge {
     display: inline-block;
     padding: 0.5rem 1.5rem;
@@ -45,36 +63,46 @@
     margin-top: 1rem;
 }
 
+/* Event is available for booking */
 .status-open { 
     background: rgba(40, 167, 69, 0.9); 
 }
 
+/* All tickets have been sold */
 .status-sold-out { 
     background: rgba(220, 53, 69, 0.9); 
 }
 
+/* Event has been cancelled */
 .status-cancelled { 
     background: rgba(108, 117, 125, 0.9); 
 }
 
+/* Event has been postponed to a later date */
 .status-postponed { 
     background: rgba(255, 193, 7, 0.9); 
     color: #000; 
 }
 
+/* Event date has passed - no longer active */
 .status-inactive { 
     background: rgba(108, 117, 125, 0.9); 
 }
 
+/* Event has finished successfully */
 .status-completed { 
     background: rgba(23, 162, 184, 0.9); 
 }
 
-/* Event Image Section */
+/* =================================================================
+   EVENT IMAGE SECTION
+   ================================================================= */
+/* Container section for event image display */
 .event-image-section {
     margin-bottom: 3rem;
 }
 
+/* White card container for event image */
 .event-image-container {
     background: white;
     border-radius: 20px;
@@ -83,6 +111,7 @@
     text-align: center;
 }
 
+/* Main event image styling with hover effects */
 .event-image {
     max-height: 500px;
     border-radius: 15px;
@@ -90,10 +119,12 @@
     transition: transform 0.3s ease;
 }
 
+/* Slight zoom effect on image hover */
 .event-image:hover {
     transform: scale(1.02);
 }
 
+/* Placeholder shown when no image is available */
 .image-placeholder {
     background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     border-radius: 15px;
@@ -101,13 +132,17 @@
     color: #6c757d;
 }
 
+/* Icon styling within image placeholder */
 .image-placeholder i {
     font-size: 4rem;
     margin-bottom: 1rem;
     opacity: 0.5;
 }
 
-/* Content Cards */
+/* =================================================================
+   CONTENT CARDS
+   ================================================================= */
+/* Base styling for information cards throughout the page */
 .content-card {
     border: none;
     border-radius: 20px;
@@ -118,10 +153,12 @@
     transition: transform 0.3s ease;
 }
 
+/* Hover effect for content cards - slight lift */
 .content-card:hover {
     transform: translateY(-5px);
 }
 
+/* Header section of content cards with gradient background */
 .content-card-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -129,6 +166,7 @@
     border: none;
 }
 
+/* Title styling within card headers */
 .content-card-header h5 {
     margin: 0;
     font-weight: 700;
@@ -137,22 +175,28 @@
     align-items: center;
 }
 
+/* Icon styling within card headers */
 .content-card-header i {
     margin-right: 0.75rem;
     font-size: 1.1rem;
 }
 
+/* Body content area of cards */
 .content-card-body {
     padding: 2rem;
 }
 
-/* Ticket Information Styling */
+/* =================================================================
+   TICKET INFORMATION STYLING
+   ================================================================= */
+/* Container for ticket type listings */
 .ticket-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
+/* Individual ticket type items with hover effects */
 .ticket-item {
     background: #f8f9fa;
     border-radius: 12px;
@@ -162,11 +206,13 @@
     transition: all 0.3s ease;
 }
 
+/* Hover effect for ticket items - slide and darken */
 .ticket-item:hover {
     background: #e9ecef;
     transform: translateX(5px);
 }
 
+/* Ticket type name styling */
 .ticket-type {
     font-weight: 700;
     color: #2d3748;
@@ -174,23 +220,30 @@
     margin-bottom: 0.5rem;
 }
 
+/* Ticket price display */
 .ticket-price {
     color: #667eea;
     font-weight: 700;
     font-size: 1.2rem;
 }
 
+/* Availability count text */
 .ticket-availability {
     color: #6c757d;
     font-size: 0.9rem;
 }
 
+/* Optional ticket description text */
 .ticket-description {
     color: #4a5568;
     font-style: italic;
     margin-top: 0.5rem;
 }
 
+/* =================================================================
+   BOOKING BUTTON
+   ================================================================= */
+/* Main call-to-action button for ticket booking */
 .btn-book-tickets {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -203,13 +256,17 @@
     margin-top: 1.5rem;
 }
 
+/* Hover effect for booking button - lift and glow */
 .btn-book-tickets:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
     color: white;
 }
 
-/* Event Details Styling */
+/* =================================================================
+   EVENT DETAILS STYLING
+   ================================================================= */
+/* Individual detail items (date, location, etc.) */
 .detail-item {
     display: flex;
     align-items: center;
@@ -220,10 +277,12 @@
     transition: background 0.3s ease;
 }
 
+/* Hover effect for detail items */
 .detail-item:hover {
     background: #e9ecef;
 }
 
+/* Icon containers for detail items */
 .detail-icon {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -235,17 +294,22 @@
     text-align: center;
 }
 
+/* Label text for detail items */
 .detail-label {
     font-weight: 600;
     color: #4a5568;
     margin-right: 0.5rem;
 }
 
+/* Value text for detail items */
 .detail-value {
     color: #2d3748;
 }
 
-/* Information Sections */
+/* =================================================================
+   INFORMATION SECTIONS
+   ================================================================= */
+/* General information section containers */
 .info-section {
     background: white;
     border-radius: 20px;
@@ -254,6 +318,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Header for information sections with gradient background */
 .info-section-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -266,16 +331,21 @@
     align-items: center;
 }
 
+/* Icon styling in information section headers */
 .info-section-header i {
     margin-right: 0.75rem;
 }
 
+/* Content area for information sections */
 .info-content {
     color: #4a5568;
     line-height: 1.6;
 }
 
-/* Social Media Section */
+/* =================================================================
+   SOCIAL MEDIA SECTION
+   ================================================================= */
+/* Container for social media links */
 .social-section {
     background: white;
     border-radius: 20px;
@@ -285,6 +355,7 @@
     text-align: center;
 }
 
+/* Title for social media section */
 .social-title {
     color: #2d3748;
     font-weight: 700;
@@ -292,6 +363,7 @@
     margin-bottom: 1.5rem;
 }
 
+/* Container for social media buttons */
 .social-buttons {
     display: flex;
     justify-content: center;
@@ -299,6 +371,7 @@
     flex-wrap: wrap;
 }
 
+/* Base styling for social media buttons */
 .social-btn {
     border-radius: 25px;
     padding: 0.75rem 1.5rem;
@@ -308,11 +381,13 @@
     border: 2px solid;
 }
 
+/* Hover effect for social buttons - lift and shadow */
 .social-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* Platform-specific social button colours colorPicker from: https://github.com/Toinane/colorpicker/releases to get the colour from facebook, instagram and twitter*/
 .social-facebook { border-color: #3b5998; color: #3b5998; }
 .social-facebook:hover { background: #3b5998; color: white; }
 
@@ -322,7 +397,10 @@
 .social-twitter { border-color: #1da1f2; color: #1da1f2; }
 .social-twitter:hover { background: #1da1f2; color: white; }
 
-/* Action Buttons */
+/* =================================================================
+   ACTION BUTTONS SECTION
+   ================================================================= */
+/* Container for event management action buttons */
 .action-section {
     background: white;
     border-radius: 20px;
@@ -332,6 +410,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Title for action section */
 .action-title {
     color: #2d3748;
     font-weight: 700;
@@ -339,6 +418,7 @@
     margin-bottom: 1.5rem;
 }
 
+/* Edit event button styling */
 .btn-edit {
     background: linear-gradient(135deg, #ffc107, #ff8f00);
     border: none;
@@ -352,12 +432,14 @@
     transition: all 0.3s ease;
 }
 
+/* Hover effect for edit button */
 .btn-edit:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(255, 193, 7, 0.4);
     color: white;
 }
 
+/* Cancel event button styling */
 .btn-cancel-event {
     background: linear-gradient(135deg, #dc3545, #c82333);
     border: none;
@@ -371,13 +453,17 @@
     transition: all 0.3s ease;
 }
 
+/* Hover effect for cancel button */
 .btn-cancel-event:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
     color: white;
 }
 
-/* Comments Section */
+/* =================================================================
+   COMMENTS SECTION
+   ================================================================= */
+/* Main container for comments functionality */
 .comments-section {
     background: white;
     border-radius: 20px;
@@ -386,6 +472,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Header for comments section */
 .comments-header {
     color: #2d3748;
     font-weight: 700;
@@ -395,11 +482,13 @@
     align-items: center;
 }
 
+/* Icon styling in comments header */
 .comments-header i {
     margin-right: 0.75rem;
     color: #667eea;
 }
 
+/* Form container for submitting new comments */
 .comment-form {
     background: #f8f9fa;
     border-radius: 15px;
@@ -407,17 +496,20 @@
     margin-bottom: 2rem;
 }
 
+/* Textarea styling for comment input */
 .comment-input {
     border-radius: 10px;
     border: 2px solid #e2e8f0;
     transition: all 0.3s ease;
 }
 
+/* Focus state for comment input */
 .comment-input:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+/* Submit button for comments */
 .btn-submit-comment {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -428,12 +520,17 @@
     transition: all 0.3s ease;
 }
 
+/* Hover effect for comment submit button */
 .btn-submit-comment:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
     color: white;
 }
 
+/* =================================================================
+   INDIVIDUAL COMMENT STYLING
+   ================================================================= */
+/* Container for individual comment items */
 .comment-item {
     background: #f8f9fa;
     border-radius: 15px;
@@ -443,23 +540,27 @@
     transition: all 0.3s ease;
 }
 
+/* Hover effect for comment items */
 .comment-item:hover {
     background: #e9ecef;
     transform: translateX(5px);
 }
 
+/* Header area of individual comments */
 .comment-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 0.75rem;
 }
-    
+
+/* Comment author name styling */
 .comment-author {
     font-weight: 700;
     color: #2d3748;
 }
-    
+
+/* Metadata container for comment info */
 .comment-meta {
     display: flex;
     flex-direction: column;
@@ -467,16 +568,19 @@
     gap: 0.5rem;
 }
 
+/* Comment timestamp styling */
 .comment-date {
     color: #6c757d;
     font-size: 0.9rem;
 }
 
+/* Container for comment action buttons */
 .comment-actions {
     display: flex;
     gap: 0.5rem;
 }
 
+/* Edit comment button styling */
 .btn-edit-comment {
     background: #ffc107;
      border: none;
@@ -486,13 +590,15 @@
      transition: all 0.3s ease;
      text-decoration: none;
     }
-    
+
+/* Hover effect for edit comment button */
 .btn-edit-comment:hover {
     background: #e0a800;
     transform: translateY(-1px);
     color: white;
 }
 
+/* Delete comment button styling */
 .btn-delete-comment {
     background: #dc3545;
     border: none;
@@ -501,31 +607,41 @@
      color: white;
      transition: all 0.3s ease;
     }
-    
+
+/* Hover effect for delete comment button */
 .btn-delete-comment:hover {
     background: #c82333;
     transform: translateY(-1px);
 }
 
+/* Comment text content styling */
 .comment-text {
     color: #4a5568;
     line-height: 1.6;
     margin: 0;
 }
 
+/* =================================================================
+   EMPTY STATES
+   ================================================================= */
+/* Styling for when no comments exist */
 .no-comments {
     text-align: center;
     padding: 2rem;
     color: #6c757d;
 }
 
+/* Icon styling in no comments state */
 .no-comments i {
     font-size: 3rem;
     margin-bottom: 1rem;
     opacity: 0.5;
 }
 
-/* Alert Styling */
+/* =================================================================
+   ALERT STYLING
+   ================================================================= */
+/* Custom alert styling with gradient backgrounds */
 .alert-custom {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
     border: 1px solid rgba(102, 126, 234, 0.2);
@@ -534,6 +650,7 @@
     margin-bottom: 1.5rem;
 }
 
+/* Info-specific alert styling */
 .alert-info-custom {
     background: linear-gradient(135deg, rgba(13, 202, 240, 0.1), rgba(13, 110, 253, 0.1));
     border: 1px solid rgba(13, 202, 240, 0.2);

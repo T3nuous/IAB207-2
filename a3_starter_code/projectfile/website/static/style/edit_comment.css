@@ -1,3 +1,14 @@
+/* =================================================================
+   EDIT_COMMENT.CSS - Comment Editing Page Styling
+   =================================================================
+   This CSS file contains all the styling for editing comments on events
+   including hero section, comment display, form controls, and actions
+   ================================================================= */
+
+/* =================================================================
+   HERO SECTION
+   ================================================================= */
+/* Hero banner for comment editing page with gradient background */
 .edit-comment-hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -5,17 +16,23 @@
     margin-bottom: 3rem;
 }
 
+/* Main title in comment edit hero section */
 .hero-title {
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 1rem;
 }
 
+/* Subtitle in comment edit hero section */
 .hero-subtitle {
     font-size: 1.2rem;
     opacity: 0.9;
 }
 
+/* =================================================================
+   MAIN EDIT CARD
+   ================================================================= */
+/* Main card container for comment editing form */
 .edit-comment-card {
     background: white;
     border-radius: 20px;
@@ -25,6 +42,7 @@
     margin: 0 auto;
 }
 
+/* Header section of edit card with gradient background */
 .card-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -32,10 +50,15 @@
     text-align: center;
 }
 
+/* Body content area of edit card */
 .card-body {
     padding: 2rem;
 }
 
+/* =================================================================
+   ORIGINAL COMMENT DISPLAY
+   ================================================================= */
+/* Container for displaying the original comment being edited */
 .original-comment {
     background: #f8f9fa;
     border-left: 4px solid #667eea;
@@ -44,6 +67,7 @@
     margin-bottom: 1.5rem;
 }
 
+/* Label for original comment section */
 .original-comment-label {
     color: #667eea;
     font-weight: 600;
@@ -51,16 +75,22 @@
     margin-bottom: 0.5rem;
 }
 
+/* Text content of original comment */
 .original-comment-text {
     color: #4a5568;
     line-height: 1.6;
     margin: 0;
 }
 
+/* =================================================================
+   FORM CONTROLS
+   ================================================================= */
+/* Form group containers for consistent spacing */
 .form-group {
     margin-bottom: 1.5rem;
 }
 
+/* Form labels for edit comment fields */
 .form-group label {
     color: #4a5568;
     font-weight: 600;
@@ -68,6 +98,7 @@
     display: block;
 }
 
+/* Textarea input for editing comment content */
 .form-control {
     border-radius: 10px;
     border: 2px solid #e2e8f0;
@@ -77,12 +108,17 @@
     resize: vertical;
 }
 
+/* Focus state for comment textarea - highlights with brand color */
 .form-control:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     outline: none;
 }
 
+/* =================================================================
+   ACTION BUTTONS
+   ================================================================= */
+/* Update comment button with gradient background */
 .btn-update-comment {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -94,12 +130,14 @@
     width: 100%;
 }
 
+/* Hover effect for update comment button - lift and glow */
 .btn-update-comment:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);
     color: white;
 }
 
+/* Cancel button with gray background */
 .btn-cancel {
     background: #718096;
     border: none;
@@ -112,12 +150,17 @@
     margin-top: 0.5rem;
 }
 
+/* Hover effect for cancel button - darken and lift */
 .btn-cancel:hover {
     background: #4a5568;
     transform: translateY(-2px);
     color: white;
 }
 
+/* =================================================================
+   INFORMATIONAL ALERTS
+   ================================================================= */
+/* Information box with yellow/warning styling for editing guidelines */
 .edit-info {
     background: #fff3cd;
     border: 1px solid #ffeaa7;
@@ -126,18 +169,24 @@
     margin-bottom: 1.5rem;
 }
 
+/* Title within edit information box */
 .edit-info h6 {
     color: #856404;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
 
+/* Content text within edit information box */
 .edit-info p {
     color: #856404;
     font-size: 0.9rem;
     margin: 0;
 }
 
+/* =================================================================
+   GENERAL ALERTS
+   ================================================================= */
+/* Base styling for all alert messages */
 .alert {
     border-radius: 10px;
     margin-bottom: 1rem;
