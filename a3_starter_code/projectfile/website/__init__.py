@@ -9,7 +9,9 @@ db = SQLAlchemy()
 # create a function that creates a web application
 # a web server will run this web application
 def create_app():
-  
+    '''
+    create a web application
+    '''
     app = Flask(__name__)  # this is the name of the module/package that is calling this app
     # Should be set to false in a production environment
     app.debug = True

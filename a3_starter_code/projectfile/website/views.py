@@ -72,7 +72,7 @@ def index():
 @main_bp.route('/booking-history')
 @login_required
 def booking_history():
-    # Get only orders for the current user (simplified approach)
+    # Get only orders for the current user
     user_orders = (Order.query
                   .filter_by(user_id=current_user.id)
                   .join(Event)
@@ -90,12 +90,20 @@ def booking_history():
     
     # Add orders only
     for order in user_orders:
+        # Determine the display status based on event status
+        if order.event.current_status == 'Cancelled':
+            display_status = 'Event Cancelled'
+        elif order.event.current_status == 'Inactive':
+            display_status = 'Event Completed'
+        else:
+            display_status = order.order_status
+            
         order_info = {
             'id': order.id,
             'type': 'order',
             'event': order.event,
             'booking_date': order.order_date,
-            'status': order.order_status,
+            'status': display_status,
             'total_price': order.total_amount,
             'order_items': order.order_items
         }

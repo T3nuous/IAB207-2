@@ -13,15 +13,20 @@ eventbp = Blueprint('event', __name__, url_prefix='/events')
 
 @eventbp.route('/<int:id>')
 def details(id):
+    '''
+    show the event details and the comments
+    '''
     event = db.session.query(Event).filter_by(id=id).first_or_404()
     cform = CommentForm()
-    comments = event.comments.order_by(Comment.created_at.desc()).all()
+    comments = event.comments.order_by(Comment.created_at.desc()).all() # order the comments by the date they were created
     return render_template('events/eventDetails.html', event=event, form=cform, comments=comments)
 
 
 @eventbp.route('/eventspage')
 def allevents():
-
+    '''
+    show all the events
+    '''
     genre_filter = request.args.get('genre', '')
     if genre_filter:
         # Filter by genre name instead of genre_id
@@ -39,6 +44,9 @@ def allevents():
     return render_template('events/allEvents.html', events=events, genres=genres, selected_genre=genre_filter)
 
 def check_upload_file(uploaded_file_data):
+    '''
+    check the upload file
+    '''
     print(f"DEBUG: check_upload_file called with: {uploaded_file_data}")
     
     if not uploaded_file_data or not uploaded_file_data.filename:
@@ -88,6 +96,9 @@ def check_upload_file(uploaded_file_data):
 @eventbp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
+    '''
+    create a new event
+    '''
     form = EventForm()
     ticketform = TicketForm() 
     
@@ -127,7 +138,7 @@ def create():
                 venue=form.venue.data,
                 genre_id=form.genre.data,
                 created_by=current_user.id,
-                status='Open',
+                status='Open', # status of the event set to open on default
                 age_limit=form.age_limit.data,
                 length=form.length.data,
                 artist_info=form.artist_info.data,
@@ -162,6 +173,9 @@ def create():
 @eventbp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_event(id):
+    '''
+    edit an event
+    '''
     event_to_edit = db.session.query(Event).filter_by(id=id).first_or_404()
 
     if event_to_edit.created_by != current_user.id:
@@ -316,6 +330,9 @@ def edit_event(id):
 @eventbp.route('/<int:id>/cancel_confirm', methods=['GET'])
 @login_required
 def cancel_confirm(id):
+    '''
+    confirm to cancel an event
+    '''
     event = db.session.query(Event).filter_by(id=id).first_or_404()
     if event.created_by != current_user.id:
         flash("You are not authorized to cancel this event.", "danger")
@@ -328,6 +345,9 @@ def cancel_confirm(id):
 @eventbp.route('/<int:id>/cancel_confirmed', methods=['POST'])
 @login_required
 def cancel_event_confirmed(id):
+    '''
+    cancel an event
+    '''
     event = db.session.query(Event).filter_by(id=id).first_or_404()
     if event.created_by != current_user.id:
         flash("You are not authorized to cancel this event.", "danger")
@@ -348,6 +368,9 @@ def cancel_event_confirmed(id):
 @eventbp.route('/<int:id>/comment', methods=['POST'])
 @login_required
 def comment(id):
+    '''
+    add a comment to an event
+    '''
     form = CommentForm()
     event = db.session.query(Event).filter_by(id=id).first_or_404()
     if form.validate_on_submit():
@@ -364,6 +387,9 @@ def comment(id):
 @eventbp.route('/<int:event_id>/comment/<int:comment_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_comment(event_id, comment_id):
+    '''
+    edit/update a comment
+    '''
     comment = db.session.query(Comment).filter_by(id=comment_id).first_or_404()
     event = db.session.query(Event).filter_by(id=event_id).first_or_404()
     
@@ -390,6 +416,9 @@ def edit_comment(event_id, comment_id):
 @eventbp.route('/<int:event_id>/comment/<int:comment_id>/delete', methods=['POST'])
 @login_required
 def delete_comment(event_id, comment_id):
+    '''
+    delete a comment
+    '''
     comment = db.session.query(Comment).filter_by(id=comment_id).first_or_404()
     
     # Check if the current user is the author of the comment
@@ -425,6 +454,7 @@ def book_tickets(id):
         cart_items = []
         total_amount = Decimal('0.00') # Process each ticket type
         
+        # use for loop to process each ticket type, get the quantity of the ticket type, and check if the quantity is valid
         for ticket in ticket_types:
             quantity_field = f'quantity_{ticket.id}'
             quantity = request.form.get(quantity_field, type=int)
@@ -444,6 +474,8 @@ def book_tickets(id):
                                 'subtotal': subtotal
                                 })
             total_amount += subtotal
+            
+        # if the cart is empty, flash a message and return the booking page
         if not cart_items:
             flash("Please select at least one ticket to proceed.", "warning")
             return render_template('events/bookTickets.html', event=event, ticket_types=ticket_types, form=form)
@@ -493,7 +525,9 @@ def book_tickets(id):
 @eventbp.route('/<int:id>/checkout', methods=['GET', 'POST'])
 @login_required
 def checkout(id):
-    """Checkout page for reviewing and confirming the order"""
+    '''
+    checkout page for reviewing and confirming the order
+    '''
     event = db.session.query(Event).filter_by(id=id).first_or_404()
     
     # Check if cart exists
@@ -517,7 +551,7 @@ def checkout(id):
             db.session.add(order)
             db.session.flush()  # Get the order ID
             
-            # Create order items and update ticket availability
+            # Create order items and update ticket availability, use for loop to process each order
             for item in cart['items']:
                 # Check ticket availability again
                 ticket = db.session.query(ticket_type).filter_by(id=item['ticket_type_id']).first()
@@ -581,11 +615,13 @@ def checkout(id):
 @eventbp.route('/<int:id>/booking-confirmation/<int:order_id>')
 @login_required
 def booking_confirmation(id, order_id):
-    """Booking confirmation page"""
+    '''
+    booking confirmation page
+    '''
     event = db.session.query(Event).filter_by(id=id).first_or_404()
     order = db.session.query(Order).filter_by(id=order_id, user_id=current_user.id).first_or_404()
     
-    # Get order items with ticket details
+    # Get order items with ticket details, use for loop to process each order item
     order_items = []
     for item in order.order_items:
         order_items.append({
@@ -604,7 +640,9 @@ def booking_confirmation(id, order_id):
 @eventbp.route('/cart/clear')
 @login_required
 def clear_cart():
-    """Clear the shopping cart"""
+    '''
+    clear the shopping cart
+    '''
     session.pop('cart', None)
     flash("Your cart has been cleared.", "info")
     return redirect(request.referrer or url_for('event.allevents'))

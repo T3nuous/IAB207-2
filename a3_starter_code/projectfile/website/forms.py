@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms.fields import (TextAreaField, SubmitField, StringField, PasswordField,                             DateField, TimeField, IntegerField, SelectField, DateTimeLocalField,                            DecimalField, HiddenField, FieldList, FormField, BooleanField)
+from wtforms.fields import (TextAreaField, SubmitField, StringField, PasswordField, DateField, TimeField, IntegerField, SelectField, DateTimeLocalField, DecimalField, HiddenField, FieldList, FormField, BooleanField)
 from wtforms.validators import (InputRequired, Length, Email, EqualTo, Regexp, 
                                 NumberRange, ValidationError, Optional, URL)
 from wtforms.widgets import TextInput
@@ -20,8 +20,15 @@ class RegisterForm(FlaskForm):
     mobileNumber = StringField("Mobile Number", validators=[
         InputRequired(), 
         Length(min=7, max=15, message="Field must be between 7 and 15 characters."), 
-        Regexp(r'^\+?[0-9\s\-()]*$', message="Please only input valid phone characters.")
+        Regexp(r'^\+?[0-9\s\-()]*$', message="Please only input valid phone characters.") # Regexp: https://wtforms.readthedocs.io/en/stable/validators/#wtforms.validators.Regexp
+        
     ]) 
+    # regex – The regular expression string to use. Can also be a compiled regular expression pattern. 
+    # ^: Start of the string
+    # \+?: Optional leading '+'
+    # [0-9\s\-()]*: Allow digits, spaces, hyphens, parentheses, or any other characters
+    # $: End of the string
+    
     streetAddress = StringField("Street Address", validators=[InputRequired(), Length(max=150)]) 
     password = PasswordField("Password", validators=[
         InputRequired(),
@@ -43,7 +50,7 @@ class TicketTypeForm(FlaskForm):
 class EventForm(FlaskForm):
     name = StringField('Event Name', validators=[InputRequired(message="Please name your event."), Length(max=120)])
     description = TextAreaField('Event Description', validators=[Optional(), Length(max=2000)])
-    image = FileField('Event Image (JPG, PNG, JPEG only)', validators=[
+    image = FileField('Event Image (JPG, PNG, JPEG, WEBP only)', validators=[
         Optional(), 
         FileAllowed(['jpg', 'png', 'jpeg', 'webp'], 'Only JPG, PNG, JPEG, and WEBP images are allowed!')
     ])
@@ -86,7 +93,7 @@ class TicketForm(FlaskForm):
 
     # Validates that at least one ticket type is provided and that quantity is specified if a price is set
     def validate(self, extra_validators=None):
-        if not super().validate(extra_validators):
+        if not super().validate(extra_validators): #super() in Python is a built-in function that provides access to methods from a parent class (also called a superclass) from within a child class. It's primarily used in inheritance scenarios.
             return False
         
         validation_passed = True
@@ -138,8 +145,7 @@ class BookingSearchForm(FlaskForm):
     booking_status = SelectField('Booking Status', choices=[
         ('', 'All Statuses'),
         ('confirmed', 'Confirmed'),
-        ('cancelled', 'Cancelled'),
-        ('refunded', 'Refunded')
+        ('cancelled', 'Cancelled')
     ], validators=[Optional()])
     date_from = DateField('From Date', validators=[Optional()])
     date_to = DateField('To Date', validators=[Optional()])
@@ -166,7 +172,6 @@ class EventStatusForm(FlaskForm):
     status = SelectField('Event Status', choices=[('Open', 'Open'),
                                                   ('Sold Out', 'Sold Out'),
                                                   ('Cancelled', 'Cancelled'),
-                                                  ('Postponed', 'Postponed'),
                                                   ('Completed', 'Completed')], validators=[InputRequired()])
     reason = TextAreaField('Reason for Status Change', validators=[Optional(), Length(max=500)])
     submit = SubmitField('Update Status')

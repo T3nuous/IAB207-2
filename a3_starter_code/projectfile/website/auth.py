@@ -13,6 +13,9 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/login', methods=['GET', 'POST'])
 # view function
 def login():
+    '''
+    login page
+    '''
     login_form = LoginForm()
     error = None
     if(login_form.validate_on_submit()==True):
@@ -27,7 +30,7 @@ def login():
         elif not check_password_hash(user.password_hash, password): # takes the hash and password
             error = 'Incorrect password'
         if error is None:
-            #all good, set the login_user of flask_login to manage the user
+            # set the login_user of flask_login to manage the user
             login_user(user)
             return redirect(url_for('main.index'))
         else:
@@ -37,6 +40,9 @@ def login():
 
 @auth_bp.route('/register', methods = ['GET', 'POST'])
 def register():
+    '''
+    register page
+    '''
     form = RegisterForm()
     if (form.validate_on_submit()==True):
         firstName = form.firstName.data
@@ -46,10 +52,10 @@ def register():
         pwd = form.password.data
         email = form.email.data
 
-        #check if a user exists with this email
+        # check if a user exists with this email
         existing_user_email = db.session.scalar(db.select(User).where(User.email==email))
         
-        #check if a user exists with this mobile number
+        # check if a user exists with this mobile number
         existing_user_mobile = db.session.scalar(db.select(User).where(User.mobileNumber==phoneNumber))
 
         if existing_user_email:#this returns true when user is not None
@@ -60,9 +66,9 @@ def register():
             flash('Mobile number already registered, please try another')
             return redirect(url_for('auth.register'))
         
-        # don't store the password in plaintext!
+        # password hashing
         pwd_hash = generate_password_hash(pwd)
-        #create a new User model object
+        # create a new User model object
         new_user = User(firstName=firstName,surname=surname,mobileNumber=phoneNumber, streetAddress=address, password_hash=pwd_hash, email=email)
         
         try:
@@ -70,7 +76,7 @@ def register():
             db.session.commit()
             print('Successfully registered')
             flash('You successfully registered your account')
-            #commit to the database and redirect to HTML page
+            # commit to the database and redirect to HTML page
             return redirect(url_for('main.index'))
         except IntegrityError as e:
             db.session.rollback()
@@ -91,16 +97,19 @@ def register():
             return redirect(url_for('auth.register'))
 
 
-        #return redirect(url_for('auth.login'))
+        # return redirect(url_for('auth.login'))
     
-    #the else is called when the HTTP request calling this page is a GET
+    # the else is called when the HTTP request calling this page is a GET
     else:
         return render_template('user.html', form=form, heading='Register')
-    #return render_template('user.html', form=form)
+    # return render_template('user.html', form=form)
 
 
 @auth_bp.route('/logout')
 @login_required
 def logout():
+    '''
+    perform logout
+    '''
     logout_user()
     return redirect(url_for('main.index'))

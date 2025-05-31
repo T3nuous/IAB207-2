@@ -19,7 +19,12 @@ class User(db.Model, UserMixin):
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)  # Timestamp for the last update
     
     # Relationships
-    comments = db.relationship('Comment', backref='user', lazy='dynamic')
+    comments = db.relationship('Comment', backref='user', lazy='dynamic') # lazy='dynamic': https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
+    # lazy='dynamic': 
+    #     Instead of immediately loading all related records, it returns a Query object
+    #     You can then apply additional filters, ordering, pagination, etc. before executing the query
+    #     The actual database query is only executed when you explicitly request the data
+        
     bookings = db.relationship('Booking', backref='user', lazy='dynamic')
     events_created = db.relationship('Event', foreign_keys='Event.created_by', backref='creator_user', lazy='dynamic')
     
@@ -91,7 +96,11 @@ class Event(db.Model):
 
     # Relationships to other models
     # 'cascade' ensures that related ticket_types are deleted if the event is deleted
-    ticket_types = db.relationship('ticket_type', backref='event', lazy='dynamic', cascade="all, delete-orphan")
+    ticket_types = db.relationship('ticket_type', backref='event', lazy='dynamic', cascade="all, delete-orphan") # cascade="all, delete-orphan": https://docs.sqlalchemy.org/en/20/orm/cascades.html
+    # cascade="all, delete-orphan": 
+    #     When an event is deleted, all associated ticket types will also be deleted
+    #     If a ticket type is deleted, it will be removed from the event but not from the database
+        
     comments = db.relationship('Comment', backref='event', lazy='dynamic', cascade="all, delete-orphan")
     bookings = db.relationship('Booking', backref='event', lazy='dynamic', cascade="all, delete-orphan")
 
