@@ -1,4 +1,14 @@
-/* Hero Section */
+/* =================================================================
+   BOOKINGHISTORY.CSS - User Booking History Page Styling
+   =================================================================
+   This CSS file contains all the styling for the user's booking history page
+   including account management, booking cards, and navigation elements
+   ================================================================= */
+
+/* =================================================================
+   HERO SECTION
+   ================================================================= */
+/* Hero banner for booking history page with gradient background */
 .booking-hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -6,22 +16,28 @@
     margin-bottom: 3rem;
 }
 
+/* Main title in booking history hero section */
 .hero-title {
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 1rem;
 }
 
+/* Subtitle in booking history hero section */
 .hero-subtitle {
     font-size: 1.2rem;
     opacity: 0.9;
 }
 
-/* Account Section */
+/* =================================================================
+   ACCOUNT MANAGEMENT SECTION
+   ================================================================= */
+/* Container for account information and settings */
 .account-section {
     margin-bottom: 3rem;
 }
 
+/* Card container for account management features */
 .account-card {
     border: none;
     border-radius: 20px;
@@ -29,6 +45,7 @@
     overflow: hidden;
 }
 
+/* Header section of account card with gradient background */
 .account-card-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -36,22 +53,28 @@
     border: none;
 }
 
+/* Title styling within account card header */
 .account-card-header h5 {
     margin: 0;
     font-weight: 700;
     font-size: 1.2rem;
 }
 
+/* Body content area of account card */
 .account-card-body {
     padding: 2rem;
     background: white;
 }
 
-/* Form Styling */
+/* =================================================================
+   FORM STYLING
+   ================================================================= */
+/* Form group containers for consistent spacing */
 .form-group {
     margin-bottom: 1.5rem;
 }
 
+/* Form labels for account information fields */
 .form-group label {
     color: #4a5568;
     font-weight: 600;
@@ -59,6 +82,7 @@
     display: block;
 }
 
+/* Base styling for form input controls */
 .form-control {
     border-radius: 10px;
     border: 2px solid #e2e8f0;
@@ -66,17 +90,22 @@
     transition: all 0.3s ease;
 }
 
+/* Focus state for form controls - highlights with brand color */
 .form-control:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+/* Disabled state for form controls (read-only fields) */
 .form-control:disabled {
     background-color: #f8f9fa;
     opacity: 0.8;
 }
 
-/* Button Styling */
+/* =================================================================
+   BUTTON STYLING
+   ================================================================= */
+/* Change password button with gradient background */
 .btn-change-password {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -87,19 +116,24 @@
     transition: all 0.3s ease;
 }
 
+/* Hover effect for change password button */
 .btn-change-password:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);
     color: white;
 }
 
-/* Bookings Section */
+/* =================================================================
+   BOOKINGS SECTION
+   ================================================================= */
+/* Main section container for booking history display */
 .bookings-section {
     background: #f8f9fa;
     padding: 3rem 0;
     border-radius: 20px 20px 0 0;
 }
 
+/* Section title for booking history */
 .section-title {
     color: #2d3748;
     font-weight: 800;
@@ -108,7 +142,10 @@
     text-align: center;
 }
 
-/* Booking Cards */
+/* =================================================================
+   BOOKING CARDS
+   ================================================================= */
+/* Individual booking cards displaying event bookings */
 .booking-card {
     border: none;
     border-radius: 20px;
@@ -120,11 +157,16 @@
     background: white;
 }
 
+/* Hover effect for booking cards - lift animation */
 .booking-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
+/* =================================================================
+   BOOKING IMAGE SECTION
+   ================================================================= */
+/* Container for booking event images with gradient fallback */
 .booking-image-container {
     position: relative;
     height: 250px;
@@ -132,12 +174,14 @@
     overflow: hidden;
 }
 
+/* Event image styling - covers full container */
 .booking-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
+/* Event name overlay on booking card images */
 .booking-event-name {
     position: absolute;
     top: 50%;
@@ -153,6 +197,10 @@
     backdrop-filter: blur(10px);
 }
 
+/* =================================================================
+   BOOKING CARD CONTENT
+   ================================================================= */
+/* Header section of booking cards with gradient background */
 .booking-card-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -161,16 +209,22 @@
     font-weight: 700;
 }
 
+/* Body content area of booking cards */
 .booking-card-body {
     padding: 1.5rem;
 }
 
+/* Event description text within booking cards */
 .booking-description {
     color: #4a5568;
     margin-bottom: 1.5rem;
     line-height: 1.6;
 }
 
+/* =================================================================
+   BOOKING DETAILS DISPLAY
+   ================================================================= */
+/* Container row for booking details with light background */
 .booking-details-row {
     background: #f8f9fa;
     border-radius: 15px;
@@ -178,10 +232,12 @@
     margin: 0;
 }
 
+/* Information section padding within booking details */
 .booking-info-section {
     padding: 1rem;
 }
 
+/* Metadata sections with white background and shadow */
 .booking-meta-section {
     background: white;
     border-radius: 10px;
@@ -190,6 +246,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Labels for booking metadata (date, tickets, etc.) */
 .booking-label {
     color: #667eea;
     font-weight: 600;
@@ -198,6 +255,7 @@
     display: block;
 }
 
+/* Values for booking metadata with input-like styling */
 .booking-value {
     background: white;
     border: 2px solid #e2e8f0;
@@ -208,6 +266,7 @@
     margin-bottom: 0.5rem;
 }
 
+/* Special styling for booking ID with gradient background */
 .booking-id {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -215,7 +274,10 @@
     font-weight: 700;
 }
 
-/* Empty State */
+/* =================================================================
+   EMPTY STATE STYLING
+   ================================================================= */
+/* Container displayed when user has no bookings */
 .no-bookings {
     text-align: center;
     padding: 4rem 2rem;
@@ -225,22 +287,29 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Large icon for empty state display */
 .no-bookings-icon {
     font-size: 4rem;
     color: #a0aec0;
     margin-bottom: 1rem;
 }
 
+/* Title text for empty state */
 .no-bookings h3 {
     color: #2d3748;
     margin-bottom: 1rem;
 }
 
+/* Description text for empty state */
 .no-bookings p {
     color: #718096;
     margin-bottom: 2rem;
 }
 
+/* =================================================================
+   BROWSE EVENTS BUTTON
+   ================================================================= */
+/* Primary button for browsing events when no bookings exist */
 .btn-browse-events {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -253,6 +322,7 @@
     display: inline-block;
 }
 
+/* Hover effect for browse events button - lift with glow */
 .btn-browse-events:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);

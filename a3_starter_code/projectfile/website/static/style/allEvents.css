@@ -1,3 +1,14 @@
+/* =================================================================
+   ALLEVENTS.CSS - All Events Listing Page Styling
+   =================================================================
+   This CSS file contains all the styling for the events listing page
+   including hero section, filters, event cards, and grid layouts
+   ================================================================= */
+
+/* =================================================================
+   HERO SECTION
+   ================================================================= */
+/* Hero banner for events listing page with gradient background */
 .events-hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -5,6 +16,10 @@
     margin-bottom: 3rem;
 }
 
+/* =================================================================
+   FILTER SECTION
+   ================================================================= */
+/* Container for event filtering controls */
 .filter-section {
     background: #f8f9fa;
     border-radius: 15px;
@@ -13,6 +28,10 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* =================================================================
+   EVENT CARDS
+   ================================================================= */
+/* Base styling for individual event cards */
 .event-card {
     border: none;
     border-radius: 20px;
@@ -22,11 +41,16 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Hover effect for event cards - lift with enhanced shadow */
 .event-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
+/* =================================================================
+   EVENT IMAGE SECTION
+   ================================================================= */
+/* Container for event images with gradient fallback */
 .event-image-container{
     position: relative;
     height: 250px;
@@ -34,12 +58,17 @@
     overflow: hidden;
 }
 
+/* Event image styling - covers full container */
 .event-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
+/* =================================================================
+   EVENT STATUS BADGES
+   ================================================================= */
+/* Base styling for event status indicators */
 .event-status {
     background: rgba(255, 255, 255, 0.9);
     color: #333;
@@ -49,16 +78,22 @@
     font-weight: 600;
 }
 
+/* Status-specific border colors for visual distinction */
 .event-status.open { border-left: 4px solid #28a745; }
 .event-status.sold-out { border-left: 4px solid #dc3545; }
 .event-status.cancelled { border-left: 4px solid #6c757d; }
 
+/* =================================================================
+   EVENT CARD CONTENT
+   ================================================================= */
+/* Event title styling within cards */
 .event-title {
     color: #2d3748;
     font-weight: 700;
     margin-bottom: 0.5rem;
 }
 
+/* Genre badge for event categories */
 .event-genre {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -69,18 +104,24 @@
     margin-bottom: 1rem;
 }
 
+/* Event date display styling */
 .event-date {
     color: #718096;
     font-weight: 600;
     margin-bottom: 1rem;
 }
 
+/* Event location display styling */
 .event-location {
     color: #a0aec0;
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
 }
 
+/* =================================================================
+   ACTION BUTTONS
+   ================================================================= */
+/* View event button with gradient background */
 .view-btn {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -91,17 +132,23 @@
     width: 100%;
 }
 
+/* Hover effect for view button - lift with glow */
 .view-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);
 }
 
+/* =================================================================
+   FILTER CONTROLS
+   ================================================================= */
+/* Title for filter sections */
 .filter-title {
     color: #2d3748;
     font-weight: 700;
     margin-bottom: 1rem;
 }
 
+/* Genre filter dropdown styling */
 .genre-filter {
     border-radius: 10px;
     border: 2px solid #e2e8f0;
@@ -110,11 +157,16 @@
     transition: all 0.3s ease;
 }
 
+/* Focus state for genre filter - highlights with brand color */
 .genre-filter:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+/* =================================================================
+   EMPTY STATE STYLING
+   ================================================================= */
+/* Container displayed when no events are found */
 .no-events {
     text-align: center;
     padding: 4rem 2rem;
@@ -123,27 +175,38 @@
     margin-top: 2rem;
 }
 
+/* Large icon for empty state display */
 .no-events-icon {
     font-size: 4rem;
     color: #a0aec0;
     margin-bottom: 1rem;
 }
 
+/* =================================================================
+   PAGE TYPOGRAPHY
+   ================================================================= */
+/* Main page title styling */
 .page-title {
     font-size: 3rem;
     font-weight: 800;
     margin-bottom: 1rem;
 }
 
+/* Page subtitle styling */
 .page-subtitle {
     font-size: 1.2rem;
     opacity: 0.9;
 }
 
+/* =================================================================
+   LAYOUT COMPONENTS
+   ================================================================= */
+/* Grid container for events display */
 .events-grid {
     margin-top: 2rem;
 }
 
+/* Filter status badge for active filters */
 .filter-badge {
     background: rgba(255, 255, 255, 0.2);
     color: white;

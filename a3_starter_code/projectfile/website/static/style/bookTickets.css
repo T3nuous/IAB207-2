@@ -1,4 +1,14 @@
-/* Content Cards */
+/* =================================================================
+   BOOKTICKETS.CSS - Ticket Booking Page Styling
+   =================================================================
+   This CSS file contains all the styling for the ticket booking process
+   including hero section, ticket selection, quantity controls, and checkout
+   ================================================================= */
+
+/* =================================================================
+   CONTENT CARDS
+   ================================================================= */
+/* Base styling for information and ticket cards */
 .content-card {
     border: none;
     border-radius: 20px;
@@ -9,10 +19,12 @@
     transition: transform 0.3s ease;
 }
 
+/* Hover effect for content cards - slight lift */
 .content-card:hover {
     transform: translateY(-5px);
 }
 
+/* Header section of content cards with gradient background */
 .content-card-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -20,6 +32,7 @@
     border: none;
 }
 
+/* Title styling within card headers */
 .content-card-header h5 {
     margin: 0;
     font-weight: 700;
@@ -28,19 +41,26 @@
     align-items: center;
 }
 
+/* Icon styling within card headers */
 .content-card-header i {
     margin-right: 0.75rem;
     font-size: 1.1rem;
 }
 
+/* Body content area of cards */
 .content-card-body {
     padding: 2rem;
 }
+
+/* Utility class for white text color */
 .color-white {
     color: #FFFFFF !important;
 }
 
-/* Additional styles for booking page */
+/* =================================================================
+   BOOKING HERO SECTION
+   ================================================================= */
+/* Hero banner for booking page with gradient background */
 .booking-hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -49,6 +69,7 @@
     text-align: center;
 }
 
+/* Main title in booking hero section */
 .hero-title {
     font-size: 3rem;
     font-weight: 700;
@@ -56,12 +77,17 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Subtitle in booking hero section */
 .hero-subtitle {
     font-size: 1.5rem;
     margin-bottom: 2rem;
     opacity: 0.9;
 }
 
+/* =================================================================
+   STATUS BADGES
+   ================================================================= */
+/* Base styling for event status badges */
 .status-badge {
     display: inline-block;
     padding: 0.5rem 1.5rem;
@@ -70,13 +96,17 @@
     margin-top: 1rem;
 }
 
+/* Status badge for events that are open for booking */
 .status-open {
     background: rgba(40, 167, 69, 0.2);
     border: 2px solid #28a745;
     color: #fff;
 }
 
-/* Ticket Selection Cards */
+/* =================================================================
+   TICKET SELECTION CARDS
+   ================================================================= */
+/* Individual ticket type cards for selection */
 .ticket-selection-card {
     background: white;
     border-radius: 20px;
@@ -88,12 +118,14 @@
     overflow: hidden;
 }
 
+/* Hover effect for ticket selection cards - lift with border accent */
 .ticket-selection-card:hover {
     border-color: #667eea;
     transform: translateY(-3px);
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
 }
 
+/* Header for individual ticket types (General, VIP, etc.) */
 .ticket-type-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -105,13 +137,17 @@
     align-items: center;
 }
 
+/* Description text for ticket types */
 .ticket-description {
     color: #6c757d;
     font-style: italic;
     margin-bottom: 1rem;
 }
 
-/* Detail Items */
+/* =================================================================
+   DETAIL ITEMS
+   ================================================================= */
+/* Individual detail items (price, availability, etc.) */
 .detail-item {
     display: flex;
     align-items: center;
@@ -121,6 +157,7 @@
     border-radius: 10px;
 }
 
+/* Icon containers for detail items */
 .detail-icon {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -134,18 +171,23 @@
     flex-shrink: 0;
 }
 
+/* Label text for detail items */
 .detail-label {
     font-weight: 600;
     color: #495057;
     margin-right: 0.5rem;
 }
 
+/* Value text for detail items (highlighted in brand color) */
 .detail-value {
     color: #667eea;
     font-weight: 700;
 }
 
-/* Quantity Selector */
+/* =================================================================
+   QUANTITY SELECTOR
+   ================================================================= */
+/* Container for quantity selection controls */
 .quantity-selector {
     display: flex;
     align-items: center;
@@ -156,6 +198,8 @@
     background: #f8f9fa;
     border-radius: 15px;
 }
+
+/* Input field for quantity selection */
 .qty-input {
     border: 2px solid #e2e8f0;
     border-radius: 12px;
@@ -169,15 +213,17 @@
     transition: border-color 0.3s ease;
 }
 
+/* Focus state for quantity input - highlights with brand color */
 .qty-input:focus {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-
-
-/* Summary Items */
+/* =================================================================
+   BOOKING SUMMARY
+   ================================================================= */
+/* Individual items in booking summary */
 .summary-item {
     padding: 0.75rem 0;
     border-bottom: 1px solid #e9ecef;
@@ -186,15 +232,20 @@
     align-items: center;
 }
 
+/* Remove border from last summary item */
 .summary-item:last-child {
     border-bottom: none;
 }
 
+/* Strong text styling in summary items */
 .summary-item strong {
     color: #495057;
 }
 
-/* Buttons */
+/* =================================================================
+   PROCEED BUTTON
+   ================================================================= */
+/* Main call-to-action button for proceeding with booking */
 .btn-proceed {
     background: linear-gradient(135deg, #28a745, #20c997);
     border: none;
@@ -209,6 +260,7 @@
     cursor: pointer;
 }
 
+/* Hover effect for proceed button - lift and glow (when enabled) */
 .btn-proceed:hover:not(:disabled) {
     background: linear-gradient(135deg, #218838, #1bb394);
     transform: translateY(-2px);
@@ -216,6 +268,7 @@
     color: white;
 }
 
+/* Disabled state for proceed button */
 .btn-proceed:disabled {
     background: #6c757d;
     cursor: not-allowed;
@@ -224,28 +277,39 @@
     opacity: 0.6;
 }
 
+/* Icon spacing within proceed button */
 .btn-proceed i {
     margin-right: 0.5rem;
 }
 
-/* Card Layout Improvements */
+/* =================================================================
+   CARD LAYOUT IMPROVEMENTS
+   ================================================================= */
+/* Row spacing within ticket selection cards */
 .ticket-selection-card .row {
     margin: 0;
     padding: 2rem;
 }
 
+/* Column padding within ticket selection cards */
 .ticket-selection-card .col-md-6 {
     padding: 0 1rem;
 }
 
-/* Form Labels */
+/* =================================================================
+   FORM STYLING
+   ================================================================= */
+/* Form label styling for consistency */
 .form-label {
     font-weight: 600;
     color: #495057;
     margin-bottom: 0.5rem;
 }
 
-/* Sticky sidebar fix */
+/* =================================================================
+   LAYOUT UTILITIES
+   ================================================================= */
+/* Sticky positioning for sidebar elements */
 .sticky-top {
     position: sticky;
     top: 2rem;

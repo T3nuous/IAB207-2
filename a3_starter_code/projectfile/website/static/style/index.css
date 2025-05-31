@@ -1,4 +1,14 @@
-/* Main Body & Layout */
+/* =================================================================
+   INDEX.CSS - Music Event Platform Homepage Styling
+   =================================================================
+   This CSS file contains all the styling for the main homepage
+   including hero section, event cards, carousels, and categories
+   ================================================================= */
+
+/* =================================================================
+   MAIN BODY & LAYOUT
+   ================================================================= */
+/* Sets the main background gradient for the entire page and base typography */
 body {
     background: linear-gradient(135deg, #141117 0%, #1B1725 50%, #2A1B3D 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,7 +17,10 @@ body {
     min-height: 100vh;
 }
 
-/* Hero Section */
+/* =================================================================
+   HERO SECTION
+   ================================================================= */
+/* Outer container for the hero section with fixed height */
 .jumbotron-outer {
     height: 700px;
     margin-bottom: 0;
@@ -15,6 +28,7 @@ body {
     overflow: hidden;
 }
 
+/* Main hero section with background image and gradient overlay */
 .jumbotronback {
     background: linear-gradient(rgba(20, 17, 23, 0.3), rgba(27, 23, 37, 0.6)), url("../img/home-hero.jpg");
     background-size: cover;
@@ -31,6 +45,7 @@ body {
     color: #F9EBE0;
 }
 
+/* Decorative overlay with subtle gradient effect */
 .jumbotronback::before {
     content: '';
     position: absolute;
@@ -47,6 +62,7 @@ body {
     height: 700px;
 }
 
+/* Main hero title with gradient text effect */
 .jumbotronback h1 {
     font-size: 4rem;
     font-weight: 800;
@@ -61,6 +77,7 @@ body {
     z-index: 2;
 }
 
+/* Hero subtitle text styling */
 .jumbotronback p {
     font-size: 1.5rem;
     color: #F9EBE0;
@@ -71,6 +88,7 @@ body {
     z-index: 2;
 }
 
+/* Call-to-action button in hero section */
 .jumbotronback .btn {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -85,42 +103,54 @@ body {
     z-index: 2;
 }
 
+/* Hover effect for hero button - adds lift and glow */
 .jumbotronback .btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
 }
 
-/* Main Content Sections */
+/* =================================================================
+   MAIN CONTENT SECTIONS
+   ================================================================= */
+/* Container for full-width sections */
 .container-fluid {
     padding: 0;
 }
 
+/* Base styling for all content sections */
 .section {
     padding: 4rem 0;
     margin: 0;
 }
 
+/* Upcoming events section with dark gradient background */
 .section-upcoming {
     background: linear-gradient(135deg, #141117, #1B1725);
     padding: 5rem 0;
 }
 
+/* Popular events section with light to purple gradient */
 .section-popular {
     background: linear-gradient(135deg, #fdfdfd, #5e098f);
     padding: 5rem 0;
 }
 
+/* Categories section with dark purple gradient */
 .section-categories {
     background: linear-gradient(135deg, #1B1725, #2A1B3D);
     padding: 5rem 0;
 }
 
+/* Recommended events section with extra bottom padding */
 .section-recommended {
     background: linear-gradient(135deg, #141117, #1B1725);
     padding: 5rem 0 8rem 0;
 }
 
-/* Section Headings */
+/* =================================================================
+   SECTION HEADINGS
+   ================================================================= */
+/* Base styling for all section titles */
 .section-title {
     font-size: 3rem;
     font-weight: 800;
@@ -129,15 +159,18 @@ body {
     position: relative;
 }
 
+/* Light colored title for dark backgrounds */
 .section-title.light {
     color: #F6F1F4;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+/* Dark colored title for light backgrounds */
 .section-title.dark {
     color: #141117;
 }
 
+/* Decorative underline for section titles */
 .section-title::after {
     content: '';
     position: absolute;
@@ -150,7 +183,10 @@ body {
     border-radius: 2px;
 }
 
-/* Card Styling */
+/* =================================================================
+   EVENT CARD STYLING
+   ================================================================= */
+/* Base card styling with rounded corners and shadow */
 .card {
     border: none;
     border-radius: 20px;
@@ -161,17 +197,20 @@ body {
     background: white;
 }
 
+/* Hover effect for cards - lifts up with colored shadow */
 .card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
 }
 
+/* Container for card images with fixed height */
 .card-img-container {
     position: relative;
     height: 400px;
     overflow: hidden;
 }
 
+/* Card image styling - covers full container */
 .card img {
     width: 100%;
     height: 100%;
@@ -179,10 +218,12 @@ body {
     transition: transform 0.3s ease;
 }
 
+/* Zoom effect on image when card is hovered */
 .card:hover img {
     transform: scale(1.05);
 }
 
+/* Event name overlay on card images */
 .event-name {
     position: absolute;
     top: 50%;
@@ -200,10 +241,12 @@ body {
     transition: opacity 0.3s ease;
 }
 
+/* Hide event name on hover to show image better */
 .card:hover .event-name {
     opacity: 0;
 }
 
+/* Status badge for events (e.g., "Open", "Sold Out") */
 .status-text {
     position: absolute;
     top: 1rem;
@@ -216,6 +259,7 @@ body {
     font-size: 0.9rem;
 }
 
+/* Card header with gradient background */
 .card-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -226,16 +270,19 @@ body {
     border: none;
 }
 
+/* Card body content area */
 .card-body {
     padding: 2rem;
     background: white;
 }
 
+/* Right border for card sections */
 .custom-border {
     border-right: 2px solid #e2e8f0;
     padding-right: 1rem;
 }
 
+/* Styled form controls within cards */
 .card-body .form-control {
     background: #f8f9fa;
     border: 2px solid #e2e8f0;
@@ -245,6 +292,7 @@ body {
     color: #4a5568;
 }
 
+/* Secondary button styling */
 .btn-secondary {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
@@ -254,20 +302,26 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Hover effect for secondary buttons */
 .btn-secondary:hover {
     background: linear-gradient(135deg, #764ba2, #667eea);
     transform: translateY(-2px);
 }
 
-/* Carousel Styling */
+/* =================================================================
+   CAROUSEL STYLING
+   ================================================================= */
+/* Carousel container with side margins */
 .carousel {
     margin: 0 2rem;
 }
 
+/* Smooth transitions between carousel items */
 .carousel-item {
     transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
 }
 
+/* Custom styled carousel navigation buttons */
 .custom-carousel-control {
     width: 60px;
     height: 60px;
@@ -283,26 +337,33 @@ body {
     z-index: 10;
 }
 
+/* Hover effect for carousel controls */
 .custom-carousel-control:hover {
     background: linear-gradient(135deg, #764ba2, #667eea);
     transform: translateY(-50%) scale(1.1);
 }
 
+/* Position for previous button */
 .carousel-control-prev {
     left: 2rem;
 }
 
+/* Position for next button */
 .carousel-control-next {
     right: 2rem;
 }
 
-/* Category Buttons */
+/* =================================================================
+   CATEGORY BUTTONS
+   ================================================================= */
+/* Container for category buttons with max width */
 .categories-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
 }
 
+/* Image-based category buttons with hover effects */
 .img-btn {
     width: 100%;
     height: 200px;
@@ -322,6 +383,7 @@ body {
     text-decoration: none;
 }
 
+/* Overlay effect for category buttons */
 .img-btn::before {
     content: '';
     position: absolute;
@@ -334,18 +396,22 @@ body {
     opacity: 0;
 }
 
+/* Hover effects for category buttons */
 .img-btn:hover {
     filter: brightness(1) saturate(1.2);
     transform: translateY(-5px);
     box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
 }
 
+/* Show overlay on hover */
 .img-btn:hover::before {
     opacity: 1;
 }
 
-
-/* Responsive Grid for Events */
+/* =================================================================
+   RESPONSIVE GRID LAYOUTS
+   ================================================================= */
+/* Responsive grid for multiple events */
 .events-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -355,25 +421,31 @@ body {
     margin: 0 auto;
 }
 
+/* Layout for single event display */
 .events-grid-single {
     max-width: 2000px;
     margin: 0 auto;
     padding: 0 2rem;
 }
 
-/* Empty State Styling */
+/* =================================================================
+   EMPTY STATE STYLING
+   ================================================================= */
+/* Styling for when no events are available */
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
     color: #F6F1F4;
 }
 
+/* Empty state heading */
 .empty-state h3 {
     font-size: 2rem;
     margin-bottom: 1rem;
     color: #667eea;
 }
 
+/* Empty state description text */
 .empty-state p {
     font-size: 1.2rem;
     opacity: 0.8;

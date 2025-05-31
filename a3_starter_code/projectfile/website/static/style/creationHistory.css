@@ -1,4 +1,14 @@
-/* Creation History Section */
+/* =================================================================
+   CREATIONHISTORY.CSS - Event Creator History Page Styling
+   =================================================================
+   This CSS file contains all the styling for the event creator's history page
+   including created events display, status management, and action buttons
+   ================================================================= */
+
+/* =================================================================
+   MAIN SECTION CONTAINER
+   ================================================================= */
+/* Main container for creation history section with teal background */
 .creation-section {
     background: #e6fffa;
     padding: 3rem 0;
@@ -6,7 +16,10 @@
     margin-top: 2rem;
 }
 
-/* Creation Cards */
+/* =================================================================
+   EVENT CREATION CARDS
+   ================================================================= */
+/* Base styling for individual created event cards */
 .creation-card {
     border: none;
     border-radius: 20px;
@@ -19,24 +32,31 @@
     border: 2px solid transparent;
 }
 
+/* Hover effect for creation cards - lift with teal border accent */
 .creation-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     border-color: #38b2ac;
 }
 
+/* =================================================================
+   EVENT IMAGE SECTION
+   ================================================================= */
+/* Container for event images with teal gradient fallback */
 .creation-image-container {
     position: relative;
     height: 250px;
     background: linear-gradient(45deg, #38b2ac, #319795);
 }
 
+/* Event image styling - covers full container */
 .creation-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
+/* Event name overlay on card images */
 .creation-event-name {
     position: absolute;
     top: 50%;
@@ -52,6 +72,10 @@
     backdrop-filter: blur(10px);
 }
 
+/* =================================================================
+   STATUS BADGES
+   ================================================================= */
+/* Base styling for event status badges positioned on images */
 .creation-status-badge {
     position: absolute;
     top: 1rem;
@@ -63,26 +87,34 @@
     text-transform: uppercase;
 }
 
+/* Event is open and accepting bookings */
 .status-open {
     background: #48bb78;
     color: white;
 }
 
+/* All tickets have been sold out */
 .status-sold-out {
     background: #f56565;
     color: white;
 }
 
+/* Event has been cancelled by creator */
 .status-cancelled {
     background: #a0aec0;
     color: white;
 }
 
+/* Event has finished successfully */
 .status-completed {
     background: #38b2ac;
     color: white;
 }
 
+/* =================================================================
+   CARD CONTENT SECTIONS
+   ================================================================= */
+/* Header section of creation cards with teal gradient */
 .creation-card-header {
     background: linear-gradient(135deg, #38b2ac, #319795);
     color: white;
@@ -91,16 +123,22 @@
     font-weight: 700;
 }
 
+/* Body content area of creation cards */
 .creation-card-body {
     padding: 1.5rem;
 }
 
+/* Event description text within cards */
 .creation-description {
     color: #4a5568;
     margin-bottom: 1.5rem;
     line-height: 1.6;
 }
 
+/* =================================================================
+   EVENT DETAILS DISPLAY
+   ================================================================= */
+/* Container row for event details with light teal background */
 .creation-details-row {
     background: #f0fdfa;
     border-radius: 15px;
@@ -108,10 +146,12 @@
     margin: 0;
 }
 
+/* Information section padding within details */
 .creation-info-section {
     padding: 1rem;
 }
 
+/* Metadata sections with white background and shadow */
 .creation-meta-section {
     background: white;
     border-radius: 10px;
@@ -120,6 +160,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Labels for event metadata (date, location, etc.) */
 .creation-label {
     color: #38b2ac;
     font-weight: 600;
@@ -128,6 +169,7 @@
     display: block;
 }
 
+/* Values for event metadata with input-like styling */
 .creation-value {
     background: white;
     border: 2px solid #e2e8f0;
@@ -138,24 +180,33 @@
     margin-bottom: 0.5rem;
 }
 
+/* =================================================================
+   ACTION BUTTONS
+   ================================================================= */
+/* Container for action buttons (View, Edit, Cancel) */
 .creation-actions {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
+/* Base styling for action buttons within creation cards */
 .creation-actions .btn {
     border-radius: 20px;
     font-weight: 600;
     transition: all 0.3s ease;
 }
 
+/* Hover effect for action buttons - lift and shadow */
 .creation-actions .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Empty State for Creation History */
+/* =================================================================
+   EMPTY STATE STYLING
+   ================================================================= */
+/* Container displayed when user has no created events */
 .no-creations {
     text-align: center;
     padding: 4rem 2rem;
@@ -165,22 +216,29 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Large icon for empty state display */
 .no-creations-icon {
     font-size: 4rem;
     color: #a0aec0;
     margin-bottom: 1rem;
 }
 
+/* Title text for empty state */
 .no-creations h3 {
     color: #2d3748;
     margin-bottom: 1rem;
 }
 
+/* Description text for empty state */
 .no-creations p {
     color: #718096;
     margin-bottom: 2rem;
 }
 
+/* =================================================================
+   CREATE EVENT BUTTON
+   ================================================================= */
+/* Primary button for creating new events */
 .btn-create-event {
     background: linear-gradient(135deg, #38b2ac, #319795);
     border: none;
@@ -193,6 +251,7 @@
     display: inline-block;
 }
 
+/* Hover effect for create event button - lift with teal glow */
 .btn-create-event:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 15px rgba(56, 178, 172, 0.4);
