@@ -3,14 +3,38 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='style/index.css') }}">
+    <style>
+        /* No fixed width needed—Bootstrap grid handles responsiveness */
+    </style>
 {% endblock %}
 
 {% block header %}
     <div class="p-5 mb-4 bg-light rounded-3 jumbotron-outer">
-        <div class="jumbotronback container-fluid py-5 d-flex flex-column justify-content-end">
-            <h1 class="display-5 fw-bold justify-content-center">AmpUpEvents</h1>
-            <p class="col-md-8 fs-4">Turn up the volume on unforgettable experiences.</p>
-            <a href="{{ url_for('event.allevents') }}" class="btn btn-primary btn-lg" type="button">Browse All Events</a>
+        <div class="jumbotronback container-fluid py-5 d-flex flex-column justify-content-center align-items-center">
+            <h1 class="display-5 fw-bold text-center">AmpUpEvents</h1>
+            <p class="col-md-8 fs-4 text-center">Turn up the volume on unforgettable experiences.</p>
+
+            <!-- Responsive search bar -->
+            <form method="GET"
+                  action="{{ url_for('event.allevents') }}"
+                  class="row justify-content-center mt-4 w-100">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <!-- Ensure this container is on top so the input is clickable -->
+                    <div class="input-group input-group-lg" style="position: relative; z-index: 10;">
+                        <input
+                            id="header-search"
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search events by title or description"
+                            aria-label="Search events"
+                        >
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 {% endblock %}
@@ -20,7 +44,7 @@
     <!-- Upcoming Events Section -->
     <section class="section-upcoming">
         <div class="container-fluid">
-            <h1 class="section-title light">🎵 Upcoming Events</h1> <!-- https://getemoji.com/  -->
+            <h1 class="section-title light">🎵 Upcoming Events</h1>
             
             {% if events %}
                 <div class="events-grid-single">
@@ -291,6 +315,4 @@
         </div>
     </section>
 </main>
-
-
 {% endblock %}
