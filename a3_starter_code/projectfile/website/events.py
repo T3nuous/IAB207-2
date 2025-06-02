@@ -27,21 +27,42 @@ def allevents():
     '''
     show all the events
     '''
+    # Get search text from query parameters (for user story 3.4)
+    search_text = request.args.get('search', '').strip()
     genre_filter = request.args.get('genre', '')
+    # Build base query
+    query = Event.query
+
     if genre_filter:
         # Filter by genre name instead of genre_id
         genre = Genre.query.filter_by(name=genre_filter).first()
         if genre:
-            events = Event.query.filter_by(genre_id=genre.id).order_by(Event.start_datetime.asc()).all()
+            query = query.filter_by(genre_id=genre.id)
         else:
-            events = []
+            query = query.filter(False)  # No matching genre, return empty
     else:
-        events = Event.query.order_by(Event.start_datetime.asc()).all()
+        # No genre filter applied; keep base query
+        pass
+
+    # Apply search filter if provided
+    if search_text:
+        query = query.filter(
+            (Event.name.ilike(f"%{search_text}%")) |
+            (Event.description.ilike(f"%{search_text}%"))
+        )
+
+    # Execute query ordered by start datetime
+    events = query.order_by(Event.start_datetime.asc()).all()
 
     genres = db.session.scalars(db.select(Genre)).all()
 
-
-    return render_template('events/allEvents.html', events=events, genres=genres, selected_genre=genre_filter)
+    return render_template(
+        'events/allEvents.html',
+        events=events,
+        genres=genres,
+        selected_genre=genre_filter,
+        search_text=search_text
+    )
 
 def check_upload_file(uploaded_file_data):
     '''
@@ -518,7 +539,7 @@ def checkout(id):
             db.session.add(order)
             db.session.flush()  # Get the order ID
             
-            # Create order items and update ticket availability, use for loop to process each order
+            # Create order items and update ticket availability, use for loop to process each order item
             for item in cart['items']:
                 # Check ticket availability again
                 ticket = db.session.query(ticket_type).filter_by(id=item['ticket_type_id']).first()
