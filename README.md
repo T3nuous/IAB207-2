@@ -225,14 +225,6 @@ The platform features an intelligent event promotion system:
 - **Recommended Events**: Promotes events with fewer sales to help struggling events gain visibility
 - **Balanced Discovery**: Ensures both successful and new events get exposure
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
 ## 📝 License
 
 This project is developed for educational purposes as part of IAB207 coursework.
